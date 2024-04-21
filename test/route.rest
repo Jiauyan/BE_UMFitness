@@ -1,0 +1,76 @@
+
+
+
+POST http://localhost:3000/auth/registerAccount
+Content-Type: application/json
+
+{
+    //"username": "yan",
+    "email": "test8@gmail.com",
+    "password": "123456"
+}
+
+###
+POST http://localhost:3000/auth/loginAccount
+Content-Type: application/json
+
+{
+    "email": "yanyantan0816@gmail.com",
+    "password": "123456"
+}
+
+###
+DELETE http://localhost:3001/auth/logoutAccount
+Content-Type: application/json
+
+{
+    "email": "yanyantan0816@gmail.com",
+    "password": "123456"
+}
+###
+GET http://localhost:3000/auth/getAccount
+
+###
+GET http://localhost:3001/auth/getAccount
+
+###
+GET http://localhost:3000/auth/getToken
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoidGVzdDYiLCJpYXQiOjE3MTA5MjQwMTIsImV4cCI6MTcxMDkyNDA3Mn0.OZBzlmsqEnUCNklfz1KBcujTmR2gbgX1Vfwic-NYAnE
+
+###
+POST http://localhost:3000/auth/refreshToken
+Content-Type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiJ9.dGVzdDY.TdW8dWZigBQcc2UB8eQWwQQHCiGa3pyxQ5-v_OXxY_g"
+}
+
+###
+PATCH http://localhost:3000/auth/editAccount/65786f07e4ecfebd2945e336
+Content-Type: application/json
+
+{
+
+    "username": "sherwynd627",
+    "email": "sherwynd627@gmail.com"
+}
+###
+
+DELETE http://localhost:3000/auth/deleteAccount/6578763b811a538863d71d04
+
+###
+DELETE http://localhost:3000/auth/logoutAccount
+Content-Type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RBZ2FpbiIsImlhdCI6MTcwMjgwNTkxOX0.EKd16-rY_DjraEzZ4GZUAyxpFdETJTQTq5-NbKPIABI"
+}
+
+###
+
+POST http://localhost:3000/auth/forgotPassword
+Content-Type: application/json
+
+{
+    "email": "test"
+}
