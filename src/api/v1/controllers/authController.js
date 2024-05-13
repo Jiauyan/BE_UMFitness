@@ -1,6 +1,4 @@
-// const { validateUser } = require("../validations/authValidation");
 const authService = require("../services/authService");
-// const authServiceLogin = require('../../../configs/firebaseDB'); 
 
 const registerAccount = async (req, res, next) => {
     try {
@@ -34,11 +32,7 @@ const loginAccount = async (req, res, next) => {
 
 const logoutAccount = async (req, res, next) => {
   try {
-    //const { email, password } = req.body;
-    const logout = await authService.logoutAccount(
-      //email,
-      //password
-    );
+    const logout = await authService.logoutAccount();
     return res.status(201).json(logout);
   } catch (error){
     console.error('Authentication failed:', error);
@@ -46,19 +40,7 @@ const logoutAccount = async (req, res, next) => {
   }
 };
 
-  
-// get all account
-const getAllAccount = async (req, res) => {
-    try {
-      const findUserAll = await authService.getAllAccount();
-      res.status(200).json(findUserAll);
-    } catch (err) {
-      res.status(400).json({ message: err.message });
-    }
-  };
-
   module.exports = {
-    getAllAccount,
     registerAccount,
     loginAccount,
     logoutAccount

@@ -20,18 +20,44 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:3001/auth/logoutAccount
+POST http://localhost:3000/auth/logoutAccount
 Content-Type: application/json
 
 {
-    "email": "yanyantan0816@gmail.com",
-    "password": "123456"
+    "access token" : "eyJhbGciOiJSUzI1NiIsImtpZCI6ImEyMzhkZDA0Y2JhYTU4MGIzMDRjODgxZTFjMDA4ZWMyOGZiYmFkZGMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vd2VmaXQtOTA5OTYiLCJhdWQiOiJ3ZWZpdC05MDk5NiIsImF1dGhfdGltZSI6MTcxNDMyMDk2NiwidXNlcl9pZCI6ImpJWDloRG92ZXdXTGNyWUg3a3dEU1FnVDdXdjIiLCJzdWIiOiJqSVg5aERvdmV3V0xjcllIN2t3RFNRZ1Q3V3YyIiwiaWF0IjoxNzE0MzIwOTY2LCJleHAiOjE3MTQzMjQ1NjYsImVtYWlsIjoieWFueWFudGFuMDgxNkBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsieWFueWFudGFuMDgxNkBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.fl0ge_ZKnG2A6g11PX1XOdNpM3kHg5HkS5NLCY5ouMg96vPKMfO9EDiqXMJiy1R4TY38twcuIpQgH0TN-CkEMxJIOt7VvVy4bOoicXFhPRp3t0-enInluh1asaDxfNQo45KJRDFZ8l9jOR7WxcIsx3-l8VmOwBsPJqqH8OaIF3a6I2nVSUyDHJ8ejta8q-G-RujE4IsPvtvOY_GQdUPgUkKHAGOr7LL--XJ9JZOa3kHl-BqSBmGT1hIgVoSb3Z8a2xbd3oxgPvRaaQ7nydmxr3e4GPUYzzLJ6pqen4qeRt5-Wx6p0G4iVjQ2OGN6UaA7veTj_SPyc20YTeN6BHPcPg"
 }
-###
-GET http://localhost:3000/auth/getAccount
+
 
 ###
-GET http://localhost:3001/auth/getAccount
+GET http://localhost:3000/goals/getAllGoals
+
+###
+GET http://localhost:3000/goals/getGoalById/hKzN9ffO74DgVFs4wGpS
+
+
+###
+POST http://localhost:3000/goals/addGoal
+Content-Type: application/json
+
+{
+    "title": "running"
+}
+
+###
+DELETE  http://localhost:3000/goals/deleteGoal/ggirc60vi9kjNFlpsLMx
+
+###
+PATCH http://localhost:3000/goals/updateGoal/hKzN9ffO74DgVFs4wGpS
+Content-Type: application/json
+
+{
+    "title": "jogging"
+}
+
+
+
+
+
 
 ###
 GET http://localhost:3000/auth/getToken

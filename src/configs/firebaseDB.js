@@ -13,13 +13,13 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const firestore = getFirestore(app);
+const db = getFirestore(app);
 const auth = getAuth(app);
 
 const connectfirebaseDB = async () => {
   try {
     console.log("Firebase connected")
-    return firestore;
+    return db;
   } catch (err) {
     console.error("Firebase Connection Error", err.message);
   }
@@ -28,4 +28,5 @@ const connectfirebaseDB = async () => {
 module.exports = {
   connectfirebaseDB,
   auth,
+  db
 };
