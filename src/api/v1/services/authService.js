@@ -1,6 +1,6 @@
 const {auth} = require('../../../configs/firebaseDB');
-const  {signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut} = require("firebase/auth")
-const { getFirestore, doc, setDoc, getDoc } = require('firebase/firestore');
+const  {signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail} = require("firebase/auth")
+const { getFirestore, doc, setDoc, getDoc, alert } = require('firebase/firestore');
 
 const db = getFirestore();
 
@@ -67,6 +67,18 @@ const logoutAccount = async () => {
   }
 };
 
+const forgotPassword = async (email) => {
+    try {
+        await sendPasswordResetEmail(auth, email);
+        return "Password reset email sent successfully";
+    } catch (error) {
+        console.log("Printing error code:" + error.code);
+        console.log("Printing error message:" + error.message);
+        return error.message;
+    }
+}
+
+
 /* const getAllAccount = async () => {
      try {
        const usersSnapshot = await db.collection('user').get();
@@ -87,6 +99,7 @@ const logoutAccount = async () => {
     saveUserDetails,
     getUserDetails ,
     loginAccount,
-    logoutAccount
+    logoutAccount,
+    forgotPassword
   };
   

@@ -1,4 +1,4 @@
-const { authService, registerAccount, saveUserDetails, getUserDetails, loginAccount, logoutAccount } = require("../services/authService");
+const { authService, registerAccount, saveUserDetails, getUserDetails, loginAccount, logoutAccount, forgotPassword } = require("../services/authService");
 
 const registerAccountHandler = async (req, res, next) => {
     try {
@@ -7,6 +7,10 @@ const registerAccountHandler = async (req, res, next) => {
         // Register account with Firebase Authentication
         const account = await registerAccount(email, password);
 
+        // Parse height and weight as integers
+        const parsedHeight = parseInt(height, 10);
+        const parsedWeight = parseInt(weight, 10);
+
          // Prepare user details
         const userDetails = {
             username,
@@ -14,8 +18,8 @@ const registerAccountHandler = async (req, res, next) => {
             name,
             gender,
             dateOfBirth,
-            height,
-            weight,
+            height: parsedHeight,
+            weight: parsedWeight,
             fitnessLevel,
             favClass: Array.isArray(favClass) ? favClass : favClass.split(',').map(item => item.trim()),
             fitnessGoal
@@ -58,8 +62,20 @@ const logoutAccountHandler = async (req, res, next) => {
   }
 };
 
+const forgotPasswordHandler = async(req, res, next) => {
+     try {
+        const { email } = req.body;
+        const result = await forgotPassword(email);
+        return res.status(201).json(result);
+      } catch (error){
+        console.error('Sending password reset email failed:', error);
+        return res.status(401).json({ error: "Sending password reset email failed", details: error.message });
+      }
+}
+
   module.exports = {
     registerAccountHandler,
     loginAccountHandler,
-    logoutAccountHandler
+    logoutAccountHandler,
+    forgotPasswordHandler
   };
