@@ -42,12 +42,12 @@ const logoutAccount = async (req, res, next) => {
 const completeProfile = async (req, res) => {
   try {
     const { uid } = req.params;
-    const {role, username, gender, age, dateOfBirth, weight, height} = req.body;
+    const {role, username, age, gender, dateOfBirth, weight, height} = req.body;
     const addUserInfo= await authService.completeProfile(
       uid,
       role,
-      age, 
       username,
+      age,
       gender, 
       dateOfBirth, 
       weight, 
