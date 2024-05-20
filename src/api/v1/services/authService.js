@@ -18,7 +18,7 @@ const registerAccount = async (email, password) => {
     const newUser = await createUserWithEmailAndPassword(auth, email, password);
     const user = newUser.user;
 
-    await setDoc(doc(db, "users", user.uid), {
+    await setDoc(doc(db, "Users", user.uid), {
       email: user.email,
     });
     
@@ -42,16 +42,18 @@ const logoutAccount = async () => {
 const completeProfile = async (
   uid,
   role, 
+  name,
   username,
   age,
   gender, 
   dateOfBirth, 
   weight, 
   height) => {
-  const userRef = doc(db, 'users', uid);
+  const userRef = doc(db, 'Users', uid);
   try {
     const addUserInfo = await setDoc(userRef, {  
       role, 
+      name,
       username,
       age,
       gender, 
@@ -70,7 +72,7 @@ const completeProfile = async (
 }
 
 const fitnessLevel = async (uid, fitnessLevel) => {
-  const userRef = doc(db, 'users', uid);
+  const userRef = doc(db, 'Users', uid);
   try {
     const addFitnessLevel = await setDoc(userRef, { fitnessLevel }, { merge: true });
     return addFitnessLevel;
@@ -82,7 +84,7 @@ const fitnessLevel = async (uid, fitnessLevel) => {
 }
 
 const fitnessGoal = async (uid, fitnessGoal) => {
-  const userRef = doc(db, 'users', uid);
+  const userRef = doc(db, 'Users', uid);
   try {
     const addFitnessGoal = await setDoc(userRef, { fitnessGoal }, { merge: true });
     return addFitnessGoal;
@@ -93,11 +95,11 @@ const fitnessGoal = async (uid, fitnessGoal) => {
   }
 }
 
-const exerciseType = async (uid, exerciseType) => {
-  const userRef = doc(db, 'users', uid);
+const favClass = async (uid, favClass) => {
+  const userRef = doc(db, 'Users', uid);
   try {
-    const addExerciseType = await setDoc(userRef, { exerciseType }, { merge: true });
-    return addExerciseType;
+    const addFavClass = await setDoc(userRef, { favClass }, { merge: true });
+    return addFavClass;
 
   } catch (error) {
     console.error('Error updating exercise type:', error);
@@ -107,7 +109,7 @@ const exerciseType = async (uid, exerciseType) => {
 
 const getUserById = async (uid) => {
   try {
-    const getUser = await getDoc(doc(db,'users',uid));
+    const getUser = await getDoc(doc(db,'Users',uid));
     const user = {uid: getUser.uid, ...getUser.data()};
     return user;
   } catch (error) {
@@ -124,7 +126,7 @@ const getUserById = async (uid) => {
     completeProfile,
     fitnessLevel,
     fitnessGoal,
-    exerciseType,
+    favClass,
     getUserById
   };
   

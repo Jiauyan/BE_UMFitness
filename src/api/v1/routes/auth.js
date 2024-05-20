@@ -20,7 +20,7 @@ router.post("/logoutAccount", authFirebaseController.logoutAccount); //Log Out A
 router.post("/completeProfile/:uid", authFirebaseController.completeProfile);
 router.post("/fitnessLevel/:uid", authFirebaseController.fitnessLevel);
 router.post("/fitnessGoal/:uid", authFirebaseController.fitnessGoal);
-router.post("/exerciseType/:uid", authFirebaseController.exerciseType);
+router.post("/favClass/:uid", authFirebaseController.favClass);
 router.get("/getUserById/:uid", authFirebaseController.getUserById);
 
 module.exports = router;

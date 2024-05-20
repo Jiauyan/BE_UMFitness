@@ -42,10 +42,11 @@ const logoutAccount = async (req, res, next) => {
 const completeProfile = async (req, res) => {
   try {
     const { uid } = req.params;
-    const {role, username, age, gender, dateOfBirth, weight, height} = req.body;
+    const {role, name, username, age, gender, dateOfBirth, weight, height} = req.body;
     const addUserInfo= await authService.completeProfile(
       uid,
       role,
+      name,
       username,
       age,
       gender, 
@@ -87,15 +88,15 @@ const fitnessGoal = async (req, res) => {
   }
 };
 
-const exerciseType = async (req, res) => {
+const favClass = async (req, res) => {
   try {
     const { uid } = req.params;
-    const {exerciseType} = req.body;
-    const addExerciseType = await authService.exerciseType(
+    const {favClass} = req.body;
+    const addFavClass = await authService.favClass(
       uid,
-      exerciseType
+      favClass
     );
-    return res.status(200).json(addExerciseType);
+    return res.status(200).json(addFavClass);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -118,6 +119,6 @@ const getUserById = async (req, res) => {
     completeProfile,
     fitnessLevel,
     fitnessGoal,
-    exerciseType,
+    favClass,
     getUserById
   };
