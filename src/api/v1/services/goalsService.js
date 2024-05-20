@@ -1,5 +1,5 @@
 const {db} = require('../../../configs/firebaseDB');
-const { collection, getDocs, addDoc, doc, deleteDoc, setDoc, getDoc, query, where } = require("firebase/firestore");
+const { collection, getDocs, addDoc, doc, deleteDoc, setDoc, getDoc } = require("firebase/firestore"); 
 
 const getAllGoals = async () => {
     try {
@@ -11,20 +11,6 @@ const getAllGoals = async () => {
       throw error;
     }
   }
-
-  const getAllUserGoals = async (uid) => {
-    try {
-      const goalsRef = collection(db, 'Goals');
-      const q = query(goalsRef, where('uid', '==', uid));
-      const querySnapshot = await getDocs(q);
-
-      const goals = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      return goals;
-    } catch (error) {
-      console.error('Error fetching goals:', error);
-      throw error;
-    }
-  };
 
 const getGoalById = async (id) => {
     try {
@@ -38,25 +24,17 @@ const getGoalById = async (id) => {
 }
 
 
-const addGoal = async (title, uid) => {
-  try {
-    const docRef = await addDoc(collection(db, 'Goals'), {
-      title,
-      uid,
-    });
-
-    // Retrieve the newly created goal document's ID
-    const newGoal = {
-      title,
-      uid,
-    };
-
-    return newGoal;
-  } catch (error) {
-    console.error('Error adding goal:', error);
-    throw error;
-  }
-};
+const addGoal = async (title) => {
+    try {
+      const addNewGoal = await addDoc(collection(db,'Goals'),{
+        title
+      })
+      return addNewGoal;
+    } catch (error) {
+      console.error('Error fetching:', error);
+      throw error;
+    }
+}
 
 
 const updateGoal = async (id, title) => {
@@ -86,7 +64,6 @@ const deleteGoal = async (id) => {
 
 module.exports = {
     getAllGoals,
-    getAllUserGoals,
     getGoalById,
     addGoal,
     updateGoal,

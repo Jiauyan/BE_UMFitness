@@ -1,60 +1,37 @@
-const { authService, registerAccount, saveUserDetails, getUserDetails, loginAccount, logoutAccount, forgotPassword } = require("../services/authService");
+const authService = require("../services/authService");
 
-const registerAccountHandler = async (req, res, next) => {
+const registerAccount = async (req, res, next) => {
     try {
-        const { email, password, username, role, name, gender, dateOfBirth, height, weight, fitnessLevel, favClass, fitnessGoal } = req.body;
-
-        // Register account with Firebase Authentication
-        const account = await registerAccount(email, password);
-
-        // Parse height and weight as integers
-        const parsedHeight = parseInt(height, 10);
-        const parsedWeight = parseInt(weight, 10);
-
-         // Prepare user details
-        const userDetails = {
-            username,
-            role,
-            name,
-            gender,
-            dateOfBirth,
-            height: parsedHeight,
-            weight: parsedWeight,
-            fitnessLevel,
-            favClass: Array.isArray(favClass) ? favClass : favClass.split(',').map(item => item.trim()),
-            fitnessGoal
-        };
-
-        // Save additional details to Firestore
-        await saveUserDetails(account.uid, userDetails);
-
-        // Fetch the saved user details from Firestore
-        const savedUserDetails = await getUserDetails(account.uid);
-
-        return res.status(201).json({ message: 'Account created successfully', account, userDetails: savedUserDetails });
+ 
+      const { email, password } = req.body;
+      const account = await authService.registerAccount(
+        email,
+        password
+      );
+  
+      return res.status(201).json(account);
     } catch (err) {
-        return res.status(500).send(`Error while registering account, Error: ${err}`);
+        return res.status(500).send(`Error while registering Account, Error :${err} `);
     }
 };
 
-const loginAccountHandler = async (req, res, next) => {
+const loginAccount = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const login = await loginAccount(email,password);
-
-    // Fetch the saved user details from Firestore
-    const savedUserDetails = await getUserDetails(login.uid);
-
-    return res.status(201).json({ message: 'Account created successfully', login, userDetails: savedUserDetails });
+    const login = await authService.loginAccount(
+      email,
+      password
+    );
+    return res.status(201).json(login);
   } catch (error) {
     console.error('Authentication failed:', error);
     return res.status(401).json({ error: "Authentication failed", details: error.message });
   }
 };
 
-const logoutAccountHandler = async (req, res, next) => {
+const logoutAccount = async (req, res, next) => {
   try {
-    const logout = await logoutAccount();
+    const logout = await authService.logoutAccount();
     return res.status(201).json(logout);
   } catch (error){
     console.error('Authentication failed:', error);
@@ -62,20 +39,85 @@ const logoutAccountHandler = async (req, res, next) => {
   }
 };
 
-const forgotPasswordHandler = async(req, res, next) => {
-     try {
-        const { email } = req.body;
-        const result = await forgotPassword(email);
-        return res.status(201).json(result);
-      } catch (error){
-        console.error('Sending password reset email failed:', error);
-        return res.status(401).json({ error: "Sending password reset email failed", details: error.message });
-      }
-}
+const completeProfile = async (req, res) => {
+  try {
+    const { uid } = req.params;
+    const {role, username, gender, age, dateOfBirth, weight, height} = req.body;
+    const addUserInfo= await authService.completeProfile(
+      uid,
+      role,
+      age, 
+      username,
+      gender, 
+      dateOfBirth, 
+      weight, 
+      height
+    );
+    return res.status(200).json(addUserInfo);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+const fitnessLevel = async (req, res) => {
+  try {
+    const { uid } = req.params;
+    const {fitnessLevel} = req.body;
+    const addFitnessLevel = await authService.fitnessLevel(
+      uid,
+      fitnessLevel
+    );
+    return res.status(200).json(addFitnessLevel);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+const fitnessGoal = async (req, res) => {
+  try {
+    const { uid } = req.params;
+    const {fitnessGoal} = req.body;
+    const addFitnessGoal = await authService.fitnessGoal(
+      uid,
+      fitnessGoal
+    );
+    return res.status(200).json(addFitnessGoal);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+const exerciseType = async (req, res) => {
+  try {
+    const { uid } = req.params;
+    const {exerciseType} = req.body;
+    const addExerciseType = await authService.exerciseType(
+      uid,
+      exerciseType
+    );
+    return res.status(200).json(addExerciseType);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+const getUserById = async (req, res) => {
+  try {
+    const { uid } = req.params;
+    const findUser= await authService.getUserById(uid);
+    return res.status(200).json(findUser);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
 
   module.exports = {
-    registerAccountHandler,
-    loginAccountHandler,
-    logoutAccountHandler,
-    forgotPasswordHandler
+    registerAccount,
+    loginAccount,
+    logoutAccount,
+    completeProfile,
+    fitnessLevel,
+    fitnessGoal,
+    exerciseType,
+    getUserById
   };

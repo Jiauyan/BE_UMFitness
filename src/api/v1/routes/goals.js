@@ -5,7 +5,6 @@ const goalsController = require("../controllers/goalsController");
 
 
 router.get("/getAllGoals", goalsController.getAllGoals);
-router.get("/getAllUserGoals/:uid", goalsController.getAllGoalsOfUser);
 router.get("/getGoalById/:id", goalsController.getGoalById);
 router.post("/addGoal", goalsController.addGoal);
 router.delete("/deleteGoal/:id", goalsController.deleteGoal);

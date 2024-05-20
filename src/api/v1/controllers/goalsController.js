@@ -11,29 +11,6 @@ const getAllGoals= async (req, res) => {
     }
   };
 
-  // get all goals by that specific user
-//  const getAllGoalsOfUser = async (req, res) => {
-//    try {
-//      const { uid } = req.params;
-//      const allUserGoals = await goalsService.getAllUserGoals(uid); // Fetch user goals using the service
-//      return res.status(200).json(allUserGoals); // Send the goals in the response
-//    } catch (err) {
-//      console.error('Error fetching user goals:', err);
-//      return res.status(400).json({ message: err.message });
-//    }
-//  };
-
-const getAllGoalsOfUser = async (req, res) => {
-  try {
-    const { uid } = req.params;
-    const allUserGoals = await goalsService.getAllUserGoals(uid);
-    return res.status(200).json(allUserGoals);
-  } catch (err) {
-    console.error('Error fetching user goals:', err);
-    return res.status(400).json({ message: err.message });
-  }
-};
-
 const getGoalById= async (req, res) => {
     try {
       const { id } = req.params;
@@ -47,10 +24,9 @@ const getGoalById= async (req, res) => {
 
 const addGoal= async (req, res) => {
     try {
-      const { title, uid } = req.body;
+      const {title} = req.body;
       const addNewGoal= await goalsService.addGoal(
-        title,
-        uid
+        title
       );
       return res.status(200).json(addNewGoal);
     } catch (err) {
@@ -83,10 +59,8 @@ const addGoal= async (req, res) => {
     }
   };
 
-
   module.exports = {
     getAllGoals,
-    getAllGoalsOfUser,
     getGoalById,
     addGoal,
     updateGoal,

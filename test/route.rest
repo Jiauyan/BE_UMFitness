@@ -5,9 +5,18 @@ POST http://localhost:3000/auth/registerAccount
 Content-Type: application/json
 
 {
-    //"username": "yan",
-    "email": "test8@gmail.com",
-    "password": "123456"
+    "email": "test88@gmail.com",
+    "password": "123456",
+    "username": "yan",
+    "role": "Student",
+    "name": "name",
+    "gender": "Female",
+    "dateOfBirth": "1/1/2022",
+    "height": 180,
+    "weight": 45,
+    "fitnessLevel": "Beginner",
+    "favClass": "0",
+    "fitnessGoal": "Lose weight"
 }
 
 ###
@@ -15,9 +24,10 @@ POST http://localhost:3000/auth/loginAccount
 Content-Type: application/json
 
 {
-    "email": "yanyantan0816@gmail.com",
+    "email": "test88@gmail.com",
     "password": "123456"
 }
+
 
 ###
 POST http://localhost:3000/auth/logoutAccount

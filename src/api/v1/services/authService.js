@@ -1,8 +1,6 @@
-const {auth} = require('../../../configs/firebaseDB');
-const  {signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail} = require("firebase/auth")
-const { getFirestore, doc, setDoc, getDoc, alert } = require('firebase/firestore');
-
-const db = getFirestore();
+const {auth, db} = require('../../../configs/firebaseDB');
+const  {signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut} = require("firebase/auth")
+const { collection, getDocs, addDoc, doc, deleteDoc, setDoc, getDoc } = require("firebase/firestore"); 
 
 const loginAccount = async (email, password) => {
   try {
@@ -16,44 +14,18 @@ const loginAccount = async (email, password) => {
 
 const registerAccount = async (email, password) => {
   try {
+ 
     const newUser = await createUserWithEmailAndPassword(auth, email, password);
-    return newUser.user;
-  } catch (error) {
-    console.log(error)
-    throw error
-  }
-};
+    const user = newUser.user;
 
-const saveUserDetails = async (uid, userDetails) => {
-  try {
-    // Validate userDetails here if needed
-    const requiredFields = ['username', 'role', 'name', 'gender', 'dateOfBirth', 'height', 'weight', 'fitnessLevel', 'favClass', 'fitnessGoal'];
-    for (const field of requiredFields) {
-      if (!userDetails[field]) {
-        throw new Error(`${field} is required`);
-      }
-    }
-
-    const userDoc = doc(db, 'Users', uid);
-    await setDoc(userDoc, userDetails);
+    await setDoc(doc(db, "users", user.uid), {
+      email: user.email,
+    });
+    
+    return { status: true, uid: user.uid, email: user.email };  // Return a success status and user data
   } catch (error) {
-    console.log(error);
-    throw error;
-  }
-};
-
-const getUserDetails = async (uid) => {
-  try {
-    const userDoc = doc(db, 'Users', uid);
-    const userSnap = await getDoc(userDoc);
-    if (userSnap.exists()) {
-      return userSnap.data();
-    } else {
-      throw new Error('No such document!');
-    }
-  } catch (error) {
-    console.error(error);
-    throw error;
+    console.error("Registration failed:", error);
+    throw new Error(error.message);  // Rethrowing the error with a clear message
   }
 };
 
@@ -67,39 +39,92 @@ const logoutAccount = async () => {
   }
 };
 
-const forgotPassword = async (email) => {
-    try {
-        await sendPasswordResetEmail(auth, email);
-        return "Password reset email sent successfully";
-    } catch (error) {
-        console.log("Printing error code:" + error.code);
-        console.log("Printing error message:" + error.message);
-        return error.message;
-    }
+const completeProfile = async (
+  uid,
+  role, 
+  username,
+  age,
+  gender, 
+  dateOfBirth, 
+  weight, 
+  height) => {
+  const userRef = doc(db, 'users', uid);
+  try {
+    const addUserInfo = await setDoc(userRef, {  
+      role, 
+      username,
+      age,
+      gender, 
+      dateOfBirth, 
+      weight, 
+      height
+     }, 
+     { merge: true });
+
+    return addUserInfo;
+    
+  } catch (error) {
+    console.error('Error fetching:', error);
+    throw error;
+  }
 }
 
+const fitnessLevel = async (uid, fitnessLevel) => {
+  const userRef = doc(db, 'users', uid);
+  try {
+    const addFitnessLevel = await setDoc(userRef, { fitnessLevel }, { merge: true });
+    return addFitnessLevel;
 
-/* const getAllAccount = async () => {
-     try {
-       const usersSnapshot = await db.collection('user').get();
-       const users = [];
-       usersSnapshot.forEach((doc) => {
-         users.push({ id: doc.id, ...doc.data() });
-       });
-       return users;
-     } catch (error) {
-       console.error('Error fetching users:', error);
-       throw error;
-     }
-   };*/
+  } catch (error) {
+    console.error('Error updating fitness level:', error);
+    throw error;
+  }
+}
+
+const fitnessGoal = async (uid, fitnessGoal) => {
+  const userRef = doc(db, 'users', uid);
+  try {
+    const addFitnessGoal = await setDoc(userRef, { fitnessGoal }, { merge: true });
+    return addFitnessGoal;
+
+  } catch (error) {
+    console.error('Error updating fitness goal:', error);
+    throw error;
+  }
+}
+
+const exerciseType = async (uid, exerciseType) => {
+  const userRef = doc(db, 'users', uid);
+  try {
+    const addExerciseType = await setDoc(userRef, { exerciseType }, { merge: true });
+    return addExerciseType;
+
+  } catch (error) {
+    console.error('Error updating exercise type:', error);
+    throw error;
+  }
+}
+
+const getUserById = async (uid) => {
+  try {
+    const getUser = await getDoc(doc(db,'users',uid));
+    const user = {uid: getUser.uid, ...getUser.data()};
+    return user;
+  } catch (error) {
+    console.error('Error fetching:', error);
+    throw error;
+  }
+}
 
   module.exports = {
     //getAllAccount,
     registerAccount,
-    saveUserDetails,
-    getUserDetails ,
     loginAccount,
     logoutAccount,
-    forgotPassword
+    completeProfile,
+    fitnessLevel,
+    fitnessGoal,
+    exerciseType,
+    getUserById
   };
   
