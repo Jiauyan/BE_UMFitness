@@ -38,18 +38,19 @@ const getGoalById = async (id) => {
 }
 
 
-const addGoal = async (title, uid) => {
+const addGoal = async (title, uid, status) => {
   try {
-    const docRef = await addDoc(collection(db, 'Goals'), {
+    const newGoal = await addDoc(collection(db, 'Goals'), {
       title,
       uid,
+      status
     });
 
     // Retrieve the newly created goal document's ID
-    const newGoal = {
-      title,
-      uid,
-    };
+    // const newGoal = {
+    //   title,
+    //   uid,
+    // };
 
     return newGoal;
   } catch (error) {
@@ -59,10 +60,12 @@ const addGoal = async (title, uid) => {
 };
 
 
-const updateGoal = async (id, title) => {
+const updateGoal = async (id, uid, title, status) => {
   try {
     const updateGoal = await setDoc(doc(db,'Goals',id),{
-      title
+      uid,
+      title,
+      status
     })
     return updateGoal;
   } catch (error) {
@@ -82,6 +85,18 @@ const deleteGoal = async (id) => {
   }
 }
 
+// const completeGoal = async (id, uid, status) => {
+//   try {
+//     const completeGoal = await setDoc(doc(db,'Goals',id),{
+//       uid,
+//       status,
+//     })
+//     return completeGoal;
+//   } catch (error) {
+//     console.error('Error fetching:', error);
+//     throw error;
+//   }
+// }
 
 
 module.exports = {
@@ -90,6 +105,7 @@ module.exports = {
     getGoalById,
     addGoal,
     updateGoal,
-    deleteGoal
+    deleteGoal,
+    //completeGoal
   };
   
