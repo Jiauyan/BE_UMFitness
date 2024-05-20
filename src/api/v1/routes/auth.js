@@ -15,7 +15,7 @@ router.post("/loginAccount", authFirebaseController.loginAccount); //Login Accou
 //router.delete("/deleteAccount/:id", authController.deleteAccount); //Delete Account
 router.post("/logoutAccount", authFirebaseController.logoutAccount); //Log Out Account
 //router.patch("/editAccount/:id", authController.editAccount); //Edit Account
-// router.post("/forgotPassword", authController.forgotPassword); //Forgot Password Account
+router.post("/forgotPassword", authFirebaseController.forgotPassword); //Forgot Password Account
 // router.post("/forgotPassword/:id", authController.forgotPassword); //Forgot Password Account
 router.post("/completeProfile/:uid", authFirebaseController.completeProfile);
 router.post("/fitnessLevel/:uid", authFirebaseController.fitnessLevel);

@@ -1,5 +1,5 @@
 const {auth, db} = require('../../../configs/firebaseDB');
-const  {signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut} = require("firebase/auth")
+const  {signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail} = require("firebase/auth")
 const { collection, getDocs, addDoc, doc, deleteDoc, setDoc, getDoc } = require("firebase/firestore"); 
 
 const loginAccount = async (email, password) => {
@@ -38,6 +38,17 @@ const logoutAccount = async () => {
     throw error;
   }
 };
+
+const forgotPassword = async (email) => {
+  try {
+      await sendPasswordResetEmail(auth, email);
+      return "Password reset email sent successfully";
+  } catch (error) {
+      console.log("Printing error code:" + error.code);
+      console.log("Printing error message:" + error.message);
+      return error.message;
+  }
+}
 
 const completeProfile = async (
   uid,
@@ -123,6 +134,7 @@ const getUserById = async (uid) => {
     registerAccount,
     loginAccount,
     logoutAccount,
+    forgotPassword,
     completeProfile,
     fitnessLevel,
     fitnessGoal,

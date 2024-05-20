@@ -39,6 +39,17 @@ const logoutAccount = async (req, res, next) => {
   }
 };
 
+const forgotPassword = async(req, res, next) => {
+  try {
+     const { email } = req.body;
+     const result = await authService.forgotPassword(email);
+     return res.status(201).json(result);
+   } catch (error){
+     console.error('Sending password reset email failed:', error);
+     return res.status(401).json({ error: "Sending password reset email failed", details: error.message });
+   }
+}
+
 const completeProfile = async (req, res) => {
   try {
     const { uid } = req.params;
@@ -116,6 +127,7 @@ const getUserById = async (req, res) => {
     registerAccount,
     loginAccount,
     logoutAccount,
+    forgotPassword,
     completeProfile,
     fitnessLevel,
     fitnessGoal,
