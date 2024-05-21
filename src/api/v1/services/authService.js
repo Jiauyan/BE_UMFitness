@@ -88,10 +88,34 @@ const registerAcc = async (email, password) => {
       email: user.email,
     });
     
-    return { status: true, uid: user.uid, email: user.email };  // Return a success status and user data
+    return { uid: user.uid, email: user.email };  
   } catch (error) {
     console.error("Registration failed:", error);
-    throw new Error(error.message);  // Rethrowing the error with a clear message
+    throw new Error(error.message);  
+  }
+};
+
+const loginAcc = async (email, password) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    // Get the user document from Firestore
+    const userDocRef = doc(db, "Users", user.uid);
+    const userDocSnapshot = await getDoc(userDocRef);
+
+    // Check if the document exists and retrieve the role
+    if (userDocSnapshot.exists()) {
+      const userData = userDocSnapshot.data();
+      const userRole = userData.role;  // Access the role field
+
+      // You can return both user and userRole if needed
+      return { user, userRole};
+    } else {
+      throw new Error("User document does not exist.");
+    }
+  } catch (error) {
+    throw error;
   }
 };
 
@@ -182,6 +206,7 @@ const getUserByIdService = async (uid) => {
     logoutAccount,
     forgotPassword,
     registerAcc,
+    loginAcc,
     completeProfile,
     fitnessLevelService,
     fitnessGoalService,

@@ -1,6 +1,7 @@
 const { 
   authService,
   registerAcc,
+  loginAcc,
   completeProfile,
   fitnessLevelService,
   fitnessGoalService,
@@ -105,7 +106,7 @@ const registerAccHandler = async (req, res, next) => {
 const loginAccHandler = async (req, res, next) => {
 try {
   const { email, password } = req.body;
-  const login = await loginAccount(
+  const login = await loginAcc(
     email,
     password
   );
