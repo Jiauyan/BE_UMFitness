@@ -138,7 +138,7 @@ try {
 const completeProfileHandler = async (req, res) => {
   try {
     const { uid } = req.params;
-    const {role, name, username, age, gender, dateOfBirth, weight, height} = req.body;
+    const {role, name, username, age, gender, weight, height} = req.body;
     const addUserInfo= await completeProfile(
       uid,
       role,
@@ -146,9 +146,8 @@ const completeProfileHandler = async (req, res) => {
       username,
       age,
       gender, 
-      dateOfBirth, 
       weight, 
-      height
+      height,
     );
     return res.status(200).json(addUserInfo);
   } catch (err) {
