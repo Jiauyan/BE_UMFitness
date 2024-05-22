@@ -23,5 +23,13 @@ router.post("/fitnessGoal/:uid", authFirebaseController.fitnessGoal);
 router.post("/favClass/:uid", authFirebaseController.favClass);
 router.get("/getUserById/:uid", authFirebaseController.getUserById);
 
+router.post("/registerAcc", authFirebaseController.registerAccHandler); //Register Account
+router.post("/loginAcc", authFirebaseController.loginAccHandler); //Login Account
+router.post("/completeProfile/:uid", authFirebaseController.completeProfileHandler);
+router.post("/fitnessLevel/:uid", authFirebaseController.fitnessLevelHandler);
+router.post("/fitnessGoal/:uid", authFirebaseController.fitnessGoalHandler);
+router.post("/favClass/:uid", authFirebaseController.favClassHandler);
+router.get("/getUserById/:uid", authFirebaseController.getUserByIdHandler);
+
 module.exports = router;
 

@@ -1,15 +1,56 @@
-const authService = require("../services/authService");
+const { 
+  authService,
+  registerAcc,
+  loginAcc,
+  completeProfile,
+  fitnessLevelService,
+  fitnessGoalService,
+  favClassService,
+  getUserByIdService,
+  registerAccount, 
+  saveUserDetails, 
+  getUserDetails, 
+  loginAccount, 
+  logoutAccount, 
+  forgotPassword 
+} = require("../services/authService");
 
 const registerAccount = async (req, res, next) => {
     try {
- 
-      const { email, password } = req.body;
-      const account = await authService.registerAccount(
-        email,
-        password
-      );
-  
-      return res.status(201).json(account);
+        const { email, password, username, role, name, age, gender, dateOfBirth, height, weight, fitnessLevel, favClass, fitnessGoal, currentHydration } = req.body;
+
+        // Register account with Firebase Authentication
+        const account = await registerAccount(email, password);
+
+        // Parse height and weight as integers
+        const parsedHeight = parseInt(height, 10);
+        const parsedWeight = parseInt(weight, 10);
+        const parsedCurrentHydration = parseInt(currentHydration, 10);
+        const parsedAge = parseInt(age, 10);
+
+         // Prepare user details
+        const userDetails = {
+            username,
+            role,
+            name,
+            age,
+            gender,
+            dateOfBirth,
+            height: parsedHeight,
+            weight: parsedWeight,
+            fitnessLevel,
+            favClass: Array.isArray(favClass) ? favClass : favClass.split(',').map(item => item.trim()),
+            fitnessGoal,
+            currentHydration: parsedCurrentHydration
+        };
+
+        // Save additional details to Firestore
+        await saveUserDetails(account.uid, userDetails);
+
+        // Fetch the saved user details from Firestore
+        const savedUserDetails = await getUserDetails(account.uid);
+
+        return res.status(201).json({ message: 'Account created successfully', account, userDetails: savedUserDetails });
     } catch (err) {
         return res.status(500).send(`Error while registering Account, Error :${err} `);
     }
@@ -50,11 +91,40 @@ const forgotPassword = async(req, res, next) => {
    }
 }
 
-const completeProfile = async (req, res) => {
+const registerAccHandler = async (req, res, next) => {
+  try {
+
+    const { email, password } = req.body;
+    const account = await registerAcc(
+      email,
+      password
+    );
+
+    return res.status(201).json(account);
+  } catch (err) {
+      return res.status(500).send(`Error while registering Account, Error :${err} `);
+  }
+};
+
+const loginAccHandler = async (req, res, next) => {
+try {
+  const { email, password } = req.body;
+  const login = await loginAcc(
+    email,
+    password
+  );
+  return res.status(201).json(login);
+} catch (error) {
+  console.error('Authentication failed:', error);
+  return res.status(401).json({ error: "Authentication failed", details: error.message });
+}
+};
+
+const completeProfileHandler = async (req, res) => {
   try {
     const { uid } = req.params;
     const {role, name, username, age, gender, dateOfBirth, weight, height} = req.body;
-    const addUserInfo= await authService.completeProfile(
+    const addUserInfo= await completeProfile(
       uid,
       role,
       name,
@@ -71,11 +141,11 @@ const completeProfile = async (req, res) => {
   }
 };
 
-const fitnessLevel = async (req, res) => {
+const fitnessLevelHandler = async (req, res) => {
   try {
     const { uid } = req.params;
     const {fitnessLevel} = req.body;
-    const addFitnessLevel = await authService.fitnessLevel(
+    const addFitnessLevel = await fitnessLevelService(
       uid,
       fitnessLevel
     );
@@ -85,11 +155,11 @@ const fitnessLevel = async (req, res) => {
   }
 };
 
-const fitnessGoal = async (req, res) => {
+const fitnessGoalHandler = async (req, res) => {
   try {
     const { uid } = req.params;
     const {fitnessGoal} = req.body;
-    const addFitnessGoal = await authService.fitnessGoal(
+    const addFitnessGoal = await fitnessGoalService(
       uid,
       fitnessGoal
     );
@@ -99,11 +169,11 @@ const fitnessGoal = async (req, res) => {
   }
 };
 
-const favClass = async (req, res) => {
+const favClassHandler = async (req, res) => {
   try {
     const { uid } = req.params;
     const {favClass} = req.body;
-    const addFavClass = await authService.favClass(
+    const addFavClass = await favClassService(
       uid,
       favClass
     );
@@ -113,24 +183,28 @@ const favClass = async (req, res) => {
   }
 };
 
-const getUserById = async (req, res) => {
+const getUserByIdHandler = async (req, res) => {
   try {
     const { uid } = req.params;
-    const findUser= await authService.getUserById(uid);
+    const findUser= await getUserByIdService(uid);
     return res.status(200).json(findUser);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 };
 
+
+
   module.exports = {
-    registerAccount,
-    loginAccount,
-    logoutAccount,
-    forgotPassword,
-    completeProfile,
-    fitnessLevel,
-    fitnessGoal,
-    favClass,
-    getUserById
+    registerAccountHandler,
+    loginAccountHandler,
+    logoutAccountHandler,
+    forgotPasswordHandler,
+    registerAccHandler,
+    loginAccHandler,
+    completeProfileHandler,
+    fitnessLevelHandler,
+    fitnessGoalHandler,
+    favClassHandler,
+    getUserByIdHandler
   };

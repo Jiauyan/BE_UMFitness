@@ -16,13 +16,30 @@ const registerAccount = async (email, password) => {
   try {
  
     const newUser = await createUserWithEmailAndPassword(auth, email, password);
-    const user = newUser.user;
+    return newUser.user;
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+};
 
-    await setDoc(doc(db, "Users", user.uid), {
-      email: user.email,
-    });
-    
-    return { status: true, uid: user.uid, email: user.email };  // Return a success status and user data
+const saveUserDetails = async (uid, userDetails) => {
+  try {
+    // Validate userDetails here if needed
+    const requiredFields = ['username', 'role', 'name', 'age', 'gender', 'dateOfBirth', 'height', 'weight', 'fitnessLevel', 'favClass', 'fitnessGoal', 'currentHydration'];
+    for (const field of requiredFields) {
+      if (!userDetails[field]) {
+        throw new Error(`${field} is required`);
+      }
+    }
+
+    // Initialize currentHydration to 0 if not provided
+    if (!userDetails.hasOwnProperty('currentHydration')) {
+      userDetails.currentHydration = "";
+    }
+
+    const userDoc = doc(db, 'Users', uid);
+    await setDoc(userDoc, userDetails);
   } catch (error) {
     console.error("Registration failed:", error);
     throw new Error(error.message);  // Rethrowing the error with a clear message
@@ -49,6 +66,47 @@ const forgotPassword = async (email) => {
       return error.message;
   }
 }
+
+const registerAcc = async (email, password) => {
+  try {
+ 
+    const newUser = await createUserWithEmailAndPassword(auth, email, password);
+    const user = newUser.user;
+
+    await setDoc(doc(db, "Users", user.uid), {
+      email: user.email,
+    });
+    
+    return { uid: user.uid, email: user.email };  
+  } catch (error) {
+    console.error("Registration failed:", error);
+    throw new Error(error.message);  
+  }
+};
+
+const loginAcc = async (email, password) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    // Get the user document from Firestore
+    const userDocRef = doc(db, "Users", user.uid);
+    const userDocSnapshot = await getDoc(userDocRef);
+
+    // Check if the document exists and retrieve the role
+    if (userDocSnapshot.exists()) {
+      const userData = userDocSnapshot.data();
+      const userRole = userData.role;  // Access the role field
+
+      // You can return both user and userRole if needed
+      return { user, userRole};
+    } else {
+      throw new Error("User document does not exist.");
+    }
+  } catch (error) {
+    throw error;
+  }
+};
 
 const completeProfile = async (
   uid,
@@ -82,7 +140,7 @@ const completeProfile = async (
   }
 }
 
-const fitnessLevel = async (uid, fitnessLevel) => {
+const fitnessLevelService = async (uid, fitnessLevel) => {
   const userRef = doc(db, 'Users', uid);
   try {
     const addFitnessLevel = await setDoc(userRef, { fitnessLevel }, { merge: true });
@@ -94,7 +152,7 @@ const fitnessLevel = async (uid, fitnessLevel) => {
   }
 }
 
-const fitnessGoal = async (uid, fitnessGoal) => {
+const fitnessGoalService = async (uid, fitnessGoal) => {
   const userRef = doc(db, 'Users', uid);
   try {
     const addFitnessGoal = await setDoc(userRef, { fitnessGoal }, { merge: true });
@@ -106,7 +164,7 @@ const fitnessGoal = async (uid, fitnessGoal) => {
   }
 }
 
-const favClass = async (uid, favClass) => {
+const favClassService = async (uid, favClass) => {
   const userRef = doc(db, 'Users', uid);
   try {
     const addFavClass = await setDoc(userRef, { favClass }, { merge: true });
@@ -118,7 +176,7 @@ const favClass = async (uid, favClass) => {
   }
 }
 
-const getUserById = async (uid) => {
+const getUserByIdService = async (uid) => {
   try {
     const getUser = await getDoc(doc(db,'Users',uid));
     const user = {uid: getUser.uid, ...getUser.data()};
@@ -130,15 +188,16 @@ const getUserById = async (uid) => {
 }
 
   module.exports = {
-    //getAllAccount,
     registerAccount,
     loginAccount,
     logoutAccount,
     forgotPassword,
+    registerAcc,
+    loginAcc,
     completeProfile,
-    fitnessLevel,
-    fitnessGoal,
-    favClass,
-    getUserById
+    fitnessLevelService,
+    fitnessGoalService,
+    favClassService,
+    getUserByIdService
   };
   
