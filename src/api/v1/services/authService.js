@@ -1,8 +1,9 @@
 const {auth} = require('../../../configs/firebaseDB');
 const  {signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail} = require("firebase/auth")
-const { getFirestore, doc, setDoc, getDoc, alert } = require('firebase/firestore');
-
+const { getFirestore, doc, setDoc, getDoc, alert, deleteDoc } = require('firebase/firestore');
+const { deleteUser } = require( "firebase/auth");
 const db = getFirestore();
+const user = auth.currentUser;
 
 const loginAccount = async (email, password) => {
   try {
@@ -82,6 +83,21 @@ const forgotPassword = async (email) => {
         return error.message;
     }
 }
+
+const deleteAccount = async (uid) => {
+  const user = auth.currentUser;
+  if (!user) {
+    console.error("User is not authenticated");
+    return;
+  }
+  try {
+    await deleteUser(user);
+    await deleteDoc(doc(db, "Users", uid));
+    console.log("Account deleted successfully");
+  } catch (error) {
+    console.error("Error deleting account:", error);
+  }
+};
 
 const registerAcc = async (email, password) => {
   try {
@@ -210,6 +226,7 @@ const getUserByIdService = async (uid) => {
     loginAccount,
     logoutAccount,
     forgotPassword,
+    deleteAccount,
     registerAcc,
     loginAcc,
     completeProfile,
