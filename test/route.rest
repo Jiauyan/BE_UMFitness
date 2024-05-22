@@ -1,38 +1,74 @@
 
-
-
-POST http://localhost:3000/auth/registerAccount
+POST http://localhost:3000/auth/registerAcc
 Content-Type: application/json
 
 {
-    //"username": "yan",
-    "email": "test8@gmail.com",
+    "email": "John@gmail.com",
     "password": "123456"
 }
 
 ###
-POST http://localhost:3000/auth/loginAccount
+POST http://localhost:3000/auth/loginAcc
 Content-Type: application/json
 
 {
-    "email": "yanyantan0816@gmail.com",
+    "email": "trainer2@gmail.com",
     "password": "123456"
 }
 
 ###
 POST http://localhost:3000/auth/logoutAccount
+
+###
+POST http://localhost:3000/auth/forgotPassword
 Content-Type: application/json
 
 {
-    "access token" : "eyJhbGciOiJSUzI1NiIsImtpZCI6ImEyMzhkZDA0Y2JhYTU4MGIzMDRjODgxZTFjMDA4ZWMyOGZiYmFkZGMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vd2VmaXQtOTA5OTYiLCJhdWQiOiJ3ZWZpdC05MDk5NiIsImF1dGhfdGltZSI6MTcxNDMyMDk2NiwidXNlcl9pZCI6ImpJWDloRG92ZXdXTGNyWUg3a3dEU1FnVDdXdjIiLCJzdWIiOiJqSVg5aERvdmV3V0xjcllIN2t3RFNRZ1Q3V3YyIiwiaWF0IjoxNzE0MzIwOTY2LCJleHAiOjE3MTQzMjQ1NjYsImVtYWlsIjoieWFueWFudGFuMDgxNkBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImZpcmViYXNlIjp7ImlkZW50aXRpZXMiOnsiZW1haWwiOlsieWFueWFudGFuMDgxNkBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.fl0ge_ZKnG2A6g11PX1XOdNpM3kHg5HkS5NLCY5ouMg96vPKMfO9EDiqXMJiy1R4TY38twcuIpQgH0TN-CkEMxJIOt7VvVy4bOoicXFhPRp3t0-enInluh1asaDxfNQo45KJRDFZ8l9jOR7WxcIsx3-l8VmOwBsPJqqH8OaIF3a6I2nVSUyDHJ8ejta8q-G-RujE4IsPvtvOY_GQdUPgUkKHAGOr7LL--XJ9JZOa3kHl-BqSBmGT1hIgVoSb3Z8a2xbd3oxgPvRaaQ7nydmxr3e4GPUYzzLJ6pqen4qeRt5-Wx6p0G4iVjQ2OGN6UaA7veTj_SPyc20YTeN6BHPcPg"
+    "email": "John@gmail.com"
+}
+
+###
+POST http://localhost:3000/auth/fitnessLevel/B7UM1BDP8FSkyISZ8xfjSOTHTUu2
+Content-Type: application/json
+
+{
+   "fitnessLevel":"Beginner"
+}
+
+###
+POST http://localhost:3000/auth/fitnessGoal/B7UM1BDP8FSkyISZ8xfjSOTHTUu2
+Content-Type: application/json
+
+{
+   "fitnessGoal":"Reduce stress"
 }
 
 
 ###
-GET http://localhost:3000/goals/getAllGoals
+POST http://localhost:3000/auth/favClass/B7UM1BDP8FSkyISZ8xfjSOTHTUu2
+Content-Type: application/json
+
+{
+   "favClass":["HIIT","Cardio","Dance"]
+}
 
 ###
-GET http://localhost:3000/goals/getGoalById/hKzN9ffO74DgVFs4wGpS
+POST http://localhost:3000/auth/completeProfile/B7UM1BDP8FSkyISZ8xfjSOTHTUu2
+Content-Type: application/json
+
+{
+    "age": 22,
+    "gender" : "Male",
+    "height": 180,
+    "name": "John Tan",
+    "role": "Student",
+    "username":"John",
+    "weight": 60
+}
+
+
+###
+GET http://localhost:3000/goals/getAllUserGoals/B7UM1BDP8FSkyISZ8xfjSOTHTUu2
 
 
 ###
@@ -40,63 +76,38 @@ POST http://localhost:3000/goals/addGoal
 Content-Type: application/json
 
 {
-    "title": "running"
+    "uid": "B7UM1BDP8FSkyISZ8xfjSOTHTUu2",
+    "title": "running",
+    "status": false
 }
 
 ###
-DELETE  http://localhost:3000/goals/deleteGoal/ggirc60vi9kjNFlpsLMx
+DELETE  http://localhost:3000/goals/deleteGoal/D1AGvqd5XVKskEJjXlCR
 
 ###
-PATCH http://localhost:3000/goals/updateGoal/hKzN9ffO74DgVFs4wGpS
+PATCH http://localhost:3000/goals/updateGoal/D1AGvqd5XVKskEJjXlCR
 Content-Type: application/json
 
 {
-    "title": "jogging"
+    "uid": "B7UM1BDP8FSkyISZ8xfjSOTHTUu2",
+    "title": "jogging",
+    "status": false
 }
 
-
-
-
-
+###
+GET http://localhost:3000/auth/getUserById/B7UM1BDP8FSkyISZ8xfjSOTHTUu2
 
 ###
-GET http://localhost:3000/auth/getToken
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoidGVzdDYiLCJpYXQiOjE3MTA5MjQwMTIsImV4cCI6MTcxMDkyNDA3Mn0.OZBzlmsqEnUCNklfz1KBcujTmR2gbgX1Vfwic-NYAnE
-
-###
-POST http://localhost:3000/auth/refreshToken
+PATCH http://localhost:3000/profile/updateProfile/B7UM1BDP8FSkyISZ8xfjSOTHTUu2
 Content-Type: application/json
 
 {
-    "token": "eyJhbGciOiJIUzI1NiJ9.dGVzdDY.TdW8dWZigBQcc2UB8eQWwQQHCiGa3pyxQ5-v_OXxY_g"
+    "username":"Johnny",
+    "age": 24,
+    "weight": 70,
+    "height": 160
 }
 
 ###
-PATCH http://localhost:3000/auth/editAccount/65786f07e4ecfebd2945e336
-Content-Type: application/json
+DELETE http://localhost:3000/auth/deleteAccount/Lb8r8mfoq6NHWDy40fKnuGuByQZ2
 
-{
-
-    "username": "sherwynd627",
-    "email": "sherwynd627@gmail.com"
-}
-###
-
-DELETE http://localhost:3000/auth/deleteAccount/6578763b811a538863d71d04
-
-###
-DELETE http://localhost:3000/auth/logoutAccount
-Content-Type: application/json
-
-{
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RBZ2FpbiIsImlhdCI6MTcwMjgwNTkxOX0.EKd16-rY_DjraEzZ4GZUAyxpFdETJTQTq5-NbKPIABI"
-}
-
-###
-
-POST http://localhost:3000/auth/forgotPassword
-Content-Type: application/json
-
-{
-    "email": "test"
-}

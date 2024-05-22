@@ -91,8 +91,8 @@ const deleteAccount = async (uid) => {
     return;
   }
   try {
-    await deleteUser(user);
     await deleteDoc(doc(db, "Users", uid));
+    await deleteUser(user);
     console.log("Account deleted successfully");
   } catch (error) {
     console.error("Error deleting account:", error);
@@ -147,9 +147,8 @@ const completeProfile = async (
   username,
   age,
   gender, 
-  dateOfBirth, 
   weight, 
-  height) => {
+  height,) => {
   const userRef = doc(db, 'Users', uid);
   try {
     const addUserInfo = await setDoc(userRef, {  
@@ -157,10 +156,9 @@ const completeProfile = async (
       name,
       username,
       age,
-      gender, 
-      dateOfBirth, 
+      gender,  
       weight, 
-      height
+      height,
      }, 
      { merge: true });
 
