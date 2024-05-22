@@ -47,10 +47,11 @@ const getGoalById= async (req, res) => {
 
 const addGoal= async (req, res) => {
     try {
-      const { title, uid } = req.body;
+      const { title, uid, status } = req.body;
       const addNewGoal= await goalsService.addGoal(
         title,
-        uid
+        uid,
+        status
       );
       return res.status(200).json(addNewGoal);
     } catch (err) {
@@ -58,14 +59,15 @@ const addGoal= async (req, res) => {
     }
   };
 
-
   const updateGoal= async (req, res) => {
     try {
       const { id } = req.params;
-      const { title } = req.body;
+      const { title, uid, status } = req.body;
       const updateGoal= await goalsService.updateGoal(
         id,
-        title
+        uid,
+        title,
+        status,
       );
       return res.status(200).json(updateGoal);
     } catch (err) {
@@ -83,6 +85,20 @@ const addGoal= async (req, res) => {
     }
   };
 
+  // const completeGoal= async (req, res) => {
+  //   try {
+  //     const { id } = req.params;
+  //     const { uid, status } = req.body;
+  //     const completeGoal= await goalsService.completeGoal(
+  //       id,
+  //       uid,
+  //       status
+  //     );
+  //     return res.status(200).json(completeGoal);
+  //   } catch (err) {
+  //     res.status(400).json({ message: err.message });
+  //   }
+  // };
 
   module.exports = {
     getAllGoals,
@@ -90,5 +106,6 @@ const addGoal= async (req, res) => {
     getGoalById,
     addGoal,
     updateGoal,
-    deleteGoal
+    deleteGoal,
+    //completeGoal
   };

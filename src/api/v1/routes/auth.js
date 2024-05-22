@@ -18,4 +18,12 @@ router.post("/logoutAccount", authFirebaseController.logoutAccountHandler); //Lo
 router.post("/forgotPassword", authFirebaseController.forgotPasswordHandler); //Forgot Password Account
 // router.post("/forgotPassword/:id", authController.forgotPassword); //Forgot Password Account
 
+router.post("/registerAcc", authFirebaseController.registerAccHandler); //Register Account
+router.post("/loginAcc", authFirebaseController.loginAccHandler); //Login Account
+router.post("/completeProfile/:uid", authFirebaseController.completeProfileHandler);
+router.post("/fitnessLevel/:uid", authFirebaseController.fitnessLevelHandler);
+router.post("/fitnessGoal/:uid", authFirebaseController.fitnessGoalHandler);
+router.post("/favClass/:uid", authFirebaseController.favClassHandler);
+router.get("/getUserById/:uid", authFirebaseController.getUserByIdHandler);
+
 module.exports = router;
