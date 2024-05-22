@@ -2,7 +2,7 @@ const { authService, registerAccount, saveUserDetails, getUserDetails, loginAcco
 
 const registerAccountHandler = async (req, res, next) => {
     try {
-        const { email, password, username, role, name, age, gender, dateOfBirth, height, weight, fitnessLevel, favClass, fitnessGoal, currentHydration } = req.body;
+        const { email, password, username, role, name, gender, dateOfBirth, height, weight, fitnessLevel, favClass, fitnessGoal } = req.body;
 
         // Register account with Firebase Authentication
         const account = await registerAccount(email, password);
@@ -10,23 +10,19 @@ const registerAccountHandler = async (req, res, next) => {
         // Parse height and weight as integers
         const parsedHeight = parseInt(height, 10);
         const parsedWeight = parseInt(weight, 10);
-        const parsedCurrentHydration = parseInt(currentHydration, 10);
-        const parsedAge = parseInt(age, 10);
 
          // Prepare user details
         const userDetails = {
             username,
             role,
             name,
-            age,
             gender,
             dateOfBirth,
             height: parsedHeight,
             weight: parsedWeight,
             fitnessLevel,
             favClass: Array.isArray(favClass) ? favClass : favClass.split(',').map(item => item.trim()),
-            fitnessGoal,
-            currentHydration: parsedCurrentHydration
+            fitnessGoal
         };
 
         // Save additional details to Firestore
