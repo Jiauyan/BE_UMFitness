@@ -49,6 +49,7 @@ const addGoal= async (req, res) => {
     try {
       const { title, uid, status } = req.body;
       const addNewGoal= await goalsService.addGoal(
+        status,
         title,
         uid,
         status
