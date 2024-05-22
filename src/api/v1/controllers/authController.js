@@ -12,7 +12,8 @@ const {
   getUserDetails, 
   loginAccount, 
   logoutAccount, 
-  forgotPassword 
+  forgotPassword ,
+  deleteAccount,
 } = require("../services/authService");
 
 const registerAccountHandler = async (req, res, next) => {
@@ -91,6 +92,19 @@ const forgotPasswordHandler = async(req, res, next) => {
         return res.status(401).json({ error: "Sending password reset email failed", details: error.message });
       }
 }
+
+const deleteAccountHandler = async (req, res, next) => {
+  try {
+    const {uid} = req.params;
+    const deleteAcc = await deleteAccount(
+      uid
+    );
+    return res.status(201).json(deleteAcc);
+  } catch (error){
+    console.error('Authentication failed:', error);
+    return res.status(401).json({ error: "Authentication failed", details: error.message });
+  }
+};
 
 const registerAccHandler = async (req, res, next) => {
   try {
@@ -194,13 +208,12 @@ const getUserByIdHandler = async (req, res) => {
   }
 };
 
-
-
   module.exports = {
     registerAccountHandler,
     loginAccountHandler,
     logoutAccountHandler,
     forgotPasswordHandler,
+    deleteAccountHandler,
     registerAccHandler,
     loginAccHandler,
     completeProfileHandler,
