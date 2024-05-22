@@ -27,11 +27,16 @@ const registerAccount = async (email, password) => {
 const saveUserDetails = async (uid, userDetails) => {
   try {
     // Validate userDetails here if needed
-    const requiredFields = ['username', 'role', 'name', 'gender', 'dateOfBirth', 'height', 'weight', 'fitnessLevel', 'favClass', 'fitnessGoal'];
+    const requiredFields = ['username', 'role', 'name', 'age', 'gender', 'dateOfBirth', 'height', 'weight', 'fitnessLevel', 'favClass', 'fitnessGoal', 'currentHydration'];
     for (const field of requiredFields) {
       if (!userDetails[field]) {
         throw new Error(`${field} is required`);
       }
+    }
+
+    // Initialize currentHydration to 0 if not provided
+    if (!userDetails.hasOwnProperty('currentHydration')) {
+      userDetails.currentHydration = "";
     }
 
     const userDoc = doc(db, 'Users', uid);
