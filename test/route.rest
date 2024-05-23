@@ -111,3 +111,31 @@ Content-Type: application/json
 ###
 DELETE http://localhost:3000/auth/deleteAccount/Lb8r8mfoq6NHWDy40fKnuGuByQZ2
 
+
+###
+GET http://localhost:3000/tips/getAllUserTips/iOVD6KGFyqajDpo2tDZ1FVPqy302
+
+
+###
+POST http://localhost:3000/tips/addTip
+Content-Type: application/json
+
+{
+    "uid": "iOVD6KGFyqajDpo2tDZ1FVPqy302",
+    "title": "running",
+    "desc": "How to run effectively"
+}
+
+###
+DELETE  http://localhost:3000/tips/deleteTip/D2rmP5I7vnuI4BeCK93i
+
+###
+PATCH http://localhost:3000/tips/updateTip/D2rmP5I7vnuI4BeCK93i
+Content-Type: application/json
+
+{
+    "uid": "iOVD6KGFyqajDpo2tDZ1FVPqy302",
+    "title": "jogging",
+    "desc": "When is the best time to jog."
+}
+
