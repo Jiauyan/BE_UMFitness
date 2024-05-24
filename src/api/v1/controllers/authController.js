@@ -18,7 +18,7 @@ const {
 
 const registerAccountHandler = async (req, res, next) => {
     try {
-        const { email, password, username, role, name, age, gender, height, weight, fitnessLevel, favClass, fitnessGoal, currentHydration } = req.body;
+        const { email, password, username, role, name, age, gender, height, weight, fitnessLevel, favClass, fitnessGoal, currentHydration, phoneNumber, photoURL } = req.body;
 
         // Register account with Firebase Authentication
         const account = await registerAccount(email, password);
@@ -31,6 +31,7 @@ const registerAccountHandler = async (req, res, next) => {
 
          // Prepare user details
         const userDetails = {
+            email,
             username,
             role,
             name,
@@ -41,7 +42,9 @@ const registerAccountHandler = async (req, res, next) => {
             fitnessLevel,
             favClass: Array.isArray(favClass) ? favClass : favClass.split(',').map(item => item.trim()),
             fitnessGoal,
-            currentHydration: parsedCurrentHydration
+            currentHydration: parsedCurrentHydration,
+            phoneNumber,
+            photoURL
         };
 
         // Save additional details to Firestore
@@ -50,7 +53,7 @@ const registerAccountHandler = async (req, res, next) => {
         // Fetch the saved user details from Firestore
         const savedUserDetails = await getUserDetails(account.uid);
 
-        return res.status(201).json({ message: 'Account created successfully', account, userDetails: savedUserDetails });
+        return res.status(201).json({ message: 'Account created successfully', uid: account.uid, userDetails: savedUserDetails });
     } catch (err) {
         return res.status(500).send(`Error while registering account, Error: ${err}`);
     }
@@ -60,11 +63,7 @@ const loginAccountHandler = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const login = await loginAccount(email,password);
-
-    // Fetch the saved user details from Firestore
-    const savedUserDetails = await getUserDetails(login.uid);
-
-    return res.status(201).json({ message: 'Account created successfully', login, userDetails: savedUserDetails });
+    return res.status(201).json({ message: 'Account logged in successfully', uid: login.uid, login });
   } catch (error) {
     console.error('Authentication failed:', error);
     return res.status(401).json({ error: "Authentication failed", details: error.message });

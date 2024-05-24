@@ -1,0 +1,81 @@
+-AUTHENTICATION-
+###
+POST http://localhost:3000/auth/registerAccount
+{
+    "email": "gg@gmail.com",
+    "password": "rrr123",
+    "username": "rr",
+    "role": "Student",
+    "name": "rr",
+    "age": 1,
+    "gender": "Male",
+    "dateOfBirth": "01/02/2002",
+    "height": 160,
+    "weight": 55,
+    "fitnessLevel": "Beginner",
+    "favClass": "Yoga",
+    "fitnessGoal": "Stay toned",
+    "currentHydration": 10
+}
+
+###
+POST http://localhost:3000/auth/loginAccount
+{
+    "email": "app@gmail.com",
+    "password": "app123"
+}
+
+###
+POST http://localhost:3000/auth/logoutAccount
+
+###
+POST http://localhost:3000/auth/forgotPassword
+
+###
+DELETE http://localhost:3000/auth/deleteAccount/:uid
+
+-PROFILE-
+###
+PATCH http://localhost:3000/profile/updateProfile/:uid
+{
+    "username": "olivia",
+    "gender": "Female",
+    "dateOfBirth": "14/08/2008",
+    "height": 200,
+    "weight": 60,
+    "photoURL": "assets/img/pic_5.png"
+}
+
+###
+PATCH http://localhost:3000/profile/updateWater/:uid
+{
+    "currentHydration": 50
+}
+
+-GOAL-
+###
+POST http://localhost:3000/goals/addGoal
+{
+    "status": false,
+    "title": "add goal 1123123",
+    "uid": "FLx5ZOVXB26kVP7NroJm"
+}
+
+###
+GET http://localhost:3000/goals/getAllGoals
+
+###
+GET http://localhost:3000/goals/getAllUserGoals/wBfHJzx8rrPT00zKEh19eRkI1zJ2
+
+###
+http://localhost:3000/goals/getGoalById/:id
+
+###
+PATCH http://localhost:3000/goals/completeGoal/:id
+
+###
+PATCH http://localhost:3000/goals/updateGoal/:id
+
+-TIPS-
+###
+GET http://localhost:3000/tips/getAllTips

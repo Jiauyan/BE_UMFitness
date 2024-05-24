@@ -9,7 +9,17 @@ const loginAccount = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
-    return user;
+
+     // Get the user document from Firestore
+    const userDocRef = doc(db, "Users", user.uid);
+    const userDocSnapshot = await getDoc(userDocRef);
+
+     if (userDocSnapshot.exists()) {
+      const userData = userDocSnapshot.data();
+      return { userData, uid: user.uid };
+    } else {
+      throw new Error("User document does not exist.");
+    }
   } catch (error) {
     throw error;
   }
@@ -18,7 +28,12 @@ const loginAccount = async (email, password) => {
 const registerAccount = async (email, password) => {
   try {
     const newUser = await createUserWithEmailAndPassword(auth, email, password);
-    return newUser.user;
+    const user = newUser.user;
+    await setDoc(doc(db, "Users", user.uid), {
+          email: user.email,
+        });
+
+    return { uid: user.uid, email: user.email };
   } catch (error) {
     console.log(error)
     throw error
@@ -28,16 +43,11 @@ const registerAccount = async (email, password) => {
 const saveUserDetails = async (uid, userDetails) => {
   try {
     // Validate userDetails here if needed
-    const requiredFields = ['username', 'role', 'name', 'age', 'gender', 'height', 'weight', 'fitnessLevel', 'favClass', 'fitnessGoal', 'currentHydration'];
+    const requiredFields = ['email', 'username', 'role', 'name', 'age', 'gender', 'height', 'weight', 'fitnessLevel', 'favClass', 'fitnessGoal', 'currentHydration', 'phoneNumber', 'photoURL'];
     for (const field of requiredFields) {
       if (!userDetails[field]) {
         throw new Error(`${field} is required`);
       }
-    }
-
-    // Initialize currentHydration to 0 if not provided
-    if (!userDetails.hasOwnProperty('currentHydration')) {
-      userDetails.currentHydration = "";
     }
 
     const userDoc = doc(db, 'Users', uid);
