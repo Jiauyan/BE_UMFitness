@@ -38,7 +38,7 @@ const getTipById = async (id) => {
 }
 
 
-const addTip = async (title, uid, desc, pic) => {
+const addTip = async (uid, title, desc, pic) => {
   try {
     const addTip = await addDoc(collection(db, 'Tips'), {
       uid,
@@ -47,7 +47,7 @@ const addTip = async (title, uid, desc, pic) => {
       //pic
     });
     
-    return { id: addTip.id, title, uid, desc, pic };
+    return { id: addTip.id, uid, title, desc, pic };
   } catch (error) {
     console.error('Error adding tip:', error);
     throw error;
@@ -57,7 +57,7 @@ const addTip = async (title, uid, desc, pic) => {
 
 const updateTip = async (id, uid, title, desc, pic) => {
   try {
-    const updateTip = await setDoc(doc(db,'Tips',id),{
+    await setDoc(doc(db,'Tips',id),{
       uid,
       title,
       desc,

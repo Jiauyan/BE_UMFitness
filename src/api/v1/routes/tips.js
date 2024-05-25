@@ -7,7 +7,7 @@ const tipsController = require("../controllers/tipsController");
 //router.patch("/", tipsController);
 router.get("/getAllTips", tipsController.getAllTips);
 router.get("/getAllUserTips/:uid", tipsController.getAllTipsOfUser);
-router.get("/getTipsById/:id", tipsController.getTipById);
+router.get("/getTipById/:id", tipsController.getTipById);
 router.post("/addTip", tipsController.addTip);
 router.delete("/deleteTip/:id", tipsController.deleteTip);
 router.patch("/updateTip/:id", tipsController.updateTip);
