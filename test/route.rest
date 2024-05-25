@@ -136,6 +136,6 @@ Content-Type: application/json
 {
     "uid": "iOVD6KGFyqajDpo2tDZ1FVPqy302",
     "title": "jogging",
-    "desc": "When is the best time to jog."
+    "desc": "When is the best time to joging."
 }
 

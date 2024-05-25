@@ -35,7 +35,7 @@ const getTipById= async (req, res) => {
 
 const addTip= async (req, res) => {
     try {
-      const { title, uid, desc, pic } = req.body;
+      const {uid,title,desc,pic } = req.body;
       const addNewTip= await tipsService.addTip(
         uid,
         title,
