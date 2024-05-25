@@ -1,5 +1,6 @@
 const tipsService = require("../services/tipsService");
-
+const { db, storage } = require('../../../configs/firebaseDB');
+const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
 
 // get all tips
 const getAllTips= async (req, res) => {
@@ -35,12 +36,17 @@ const getTipById= async (req, res) => {
 
 const addTip= async (req, res) => {
     try {
-      const {uid,title,desc,pic } = req.body;
+      const {uid,title,desc} = req.body;
+      const tipImage = req.file;
+      const tipImageRef = ref(storage, `tipImages/${tipImage.filename}`);
+      const uploadResult = await tipsService.uploadTipImage(tipImage);
+      const downloadUrl = await getDownloadURL(tipImageRef);
+      
       const addNewTip= await tipsService.addTip(
         uid,
         title,
         desc,
-        //pic
+        downloadUrl
       );
       return res.status(200).json(addNewTip);
     } catch (err) {
@@ -51,13 +57,18 @@ const addTip= async (req, res) => {
   const updateTip= async (req, res) => {
     try {
       const { id } = req.params;
-      const { title, uid, desc, pic } = req.body;
+      const {uid,title,desc} = req.body;
+      const tipImage = req.file;
+      const tipImageRef = ref(storage, `tipImages/${tipImage.filename}`);
+      const uploadResult = await tipsService.uploadTipImage(tipImage);
+      const downloadUrl = await getDownloadURL(tipImageRef);
+
       const updateTip= await tipsService.updateTip(
         id,
         uid,
         title,
         desc,
-        //pic
+        downloadUrl
       );
       return res.status(200).json(updateTip);
     } catch (err) {
@@ -75,6 +86,17 @@ const addTip= async (req, res) => {
     }
   };
 
+  const uploadTipImage = async (req, res) => {
+    try {
+      const tipImage = req.file;
+      const uploadResult = await tipsService.uploadTipImage(tipImage);
+      res.status(200).json({ message: 'Uploaded successfully', data: uploadResult });
+  } catch (err) {
+      console.error(err); 
+      res.status(500).json({ message: "Internal Server Error", error: err.toString() });
+  }
+  };
+
   module.exports = {
     getAllTips,
     getAllTipsOfUser,
@@ -82,4 +104,5 @@ const addTip= async (req, res) => {
     addTip,
     updateTip,
     deleteTip,
+    uploadTipImage
   };
