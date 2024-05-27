@@ -21,6 +21,6 @@ router.get("/getTipById/:id", tipsController.getTipById);
 router.post("/addTip",upload.single('tipImage'), tipsController.addTip);
 router.delete("/deleteTip/:id", tipsController.deleteTip);
 router.patch("/updateTip/:id", upload.single('tipImage'), tipsController.updateTip);
-router.post("/uploadTipImage", upload.single('tipImage'), tipsController.uploadTipImage);
+//router.post("/uploadTipImage", upload.single('tipImage'), tipsController.uploadTipImage);
 
 module.exports = router;

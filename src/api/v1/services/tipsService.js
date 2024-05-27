@@ -88,7 +88,7 @@ const deleteTip = async (id) => {
 const uploadTipImage = async (tipImage) => {
   try {
     const tipImageRef = ref(storage, `tipImages/${tipImage.filename}`);
-
+    console.log(tipImage.path);
     // Assuming you are using Node.js and have the file system module available
     const buffer = fs.readFileSync(tipImage.path);  // Read the file into a buffer
 
