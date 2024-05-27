@@ -15,6 +15,9 @@ const {
   forgotPassword ,
   deleteAccount,
 } = require("../services/authService");
+const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
+const fs = require('fs');
+const { storage } = require('../../../configs/firebaseDB');
 
 const registerAccountHandler = async (req, res, next) => {
     try {
@@ -106,16 +109,29 @@ const deleteAccountHandler = async (req, res, next) => {
 
 const registerAccHandler = async (req, res, next) => {
   try {
-
     const { email, password } = req.body;
+
+    const imagePath = 'src/api/v1/uploads/defaultProfileImg.png';
+
+    const profileImageRef = ref(storage, `profileImages/${Date.now()}.png`);
+
+    const buffer = fs.readFileSync(imagePath);
+    const metadata = {
+      contentType: req.file ? req.file.mimetype : 'image/png',
+    };
+    await uploadBytes(profileImageRef, buffer, metadata);
+
+    const downloadUrl = await getDownloadURL(profileImageRef);
+
     const account = await registerAcc(
       email,
-      password
+      password,
+      downloadUrl 
     );
 
     return res.status(201).json(account);
   } catch (err) {
-      return res.status(500).send(`Error while registering Account, Error :${err} `);
+      return res.status(500).send(`Error while registering Account, Error: ${err}`);
   }
 };
 
@@ -204,6 +220,7 @@ const getUserByIdHandler = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 };
+
 
   module.exports = {
     registerAccountHandler,

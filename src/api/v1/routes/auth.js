@@ -1,11 +1,18 @@
 const express = require("express");
 const router = express.Router();
-
-//Validation
-
-//Controller
+const multer = require('multer');
+const path = require('path');
 const authFirebaseController = require("../controllers/authController");
-//auth
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'src/api/v1/uploads/'); 
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+const upload = multer({ storage: storage });
 
 //router.get("/getAccount", authFirebaseController.getAllAccount); //Get All Acc
 //router.get("/getToken", authController.authenticateToken); //Get Token Check Exp. Date
@@ -18,7 +25,7 @@ router.post("/logoutAccount", authFirebaseController.logoutAccountHandler); //Lo
 router.post("/forgotPassword", authFirebaseController.forgotPasswordHandler); //Forgot Password Account
 // router.post("/forgotPassword/:id", authController.forgotPassword); //Forgot Password Account
 
-router.post("/registerAcc", authFirebaseController.registerAccHandler); //Register Account
+router.post("/registerAcc", upload.single('profileImage'), authFirebaseController.registerAccHandler); //Register Account
 router.post("/loginAcc", authFirebaseController.loginAccHandler); //Login Account
 router.post("/completeProfile/:uid", authFirebaseController.completeProfileHandler);
 router.post("/fitnessLevel/:uid", authFirebaseController.fitnessLevelHandler);

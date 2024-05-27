@@ -1,4 +1,8 @@
 const profileService = require("../services/profileService");
+const { db, storage } = require('../../../configs/firebaseDB');
+const { doc, updateDoc } = require("firebase/firestore");
+const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
+const fs = require('fs');
 
 const updateProfileHandler = async (req, res) => {
     try {
@@ -34,7 +38,27 @@ const updateWaterHandler = async (req, res) => {
     }
 };
 
+const uploadProfileImage = async (req, res) => {
+  try {
+    console.log(req.file);
+    const { uid } = req.params;
+    const updates = req.body;
+    const profileImage = req.file;
+    const profileImageRef = ref(storage, `profileImages/${profileImage.filename}`);
+    const uploadResult = await profileService.uploadProfileImage(profileImage);
+    const downloadUrl = await getDownloadURL(profileImageRef);
+
+    await profileService.updateProfile(uid, updates, downloadUrl);
+
+    return res.status(200).json(uploadResult);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+
 module.exports = {
     updateProfileHandler,
-    updateWaterHandler
+    updateWaterHandler,
+    uploadProfileImage,
 }

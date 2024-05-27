@@ -1,7 +1,10 @@
-const {db} = require('../../../configs/firebaseDB');
-const { getFirestore, doc, setDoc, getDoc, alert, updateDoc } = require('firebase/firestore');
+const { db, storage } = require('../../../configs/firebaseDB');
+const { collection, getDocs, addDoc, doc, deleteDoc, setDoc, getDoc, query, where, updateDoc } = require("firebase/firestore");
+const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
+const { v4 } = require("uuid");
+const fs = require('fs');
 
-const updateProfile = async (uid, updates) => {
+const updateProfile = async (uid, updates, downloadUrl) => {
   try {
      const userRef = doc(db, 'Users', uid);
 
@@ -18,7 +21,7 @@ const updateProfile = async (uid, updates) => {
 
     // Update the document with the filtered fields
     await updateDoc(userRef, fieldsToUpdate);
-
+    await updateDoc(userRef, {downloadUrl});
     return { message: 'Profile updated successfully' };
   } catch (error) {
     console.error('Error updating profile:', error);
@@ -49,7 +52,26 @@ const updateWater = async (uid, currentHydration) => {
   }
 }
 
+const uploadProfileImage = async (profileImage) => {
+  try {
+    const profileImageRef = ref(storage, `profileImages/${profileImage.filename}`);
+    console.log(profileImage.path);
+    // Assuming you are using Node.js and have the file system module available
+    const buffer = fs.readFileSync(profileImage.path);  // Read the file into a buffer
+
+    const metadata = {
+      contentType: profileImage.mimetype, 
+    };
+    await uploadBytes(profileImageRef, buffer, metadata);
+    console.log("Sharing profile image uploaded");
+  } catch (error) {
+    console.error('Error uploading:', error);
+    throw error;
+  }
+}
+
 module.exports = {
     updateProfile,
-    updateWater
+    updateWater,
+    uploadProfileImage,
 }

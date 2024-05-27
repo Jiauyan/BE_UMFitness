@@ -109,7 +109,7 @@ const deleteAccount = async (uid) => {
   }
 };
 
-const registerAcc = async (email, password) => {
+const registerAcc = async (email, password, downloadUrl) => {
   try {
  
     const newUser = await createUserWithEmailAndPassword(auth, email, password);
@@ -117,6 +117,7 @@ const registerAcc = async (email, password) => {
 
     await setDoc(doc(db, "Users", user.uid), {
       email: user.email,
+      downloadUrl
     });
     
     return { uid: user.uid, email: user.email };  
@@ -149,6 +150,24 @@ const loginAcc = async (email, password) => {
     throw error;
   }
 };
+
+const uploadTipImage = async (tipImage) => {
+  try {
+    const tipImageRef = ref(storage, `tipImages/${tipImage.filename}`);
+
+    // Assuming you are using Node.js and have the file system module available
+    const buffer = fs.readFileSync(tipImage.path);  // Read the file into a buffer
+
+    const metadata = {
+      contentType: tipImage.mimetype, 
+    };
+    await uploadBytes(tipImageRef, buffer, metadata);
+    console.log("Sharing tip image uploaded");
+  } catch (error) {
+    console.error('Error uploading:', error);
+    throw error;
+  }
+}
 
 const completeProfile = async (
   uid,
@@ -241,6 +260,7 @@ const getUserByIdService = async (uid) => {
     fitnessLevelService,
     fitnessGoalService,
     favClassService,
-    getUserByIdService
+    getUserByIdService,
+    uploadTipImage
   };
   
