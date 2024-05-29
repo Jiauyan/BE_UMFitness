@@ -1,6 +1,7 @@
 const tipsService = require("../services/tipsService");
 const { db, storage } = require('../../../configs/firebaseDB');
 const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
+const { format } = require('date-fns');
 
 // get all tips
 const getAllTips= async (req, res) => {
@@ -42,11 +43,14 @@ const addTip= async (req, res) => {
       const uploadResult = await tipsService.uploadTipImage(tipImage);
       const downloadUrl = await getDownloadURL(tipImageRef);
       
+      const createdAt = format(new Date(), 'MMMM d, yyyy')
+
       const addNewTip= await tipsService.addTip(
         uid,
         title,
         desc,
-        downloadUrl
+        downloadUrl,
+        createdAt
       );
       return res.status(200).json(addNewTip);
     } catch (err) {
@@ -57,20 +61,23 @@ const addTip= async (req, res) => {
   const updateTip= async (req, res) => {
     try {
       const { id } = req.params;
-      const {uid,title,desc} = req.body;
-      const tipImage = req.file;
-      const tipImageRef = ref(storage, `tipImages/${tipImage.filename}`);
-      const uploadResult = await tipsService.uploadTipImage(tipImage);
-      const downloadUrl = await getDownloadURL(tipImageRef);
-
-      const updateTip= await tipsService.updateTip(
-        id,
-        uid,
-        title,
-        desc,
-        downloadUrl
-      );
-      return res.status(200).json(updateTip);
+      const updates = req.body;
+      let downloadUrl;
+  
+      if (req.file) {
+        const tipImage = req.file;
+        const tipImageRef = ref(storage, `tipImages/${tipImage.filename}`);
+        const uploadResult = await tipsService.uploadTipImage(tipImage);
+        downloadUrl = await getDownloadURL(tipImageRef);
+      }
+  
+      // Include the downloadUrl in updates only if a new image was uploaded
+      if (downloadUrl) {
+        updates.downloadUrl = downloadUrl;
+      }
+  
+      const updatedTip = await tipsService.updateTip(id, updates);
+      return res.status(200).json(updatedTip);
     } catch (err) {
       res.status(400).json({ message: err.message });
     }

@@ -1,5 +1,5 @@
 const { db, storage } = require('../../../configs/firebaseDB');
-const { collection, getDocs, addDoc, doc, deleteDoc, setDoc, getDoc, query, where } = require("firebase/firestore");
+const { collection, getDocs, addDoc, doc, deleteDoc, setDoc, getDoc, query, where, updateDoc } = require("firebase/firestore");
 const { ref, uploadBytes } = require("firebase/storage");
 const { v4 } = require("uuid");
 const fs = require('fs');
@@ -42,15 +42,17 @@ const getTipById = async (id) => {
 }
 
 
-const addTip = async (uid, title, desc, downloadUrl) => {
+const addTip = async (uid, title, desc, downloadUrl, createdAt
+) => {
   try {
     const addTip = await addDoc(collection(db, 'Tips'), {
       uid,
       title,
       desc,
-      downloadUrl
+      downloadUrl,
+      createdAt
     });
-    return { id: addTip.id, uid, title, desc, downloadUrl};
+    return { id: addTip.id, uid, title, desc, downloadUrl, createdAt};
   } catch (error) {
     console.error('Error adding tip:', error);
     throw error;
@@ -58,15 +60,22 @@ const addTip = async (uid, title, desc, downloadUrl) => {
 };
 
 
-const updateTip = async (id, uid, title, desc, downloadUrl) => {
+const updateTip = async (id, updates) => {
   try {
-    await setDoc(doc(db,'Tips',id),{
-      uid,
-      title,
-      desc,
-      downloadUrl
-    })
-    return { id, title, uid, desc, downloadUrl };
+    const tipRef = doc(db, 'Tips', id); 
+
+    // Prepare fields to update
+    const fieldsToUpdate = { ...updates };
+
+    // Add downloadUrl to fieldsToUpdate if it's provided
+    if (updates.downloadUrl) {
+      fieldsToUpdate.downloadUrl = updates.downloadUrl;
+    }
+
+    // Update the document with the fields
+    await updateDoc(tipRef, fieldsToUpdate);
+
+    return { id, updates, downloadUrl };
   } catch (error) {
     console.error('Error fetching:', error);
     throw error;
