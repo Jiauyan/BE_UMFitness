@@ -40,17 +40,24 @@ const updateWaterHandler = async (req, res) => {
 
 const uploadProfileImage = async (req, res) => {
   try {
-    console.log(req.file);
     const { uid } = req.params;
     const updates = req.body;
+    let downloadUrl;
+
+    if(req.file){
     const profileImage = req.file;
     const profileImageRef = ref(storage, `profileImages/${profileImage.filename}`);
     const uploadResult = await profileService.uploadProfileImage(profileImage);
-    const downloadUrl = await getDownloadURL(profileImageRef);
+    downloadUrl = await getDownloadURL(profileImageRef);
+    }
+    
+    if (downloadUrl) {
+      updates.downloadUrl = downloadUrl;
+    }
 
-    await profileService.updateProfile(uid, updates, downloadUrl);
+    const updatedProfile = await profileService.updateProfileInfo(uid, updates);
 
-    return res.status(200).json(uploadResult);
+    return res.status(200).json(updatedProfile);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
