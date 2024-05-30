@@ -4,7 +4,7 @@ const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
 const { v4 } = require("uuid");
 const fs = require('fs');
 
-const updateProfile = async (uid, updates, downloadUrl) => {
+const updateProfile = async (uid, updates) => {
   try {
      const userRef = doc(db, 'Users', uid);
 
@@ -21,7 +21,6 @@ const updateProfile = async (uid, updates, downloadUrl) => {
 
     // Update the document with the filtered fields
     await updateDoc(userRef, fieldsToUpdate);
-    await updateDoc(userRef, {downloadUrl});
     return { message: 'Profile updated successfully' };
   } catch (error) {
     console.error('Error updating profile:', error);
@@ -70,8 +69,32 @@ const uploadProfileImage = async (profileImage) => {
   }
 }
 
+const updateProfileInfo = async (uid, updates) => {
+  try {
+     const userRef = doc(db, 'Users', uid);
+
+     const fieldsToUpdate = { ...updates };
+
+     // Add downloadUrl to fieldsToUpdate if it's provided
+     if (updates.downloadUrl) {
+       fieldsToUpdate.downloadUrl = updates.downloadUrl;
+     }
+
+    // Log the fields to be updated
+    console.log('Updating fields:', fieldsToUpdate);
+
+    // Update the document with the filtered fields
+    await updateDoc(userRef, fieldsToUpdate);
+    return { message: 'Profile updated successfully' };
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    throw error;
+  }
+}
+
 module.exports = {
     updateProfile,
     updateWater,
     uploadProfileImage,
+    updateProfileInfo
 }
