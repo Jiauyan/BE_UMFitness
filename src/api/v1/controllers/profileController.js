@@ -7,12 +7,12 @@ const fs = require('fs');
 const updateProfileHandler = async (req, res) => {
     try {
       const { uid } = req.params;
-      const { username, name, gender, dateOfBirth, height, weight, photoURL } = req.body;
+      const { username, gender, age, height, weight, photoURL } = req.body;
       const updates = req.body;
 
        // Log the received data for debugging
        console.log('Received data for update:', updates);
-       const updateProfile = await profileService.updateProfile(uid, updates);
+       const updateProfile = await profileService.updateProfile(uid, updates, photoURL);
 
       return res.status(201).json(updateProfile);
     } catch (err) {
