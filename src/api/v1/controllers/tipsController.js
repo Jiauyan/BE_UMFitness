@@ -37,7 +37,7 @@ const getTipById= async (req, res) => {
 
 const addTip= async (req, res) => {
     try {
-      const {uid,title,desc} = req.body;
+      const {uid,title,desc,shortDesc, username, userImageUrl} = req.body;
       const tipImage = req.file;
       const tipImageRef = ref(storage, `tipImages/${tipImage.filename}`);
       const uploadResult = await tipsService.uploadTipImage(tipImage);
@@ -50,7 +50,10 @@ const addTip= async (req, res) => {
         title,
         desc,
         downloadUrl,
-        createdAt
+        createdAt,
+        shortDesc, 
+        username, 
+        userImageUrl
       );
       return res.status(200).json(addNewTip);
     } catch (err) {
