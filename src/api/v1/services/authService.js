@@ -139,10 +139,9 @@ const loginAcc = async (email, password) => {
     // Check if the document exists and retrieve the role
     if (userDocSnapshot.exists()) {
       const userData = userDocSnapshot.data();
-      const userRole = userData.role;  // Access the role field
+      const userRole = userData.role;  
 
-      // You can return both user and userRole if needed
-      return { user, userRole};
+      return { user, userRole, userData};
     } else {
       throw new Error("User document does not exist.");
     }
