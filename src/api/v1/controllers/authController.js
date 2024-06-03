@@ -2,6 +2,7 @@ const {
   authService,
   registerAcc,
   loginAcc,
+  signInWithGoogleService,
   completeProfile,
   fitnessLevelService,
   fitnessGoalService,
@@ -149,6 +150,18 @@ try {
 }
 };
 
+const signInWithGoogle = async (req, res, next) => {
+  try {
+    const {user} = req.body;
+    const login = await signInWithGoogleService(user);
+    return res.status(201).json(login);
+  } catch (error) {
+    console.error('Authentication failed:', error);
+    return res.status(401).json({ error: "Authentication failed", details: error.message });
+  }
+  };
+
+
 const completeProfileHandler = async (req, res) => {
   try {
     const { uid } = req.params;
@@ -230,6 +243,7 @@ const getUserByIdHandler = async (req, res) => {
     deleteAccountHandler,
     registerAccHandler,
     loginAccHandler,
+    signInWithGoogle,
     completeProfileHandler,
     fitnessLevelHandler,
     fitnessGoalHandler,

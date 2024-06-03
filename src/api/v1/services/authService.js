@@ -1,7 +1,6 @@
 const {auth} = require('../../../configs/firebaseDB');
-const  {signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail} = require("firebase/auth")
+const  {signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup,deleteUser} = require("firebase/auth")
 const { getFirestore, doc, setDoc, getDoc, alert, deleteDoc } = require('firebase/firestore');
-const { deleteUser } = require( "firebase/auth");
 const db = getFirestore();
 const user = auth.currentUser;
 
@@ -150,6 +149,25 @@ const loginAcc = async (email, password) => {
   }
 };
 
+const signInWithGoogleService = async (user) => {
+  try {
+    // Get the user document from Firestore
+    const userDocRef = doc(db, "Users", user.uid);
+    const userDocSnapshot = await setDoc(userDocRef, user);
+
+    if (userDocSnapshot.exists()) {
+      const userData = userDocSnapshot.data();
+      const userRole = userData.role;  
+
+      return { user, userRole, userData};
+    } else {
+      throw new Error("User document does not exist.");
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
 const uploadTipImage = async (tipImage) => {
   try {
     const tipImageRef = ref(storage, `tipImages/${tipImage.filename}`);
@@ -255,6 +273,7 @@ const getUserByIdService = async (uid) => {
     deleteAccount,
     registerAcc,
     loginAcc,
+    signInWithGoogleService,
     completeProfile,
     fitnessLevelService,
     fitnessGoalService,
