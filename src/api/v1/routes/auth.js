@@ -26,7 +26,8 @@ router.post("/forgotPassword", authFirebaseController.forgotPasswordHandler); //
 // router.post("/forgotPassword/:id", authController.forgotPassword); //Forgot Password Account
 
 router.post("/registerAcc", upload.single('profileImage'), authFirebaseController.registerAccHandler); //Register Account
-router.post("/loginAcc", authFirebaseController.loginAccHandler); //Login Account
+router.post("/loginAcc", authFirebaseController.loginAccHandler); 
+router.post("/signInWithGoogle", authFirebaseController.signInWithGoogle); 
 router.post("/completeProfile/:uid", authFirebaseController.completeProfileHandler);
 router.post("/fitnessLevel/:uid", authFirebaseController.fitnessLevelHandler);
 router.post("/fitnessGoal/:uid", authFirebaseController.fitnessGoalHandler);
