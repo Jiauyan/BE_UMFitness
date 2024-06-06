@@ -1,6 +1,6 @@
 const {auth} = require('../../../configs/firebaseDB');
 const  {signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup,deleteUser} = require("firebase/auth")
-const { getFirestore, doc, setDoc, getDoc, alert, deleteDoc } = require('firebase/firestore');
+const { getFirestore, doc, setDoc, getDoc, getDocs,alert, deleteDoc,collection,where, query} = require('firebase/firestore');
 const db = getFirestore();
 const user = auth.currentUser;
 
@@ -100,7 +100,23 @@ const deleteAccount = async (uid) => {
     return;
   }
   try {
-    await deleteDoc(doc(db, "Users", uid));
+    const goalsRef = collection(db, 'Goals');
+    const q = query(goalsRef, where('uid', '==', uid));
+    const querySnapshot = await getDocs(q);
+    
+    querySnapshot.forEach(async (goalDoc) => {
+      await deleteDoc(goalDoc.ref);
+    });
+
+    // Delete tips associated with the user
+    const tipsRef = collection(db, 'Tips');
+    const tipsQuery = query(tipsRef, where('uid', '==', uid));
+    const tipsSnapshot = await getDocs(tipsQuery);
+    
+    tipsSnapshot.forEach(async (tipDoc) => {
+      await deleteDoc(tipDoc.ref);
+    });
+    await deleteDoc(doc(db,'Users',uid))
     await deleteUser(user);
     console.log("Account deleted successfully");
   } catch (error) {
