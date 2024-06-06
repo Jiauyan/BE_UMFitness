@@ -108,7 +108,7 @@ const deleteAccount = async (uid) => {
   }
 };
 
-const registerAcc = async (email, password, downloadUrl) => {
+const registerAcc = async (email, password, photoURL) => {
   try {
  
     const newUser = await createUserWithEmailAndPassword(auth, email, password);
@@ -116,7 +116,7 @@ const registerAcc = async (email, password, downloadUrl) => {
 
     await setDoc(doc(db, "Users", user.uid), {
       email: user.email,
-      downloadUrl
+      photoURL
     });
     
     return { uid: user.uid, email: user.email };  
