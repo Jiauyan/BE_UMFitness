@@ -122,12 +122,12 @@ const registerAccHandler = async (req, res, next) => {
     };
     await uploadBytes(profileImageRef, buffer, metadata);
 
-    const downloadUrl = await getDownloadURL(profileImageRef);
+    const photoURL = await getDownloadURL(profileImageRef);
 
     const account = await registerAcc(
       email,
       password,
-      downloadUrl 
+      photoURL 
     );
 
     return res.status(201).json(account);
