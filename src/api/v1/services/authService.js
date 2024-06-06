@@ -1,7 +1,6 @@
 const {auth} = require('../../../configs/firebaseDB');
-const  {signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail} = require("firebase/auth")
-const { getFirestore, doc, setDoc, getDoc, alert, deleteDoc } = require('firebase/firestore');
-const { deleteUser } = require( "firebase/auth");
+const  {signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup,deleteUser} = require("firebase/auth")
+const { getFirestore, doc, setDoc, getDoc, getDocs,alert, deleteDoc,collection,where, query} = require('firebase/firestore');
 const db = getFirestore();
 const user = auth.currentUser;
 
@@ -101,7 +100,23 @@ const deleteAccount = async (uid) => {
     return;
   }
   try {
-    await deleteDoc(doc(db, "Users", uid));
+    const goalsRef = collection(db, 'Goals');
+    const q = query(goalsRef, where('uid', '==', uid));
+    const querySnapshot = await getDocs(q);
+    
+    querySnapshot.forEach(async (goalDoc) => {
+      await deleteDoc(goalDoc.ref);
+    });
+
+    // Delete tips associated with the user
+    const tipsRef = collection(db, 'Tips');
+    const tipsQuery = query(tipsRef, where('uid', '==', uid));
+    const tipsSnapshot = await getDocs(tipsQuery);
+    
+    tipsSnapshot.forEach(async (tipDoc) => {
+      await deleteDoc(tipDoc.ref);
+    });
+    await deleteDoc(doc(db,'Users',uid))
     await deleteUser(user);
     console.log("Account deleted successfully");
   } catch (error) {
@@ -109,7 +124,7 @@ const deleteAccount = async (uid) => {
   }
 };
 
-const registerAcc = async (email, password, downloadUrl) => {
+const registerAcc = async (email, password, photoURL) => {
   try {
  
     const newUser = await createUserWithEmailAndPassword(auth, email, password);
@@ -117,7 +132,7 @@ const registerAcc = async (email, password, downloadUrl) => {
 
     await setDoc(doc(db, "Users", user.uid), {
       email: user.email,
-      downloadUrl
+      photoURL
     });
     
     return { uid: user.uid, email: user.email };  
@@ -137,6 +152,25 @@ const loginAcc = async (email, password) => {
     const userDocSnapshot = await getDoc(userDocRef);
 
     // Check if the document exists and retrieve the role
+    if (userDocSnapshot.exists()) {
+      const userData = userDocSnapshot.data();
+      const userRole = userData.role;  
+
+      return { user, userRole, userData};
+    } else {
+      throw new Error("User document does not exist.");
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+const signInWithGoogleService = async (user) => {
+  try {
+    // Get the user document from Firestore
+    const userDocRef = doc(db, "Users", user.uid);
+    const userDocSnapshot = await setDoc(userDocRef, user);
+
     if (userDocSnapshot.exists()) {
       const userData = userDocSnapshot.data();
       const userRole = userData.role;  
@@ -255,6 +289,7 @@ const getUserByIdService = async (uid) => {
     deleteAccount,
     registerAcc,
     loginAcc,
+    signInWithGoogleService,
     completeProfile,
     fitnessLevelService,
     fitnessGoalService,

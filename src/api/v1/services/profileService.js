@@ -76,9 +76,9 @@ const updateProfileInfo = async (uid, updates) => {
      const fieldsToUpdate = { ...updates };
 
      // Add downloadUrl to fieldsToUpdate if it's provided
-     if (updates.downloadUrl) {
-       fieldsToUpdate.downloadUrl = updates.downloadUrl;
-     }
+    //  if (updates.downloadUrl) {
+    //    fieldsToUpdate.downloadUrl = updates.downloadUrl;
+    //  }
 
     // Log the fields to be updated
     console.log('Updating fields:', fieldsToUpdate);

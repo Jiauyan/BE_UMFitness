@@ -42,17 +42,17 @@ const uploadProfileImage = async (req, res) => {
   try {
     const { uid } = req.params;
     const updates = req.body;
-    let downloadUrl;
+    let photoURL;
 
     if(req.file){
     const profileImage = req.file;
     const profileImageRef = ref(storage, `profileImages/${profileImage.filename}`);
     const uploadResult = await profileService.uploadProfileImage(profileImage);
-    downloadUrl = await getDownloadURL(profileImageRef);
+    photoURL = await getDownloadURL(profileImageRef);
     }
     
-    if (downloadUrl) {
-      updates.downloadUrl = downloadUrl;
+    if (photoURL) {
+      updates.photoURL = photoURL;
     }
 
     const updatedProfile = await profileService.updateProfileInfo(uid, updates);

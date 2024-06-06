@@ -71,14 +71,14 @@ const updateTip = async (id, updates) => {
     const fieldsToUpdate = { ...updates };
 
     // Add downloadUrl to fieldsToUpdate if it's provided
-    if (updates.downloadUrl) {
-      fieldsToUpdate.downloadUrl = updates.downloadUrl;
-    }
+    // if (updates.downloadUrl) {
+    //   fieldsToUpdate.downloadUrl = updates.downloadUrl;
+    // }
 
     // Update the document with the fields
     await updateDoc(tipRef, fieldsToUpdate);
 
-    return { id, updates, downloadUrl };
+    return { id, updates};
   } catch (error) {
     console.error('Error fetching:', error);
     throw error;
