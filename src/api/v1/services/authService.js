@@ -126,13 +126,16 @@ const deleteAccount = async (uid) => {
 
 const registerAcc = async (email, password, photoURL) => {
   try {
- 
+    const currentHydration = 0;
+    const phoneNumber = "0";
     const newUser = await createUserWithEmailAndPassword(auth, email, password);
     const user = newUser.user;
 
     await setDoc(doc(db, "Users", user.uid), {
       email: user.email,
-      photoURL
+      photoURL,
+      currentHydration,
+      phoneNumber
     });
     
     return { uid: user.uid, email: user.email };  
