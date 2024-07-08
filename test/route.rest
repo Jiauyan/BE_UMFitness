@@ -146,3 +146,31 @@ Content-Type: application/json
     "tipImage": 
 }
 
+
+###
+GET http://localhost:3000/motivationalQuotes/getAllMotivationalQuotes
+
+###
+GET http://localhost:3000/motivationalQuotes/getRandomMotivationalQuote/sw4V1RqneuzkzGDJvuHb
+
+###
+POST http://localhost:3000/motivationalQuotes/addMotivationalQuote
+Content-Type: application/json
+
+{
+    "uid": "qC2HlKMvwSbsYHfBcKsQJquXuqn2",
+    "motivationalQuote": "Sweat is magic. Cover yourself in it daily to grant your wishes."
+}
+
+
+###
+DELETE  http://localhost:3000/motivationalQuotes/deleteMotivationalQuote/sw4V1RqneuzkzGDJvuHb
+
+###
+PATCH http://localhost:3000/motivationalQuotes/updateMotivationalQuote/sw4V1RqneuzkzGDJvuHb
+Content-Type: application/json
+
+{
+    "uid": "qC2HlKMvwSbsYHfBcKsQJquXuqn2",
+    "motivationalQuote": "Sweat is magic. Cover yourself in it daily to grant your wishes."
+}

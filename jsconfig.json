@@ -1,9 +1,9 @@
-{
-    "compilerOptions": {
-        "baseUrl": "./",
-        "paths": {
-            "@configs/": ["configs/*"],
-            "@utils/": ["utils/*"],
-        }
-    }
-}
+// {
+//     "compilerOptions": {
+//         "baseUrl": "./",
+//         "paths": {
+//             "@configs/": ["configs/*"],
+//             "@utils/": ["utils/*"],
+//         }
+//     }
+// }
