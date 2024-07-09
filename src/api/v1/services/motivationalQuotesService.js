@@ -78,23 +78,25 @@ const deleteMotivationalQuote = async (id) => {
 }
 
 const getRandomMotivationalQuote = async (id) => {
-    try {
-      const querySnapshot = await getDocs(collection(db, 'MotivationalQuotes'));
-      const motivationalQuotes = querySnapshot.docs
-        .map(doc => ({ id: doc.id, ...doc.data() }))
-        .filter(quote => quote.id !== id);
-  
-      if (motivationalQuotes.length === 0) {
-        throw new Error('No motivational quotes found');
-      }
-  
-      const randomIndex = Math.floor(Math.random() * motivationalQuotes.length);
-      return motivationalQuotes[randomIndex];
-    } catch (error) {
-      console.error('Error fetching random motivational quote:', error);
-      throw error;
+  try {
+    const querySnapshot = await getDocs(collection(db, 'MotivationalQuotes'));
+    let motivationalQuotes = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+    if (id !== null) {
+      motivationalQuotes = motivationalQuotes.filter(quote => quote.id !== id);
     }
-  };
+
+    if (motivationalQuotes.length === 0) {
+      throw new Error('No motivational quotes found');
+    }
+
+    const randomIndex = Math.floor(Math.random() * motivationalQuotes.length);
+    return motivationalQuotes[randomIndex];
+  } catch (error) {
+    console.error('Error fetching random motivational quote:', error);
+    throw error;
+  }
+};
 
 module.exports = {
     getAllMotivationalQuotes,
