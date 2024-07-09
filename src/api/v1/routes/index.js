@@ -14,5 +14,7 @@ router.use("/goals", goalsRouter);
 router.use("/profile", profileRouter);
 router.use("/tips", tipsRouter);
 router.use("/steps", stepsRouter);
+router.use("/posts", postRouter);
+router.use("/motivationalQuotes", motivationalQuotesRouter);
 
 module.exports = router;
