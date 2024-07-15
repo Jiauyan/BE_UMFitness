@@ -70,7 +70,6 @@ const updatePost = async (id, uid, postDetails) => {
 }
 
 // delete post
-
 const deletePost = async (id) => {
     try {
         const deletePost = await deleteDoc(doc(db, 'Posts', id));

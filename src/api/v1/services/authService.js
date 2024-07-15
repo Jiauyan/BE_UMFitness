@@ -42,7 +42,7 @@ const registerAccount = async (email, password) => {
 const saveUserDetails = async (uid, userDetails) => {
   try {
     // Validate userDetails here if needed
-    const requiredFields = ['email', 'username', 'role', 'name', 'age', 'gender', 'height', 'weight', 'fitnessLevel', 'favClass', 'fitnessGoal', 'currentHydration', 'phoneNumber', 'photoURL'];
+    const requiredFields = ['email', 'username', 'role', 'name', 'age', 'gender', 'height', 'weight', 'fitnessLevel', 'favClass', 'fitnessGoal', 'currentHydration', 'phoneNumber', 'photoURL', 'mQuote'];
     for (const field of requiredFields) {
       if (!userDetails[field]) {
         throw new Error(`${field} is required`);

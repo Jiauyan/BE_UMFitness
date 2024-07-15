@@ -79,3 +79,111 @@ PATCH http://localhost:3000/goals/updateGoal/:id
 -TIPS-
 ###
 GET http://localhost:3000/tips/getAllTips
+
+-STEPS-
+###
+POST http://localhost:3000/steps/storeSteps
+{
+    "uid": "qe2BxwOlrnhIZjTNcWm6wcjdCsP2",
+    "stepCount": 1362
+}
+
+###
+GET http://localhost:3000/steps/getStepCountByUid
+{
+    "uid": "qe2BxwOlrnhIZjTNcWm6wcjdCsP2"
+}
+
+
+-POST-
+###
+POST http://localhost:3000/posts/addPost
+{
+    "postDetails": "glad",
+    "uid": "OeW4e9rCbOSCjPIGAEZdyLRlexr2"
+}
+
+### 
+PATCH http://localhost:3000/posts/updatePost/Tv5aWLq9OVmNWBt8CdIn
+{
+    "postDetails": "feeling good today yay yay yay!",
+    "uid": "OeW4e9rCbOSCjPIGAEZdyLRlexr2"
+}
+
+###
+DELETE http://localhost:3000/posts/deletePost/Tv5aWLq9OVmNWBt8CdIn
+
+###
+GET http://localhost:3000/posts/getAllPostsByUid/OeW4e9rCbOSCjPIGAEZdyLRlexr2
+
+###
+GET http://localhost:3000/posts/getPostById/TDBED2mtcTJsx6yamD9p
+
+### 
+GET http://localhost:3000/posts/getAllPosts
+
+- CHAT -
+###
+POST http://localhost:3000/chat/getAllUsers
+
+- MOTIVATIONAL QUOTES - 
+###
+GET http://localhost:3000/motivationalQuotes/getRandomMotivationalQuote/null
+
+###
+GET http://localhost:3000/motivationalQuotes/getAllMotivationalQuotes
+
+- FITNESS PLAN -
+###
+POST http://localhost:3000/fitnessPlan/addFitnessPlan
+{
+    "uid": "OeW4e9rCbOSCjPIGAEZdyLRlexr2",
+    "title": "Fitness Plan 1",
+    "date": "05/07/2024"
+}
+
+### 
+PATCH http://localhost:3000/fitnessPlan/updateFitnessPlan/XOVFPTSzNTHujbAciaVs
+{
+    "uid": "OeW4e9rCbOSCjPIGAEZdyLRlexr2",
+    "title": "Edit Fitness Plan add count testing",
+    "date": "15/07/2024",
+    "completeCount": 0,
+    "totalCount": 0,
+    "createdAt": "2024-07-15T05:09:45.529Z"
+}
+
+###
+GET 
+http://localhost:3000/fitnessPlan/getAllFitnessPlanByUid/OeW4e9rCbOSCjPIGAEZdyLRlexr2
+
+### 
+GET 
+http://localhost:3000/fitnessPlan/getFitnessPlanById/XOVFPTSzNTHujbAciaVs
+
+- FITNESS ACTIVITY -
+###
+POST http://localhost:3000/fitnessActivity/addFitnessActivity
+{
+    "uid": "OeW4e9rCbOSCjPIGAEZdyLRlexr2",
+    "task": "Running",
+    "duration": "30 minutes",
+    "fitnessPlanID": "XOVFPTSzNTHujbAciaVs"
+}
+
+###
+PATCH http://localhost:3000/fitnessActivity/updateFitnessActivity/XfUYryhCcP4UqxPz53Iy
+{
+    "uid": "OeW4e9rCbOSCjPIGAEZdyLRlexr2",
+    "task": "Jumping jumping",
+    "duration": "10 minutes",
+    "status": true,
+    "fitnessPlanID": "XOVFPTSzNTHujbAciaVs",
+    "createdAt": "2024-07-12T09:22:47.853Z"
+}
+
+###
+GET http://localhost:3000/fitnessActivity/getAllFitnessActivitiesByUidAndPlanID/OeW4e9rCbOSCjPIGAEZdyLRlexr2/XOVFPTSzNTHujbAciaVs
+
+###
+GET http://localhost:3000/fitnessActivity/getFitnessActivityById/B6NmmJMtnL2nLduYBoUF
