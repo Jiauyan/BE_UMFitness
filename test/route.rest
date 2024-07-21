@@ -151,7 +151,8 @@ Content-Type: application/json
 GET http://localhost:3000/motivationalQuotes/getAllMotivationalQuotes
 
 ###
-GET http://localhost:3000/motivationalQuotes/getRandomMotivationalQuote/sw4V1RqneuzkzGDJvuHb
+GET http://localhost:3000/motivationalQuotes/getRandomMotivationalQuote/null
+
 
 ###
 POST http://localhost:3000/motivationalQuotes/addMotivationalQuote
@@ -173,4 +174,20 @@ Content-Type: application/json
 {
     "uid": "qC2HlKMvwSbsYHfBcKsQJquXuqn2",
     "motivationalQuote": "Sweat is magic. Cover yourself in it daily to grant your wishes."
+}
+
+
+###
+POST http://localhost:3000/trainingPrograms/addTrainingProgram
+Content-Type: application/json
+
+{
+    "uid":"qC2HlKMvwSbsYHfBcKsQJquXuqn2",
+    "title": "Training Program Beginner",
+    "downloadUrl": "",
+    "fitnessLevel":"Beginner",
+    "fitnessGoal":"Lose Weight",
+    "typeOfExercise": "yoga",
+    "desc":"Training progrom that provide light exercise which suit for beginner.",
+    "slots":"2/1/2025 1pm-2pm"
 }
