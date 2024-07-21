@@ -11,6 +11,7 @@ const chatRouter = require("./chat");
 const motivationalQuotesRouter = require("./motivationalQuotes");
 const fitnessPlanRouter = require("./fitnessPlan");
 const fitnessActivityRouter = require("./fitnessActivity");
+const trainingProgramsRouter = require("./trainingPrograms");
 
 router.use("/auth", authRouter);
 router.use("/goals", goalsRouter);
@@ -22,5 +23,6 @@ router.use("/chat", chatRouter);
 router.use("/motivationalQuotes", motivationalQuotesRouter);
 router.use("/fitnessPlan", fitnessPlanRouter);
 router.use("/fitnessActivity", fitnessActivityRouter);
+router.use("/trainingPrograms", trainingProgramsRouter);
 
 module.exports = router;
