@@ -5,7 +5,7 @@ const { collection, getDocs, addDoc, doc, deleteDoc, setDoc, getDoc, query, wher
 const addFitnessActivity = async (uid, task, duration, status, fitnessPlanID) => {
     try {
         const timestamp = new Date().toISOString();
-        const addNewFitnessActivity = await addDoc(collection(db, 'Fitness Activity'), {
+        const addNewFitnessActivity = await addDoc(collection(db, 'FitnessActivities'), {
             uid,
             task,
             duration,
@@ -28,7 +28,7 @@ const addFitnessActivity = async (uid, task, duration, status, fitnessPlanID) =>
 // createdAt - get from addFitnessActivity (to maintain list sequence after editing, based on add time, not edit time)
 const updateFitnessActivity = async (id, uid, task, duration, status, fitnessPlanID, createdAt) => {
     try {
-        const updateFitnessActivity = await setDoc(doc(db, 'Fitness Activity', id), {
+        const updateFitnessActivity = await setDoc(doc(db, 'FitnessActivities', id), {
             uid,
             task, 
             duration,
@@ -47,7 +47,7 @@ const updateFitnessActivity = async (id, uid, task, duration, status, fitnessPla
 // get all fitness activities by uid and fitnessPlanID
 const getFitnessActivityByUidAndPlanID = async (uid, fitnessPlanID) => {
     try {
-      const fitnessActivitiesRef = collection(db, 'Fitness Activity');
+      const fitnessActivitiesRef = collection(db, 'FitnessActivities');
       const q = query(fitnessActivitiesRef, where('uid', '==', uid), where('fitnessPlanID', '==', fitnessPlanID));
       const querySnapshot = await getDocs(q);
   
@@ -63,7 +63,7 @@ const getFitnessActivityByUidAndPlanID = async (uid, fitnessPlanID) => {
 // get fitness activity by id
 const getFitnessActivityById = async (id) => {
     try {
-        const fitnessActivitySnap = await getDoc(doc(db,'Fitness Activity',id));
+        const fitnessActivitySnap = await getDoc(doc(db,'FitnessActivities',id));
         const fitnessActivity = {id: fitnessActivitySnap.id, ...fitnessActivitySnap.data()};
         return {
             ...fitnessActivity
@@ -77,7 +77,7 @@ const getFitnessActivityById = async (id) => {
 // delete fitness Activity
 const deleteFitnessActivity = async (id) => {
     try {
-        const deleteFitnessActivity = await deleteDoc(doc(db, 'Fitness Activity', id));
+        const deleteFitnessActivity = await deleteDoc(doc(db, 'FitnessActivities', id));
         return id;
     }catch (err) {
         console.error('Error fetching:', err);

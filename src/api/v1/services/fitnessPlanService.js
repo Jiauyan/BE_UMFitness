@@ -5,7 +5,7 @@ const { collection, getDocs, addDoc, doc, deleteDoc, setDoc, getDoc, query, wher
 const createFitnessPlan = async (uid, title, date, completeCount, totalCount) => {
     try {
         const timestamp = new Date().toISOString();
-        const addNewFitnessPlan = await addDoc(collection(db, 'Fitness Plan'), {
+        const addNewFitnessPlan = await addDoc(collection(db, 'FitnessPlans'), {
             uid,
             title,
             date,
@@ -28,7 +28,7 @@ const createFitnessPlan = async (uid, title, date, completeCount, totalCount) =>
 // createdAt - get from createFitnessPlan (to maintain list sequence after editing - based on add time,  not edit time)
 const updateFitnessPlan = async (id, uid, title, date, completeCount, totalCount, createdAt) => {
     try {
-        const updateFitnessPlan = await setDoc(doc(db, 'Fitness Plan', id), {
+        const updateFitnessPlan = await setDoc(doc(db, 'FitnessPlans', id), {
             uid,
             title, 
             date,
@@ -47,7 +47,7 @@ const updateFitnessPlan = async (id, uid, title, date, completeCount, totalCount
 // get all fitness plans by uid
 const getFitnessPlanByUid = async (uid) => {
     try {
-        const fitnessPlansRef = collection(db, 'Fitness Plan');
+        const fitnessPlansRef = collection(db, 'FitnessPlans');
         const q = query(fitnessPlansRef, where('uid', '==', uid));
         const querySnapshot = await getDocs(q);
 
@@ -63,7 +63,7 @@ const getFitnessPlanByUid = async (uid) => {
 // get fitness plan by id
 const getFitnessPlanById = async (id) => {
     try {
-        const fitnessPlanSnap = await getDoc(doc(db,'Fitness Plan',id));
+        const fitnessPlanSnap = await getDoc(doc(db,'FitnessPlans',id));
         const fitnessPlan = {id: fitnessPlanSnap.id, ...fitnessPlanSnap.data()};
         return {
             ...fitnessPlan
@@ -78,14 +78,14 @@ const getFitnessPlanById = async (id) => {
 const deleteFitnessPlan = async (id) => {
     try {
         // Delete fitness activities associated with the plan id
-        const fitnessActivityRef = collection(db, 'Fitness Activity');
+        const fitnessActivityRef = collection(db, 'FitnessActivities');
         const fitnessActivityQuery = query(fitnessActivityRef, where('fitnessPlanID', '==', id));
         const fitnessActivitySnapshot = await getDocs(fitnessActivityQuery);
         
         fitnessActivitySnapshot.forEach(async (fitnessActivityDoc) => {
         await deleteDoc(fitnessActivityDoc.ref);
         });
-        const deleteFitnessPlan = await deleteDoc(doc(db, 'Fitness Plan', id));
+        const deleteFitnessPlan = await deleteDoc(doc(db, 'FitnessPlans', id));
         return id;
     }catch (err) {
         console.error('Error fetching:', err);
