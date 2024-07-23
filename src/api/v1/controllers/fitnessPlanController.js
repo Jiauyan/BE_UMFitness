@@ -3,11 +3,7 @@ const fitnessPlanService = require("../services/fitnessPlanService");
 // add fitness plan - title & date
 const addFitnessPlan = async (req, res) => {
     try {
-        const { uid, title, date } = req.body;
-
-      
-        const completeCount = 0;
-        const totalCount = 0;
+        const { uid, title, date, completeCount, totalCount } = req.body;
 
         const addNewFitnessPlan = await fitnessPlanService.createFitnessPlan(
             uid,
