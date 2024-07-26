@@ -30,6 +30,25 @@ const getAllTrainingPrograms = async () => {
     }
   };
 
+  const getRecommendedTrainingPrograms = async (fitnessLevel, fitnessGoal, favClass) => {
+    try {
+
+      const trainingProgramsRef = collection(db, 'TrainingPrograms');
+      const q = query(trainingProgramsRef, 
+        where('fitnessLevel', '==', fitnessLevel),
+        where('fitnessGoal', '==', fitnessGoal),
+        where('typeOfExercise', 'in', favClass)
+      );
+  
+      const querySnapshot = await getDocs(q);
+      const recommendedTrainingPrograms = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      return recommendedTrainingPrograms;
+    } catch (error) {
+      console.error('Error fetching training programs:', error);
+      throw error;
+    }
+  };
+
 const getTrainingProgramById = async (id) => {
     try {
       const trainingProgramSnap = await getDoc(doc(db,'TrainingPrograms',id));
@@ -122,6 +141,7 @@ module.exports = {
     addTrainingProgram,
     updateTrainingProgram,
     deleteTrainingProgram,
-    uploadTrainingProgramImage
+    uploadTrainingProgramImage,
+    getRecommendedTrainingPrograms
   };
   
