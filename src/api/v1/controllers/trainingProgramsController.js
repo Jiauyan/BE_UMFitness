@@ -24,6 +24,18 @@ const getAllTrainingProgramsOfUser = async (req, res) => {
   }
 };
 
+const getRecommendedTrainingPrograms = async (req, res) => {
+  try {
+    const { fitnessLevel, fitnessGoal, favClass } = req.body;
+
+    const recommendedTrainingPrograms = await trainingProgramsService.getRecommendedTrainingPrograms(fitnessLevel, fitnessGoal, favClass);
+    return res.status(200).json(recommendedTrainingPrograms);
+  } catch (err) {
+    console.error('Error fetching recommended training programs:', err);
+    return res.status(500).json({ message: err.message });
+  }
+};
+
 const getTrainingProgramById= async (req, res) => {
     try {
       const { id } = req.params;
@@ -114,5 +126,6 @@ const addTrainingProgram= async (req, res) => {
     addTrainingProgram,
     updateTrainingProgram,
     deleteTrainingProgram,
-    uploadTrainingProgramImage
+    uploadTrainingProgramImage,
+    getRecommendedTrainingPrograms
   };
