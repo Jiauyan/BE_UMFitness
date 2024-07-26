@@ -191,3 +191,21 @@ Content-Type: application/json
     "desc":"Training progrom that provide light exercise which suit for beginner.",
     "slots":"2/1/2025 1pm-2pm"
 }
+
+###
+GET http://localhost:3000/fitnessActivity/getAllFitnessActivitiesByUidAndPlanID/1PSPsIfGIfO3avhNK4lO6K5ndbj1/UgqZnC9Ad1W0gjRyoW7Z
+
+
+###
+POST http://localhost:3000/trainingPrograms/getRecommendedTrainingPrograms
+Content-Type: application/json
+
+{
+  "fitnessLevel": "Beginner",
+  "fitnessGoal": "Reduce stress",
+  "favClass": ["Dance","HIIT","Strength","Cardio","Yoga"]
+}
+
+
+###
+GET http://localhost:3000/trainingPrograms/getAllTrainingPrograms
