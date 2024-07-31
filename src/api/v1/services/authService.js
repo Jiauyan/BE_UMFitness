@@ -1,8 +1,9 @@
-const {auth} = require('../../../configs/firebaseDB');
-const  {signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup,deleteUser} = require("firebase/auth")
-const { getFirestore, doc, setDoc, getDoc, getDocs,alert, deleteDoc,collection,where, query} = require('firebase/firestore');
+const {app, auth} = require('../../../configs/firebaseDB');
+const  {signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail,deleteUser} = require("firebase/auth")
+const { getFirestore, doc, setDoc, getDoc, getDocs, deleteDoc,collection,where, query, snapshotEqual} = require('firebase/firestore');
 const db = getFirestore();
-const user = auth.currentUser;
+const { ref, remove, get, getDatabase } = require('firebase/database');
+const {firebase} = require('firebase/app');
 
 const loginAccount = async (email, password) => {
   try {
@@ -42,7 +43,7 @@ const registerAccount = async (email, password) => {
 const saveUserDetails = async (uid, userDetails) => {
   try {
     // Validate userDetails here if needed
-    const requiredFields = ['email', 'username', 'role', 'name', 'age', 'gender', 'height', 'weight', 'fitnessLevel', 'favClass', 'fitnessGoal', 'currentHydration', 'phoneNumber', 'photoURL', 'mQuote'];
+    const requiredFields = ['email', 'username', 'role', 'name', 'age', 'gender', 'height', 'weight', 'fitnessLevel', 'favClass', 'fitnessGoal', 'currentHydration', 'phoneNumber', 'photoURL'];
     for (const field of requiredFields) {
       if (!userDetails[field]) {
         throw new Error(`${field} is required`);
@@ -100,29 +101,79 @@ const deleteAccount = async (uid) => {
     return;
   }
   try {
-    const goalsRef = collection(db, 'Goals');
-    const q = query(goalsRef, where('uid', '==', uid));
-    const querySnapshot = await getDocs(q);
-    
-    querySnapshot.forEach(async (goalDoc) => {
-      await deleteDoc(goalDoc.ref);
-    });
+    const collectionsToDelete = [
+      'Goals', 
+      'Tips', 
+      'TrainingClassBooking', 
+      'Posts', 
+      'ConsentForm', 
+      'FitnessPlans', 
+      'FitnessActivities',
+      'Steps',
+      'MotivationalQuotes',
+      'TrainingPrograms'
+    ];
 
-    // Delete tips associated with the user
-    const tipsRef = collection(db, 'Tips');
-    const tipsQuery = query(tipsRef, where('uid', '==', uid));
-    const tipsSnapshot = await getDocs(tipsQuery);
+    for (const collectionName of collectionsToDelete) {
+      const collectionRef = collection(db, collectionName);
+      const collectionQuery = query(collectionRef, where('uid', '==', uid));
+      const collectionSnapshot = await getDocs(collectionQuery);
+
+      collectionSnapshot.forEach(async (doc) => {
+        await deleteDoc(doc.ref);
+      });
+    }
+
+    // Delete the user document
+    await deleteDoc(doc(db, 'Users', uid));
     
-    tipsSnapshot.forEach(async (tipDoc) => {
-      await deleteDoc(tipDoc.ref);
-    });
-    await deleteDoc(doc(db,'Users',uid))
+    // Delete the user authentication
     await deleteUser(user);
-    console.log("Account deleted successfully");
+
+    // Delete 'CHATROOM' data from Realtime Database
+    const database = getDatabase(app);
+    const dbRef = ref(database, 'CHATROOM');
+
+    get(dbRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        const chatroomsSnapshot = snapshot.val();
+        const chatrooms = Object.entries(chatroomsSnapshot);
+
+        chatrooms.map(async ([chatroomId, value]) => {
+          const uids = chatroomId.split('_');
+          // Check if the user's UID is part of the chatroom ID
+          if (uids.includes(uid)) {
+            const userChatRoomRef = ref(database, `CHATROOM/${chatroomId}`);
+            await remove(userChatRoomRef);
+          }
+        });
+      } else {
+        console.log('Error');
+      }
+    }).catch((error) => {
+      console.error(error);
+    })
+
+    // const chatroomsRef = ref(rtdb, 'CHATROOM');
+    // const chatroomsSnapshot = await get(chatroomsRef);
+
+    // if (chatroomsSnapshot.exists()) {
+    //   const chatrooms = chatroomsSnapshot.val();
+    //   await Promise.all(chatrooms.map(async (chatroomId) => {
+    //     const uids = chatroomId.split('_');
+    //     // Check if the user's UID is part of the chatroom ID
+    //     if (uids.includes(uid)) {
+    //       await remove(ref(rtdb, `CHATROOM/${chatroomId}`));
+    //     }
+    //   }))
+    // }
+
+    console.log("Account and related data deleted successfully");
   } catch (error) {
     console.error("Error deleting account:", error);
   }
 };
+
 
 const registerAcc = async (email, password, photoURL) => {
   try {
