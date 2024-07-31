@@ -7,5 +7,5 @@ router.post("/addTrainingClassBooking", trainingClassBookingController.addTraini
 router.get("/getAllTrainingClassBookingsByUID/:uid", trainingClassBookingController.getAllTrainingClassBookingsByUID);
 router.delete("/deleteTrainingClassBooking/:id", trainingClassBookingController.deleteTrainingClassBooking);
 router.get("/getAllBookingsById/:id", trainingClassBookingController.getAllBookingsById);
-
+router.get("/getBookingById/:id", trainingClassBookingController.getBookingById);
 module.exports = router;

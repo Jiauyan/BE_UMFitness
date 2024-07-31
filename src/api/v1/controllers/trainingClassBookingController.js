@@ -53,9 +53,20 @@ const getAllBookingsById= async (req, res) => {
   }
 };
 
+const getBookingById= async (req, res) => {
+  try {
+    const { id } = req.params;
+    const findOneBooking = await trainingClassBookingService.getBookingById(id);
+    return res.status(200).json(findOneBooking);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
 module.exports = {
   addTrainingClassBooking,
   getAllTrainingClassBookingsByUID,
   deleteTrainingClassBooking,
-  getAllBookingsById
+  getAllBookingsById,
+  getBookingById
 };
