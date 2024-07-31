@@ -149,17 +149,25 @@ const loginAcc = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
+    const uid = user.uid;
 
     // Get the user document from Firestore
     const userDocRef = doc(db, "Users", user.uid);
     const userDocSnapshot = await getDoc(userDocRef);
 
+    // get consent form
+    const consentFormRef = collection(db, 'ConsentForm');
+    const q = query(consentFormRef, where('uid', '==', uid));
+    const querySnapshot = await getDocs(q);
+  
+    
     // Check if the document exists and retrieve the role
-    if (userDocSnapshot.exists()) {
+    if (userDocSnapshot.exists() || querySnapshot.exists()) {
       const userData = userDocSnapshot.data();
       const userRole = userData.role;  
+      const consentForm = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-      return { user, userRole, userData};
+      return { user, userRole, userData, consentForm};
     } else {
       throw new Error("User document does not exist.");
     }
