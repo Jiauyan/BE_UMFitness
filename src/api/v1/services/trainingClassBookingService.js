@@ -28,9 +28,9 @@ const getAllTrainingClassBookingsByUID = async (uid) => {
       const q = query(trainingClassBookingRef, where('uid', '==', uid));
       const querySnapshot = await getDocs(q);
   
-      const consentForm = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const trainingClassBooking = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   
-      return consentForm;
+      return trainingClassBooking;
     } catch (err) {
       throw new Error('Error fetching training class bookings');
     }
@@ -67,9 +67,21 @@ const getAllBookingsById = async (id) => {
     }
 }
 
+const getBookingById = async (id) => {
+    try {
+      const bookingSnap = await getDoc(doc(db,'TrainingClassBooking',id));
+      const booking = {id: bookingSnap.id, ...bookingSnap.data()};
+      return booking;
+    } catch (error) {
+      console.error('Error fetching:', error);
+      throw error;
+    }
+}
+
 module.exports = {
     addTrainingClassBooking,
     getAllTrainingClassBookingsByUID,
     deleteTrainingClassBooking,
-    getAllBookingsById
+    getAllBookingsById,
+    getBookingById
 };
