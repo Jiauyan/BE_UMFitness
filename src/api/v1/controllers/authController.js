@@ -51,6 +51,9 @@ const registerAccountHandler = async (req, res, next) => {
             photoURL
         };
 
+        console.log("current hydration in BE:");
+        console.log(parsedCurrentHydration);
+
         // Save additional details to Firestore
         await saveUserDetails(account.uid, userDetails);
 

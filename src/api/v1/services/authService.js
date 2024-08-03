@@ -45,7 +45,7 @@ const saveUserDetails = async (uid, userDetails) => {
     // Validate userDetails here if needed
     const requiredFields = ['email', 'username', 'role', 'name', 'age', 'gender', 'height', 'weight', 'fitnessLevel', 'favClass', 'fitnessGoal', 'currentHydration', 'phoneNumber', 'photoURL'];
     for (const field of requiredFields) {
-      if (!userDetails[field]) {
+      if (userDetails[field] === undefined || userDetails[field] === null) {
         throw new Error(`${field} is required`);
       }
     }

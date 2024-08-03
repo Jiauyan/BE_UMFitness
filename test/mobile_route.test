@@ -89,11 +89,7 @@ POST http://localhost:3000/steps/storeSteps
 }
 
 ###
-GET http://localhost:3000/steps/getStepCountByUid
-{
-    "uid": "qe2BxwOlrnhIZjTNcWm6wcjdCsP2"
-}
-
+GET http://localhost:3000/steps/getStepCountByUid/X5eTaR9I7CdUUCIYSaZnznhySm23
 
 -POST-
 ###
