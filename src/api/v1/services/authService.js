@@ -211,14 +211,19 @@ const loginAcc = async (email, password) => {
     const q = query(consentFormRef, where('uid', '==', uid));
     const querySnapshot = await getDocs(q);
   
+    // get steps
+    const stepsRef = collection(db, 'Steps');
+    const s = query(stepsRef, where('uid', '==', uid));
+    const querySteps = await getDocs(s);
     
     // Check if the document exists and retrieve the role
     if (userDocSnapshot.exists() || querySnapshot.exists()) {
       const userData = userDocSnapshot.data();
       const userRole = userData.role;  
       const consentForm = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const steps = querySteps.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-      return { user, userRole, userData, consentForm};
+      return { user, userRole, userData, consentForm, steps};
     } else {
       throw new Error("User document does not exist.");
     }
