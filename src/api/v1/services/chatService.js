@@ -6,7 +6,8 @@ const { ref, push, onValue, get, child , set} = require('firebase/database');
 const getAllUsersWithInfo = async () => {
   try {
     const usersRef = collection(db, 'Users');
-    const querySnapshot = await getDocs(usersRef);
+    const q = query(usersRef, where('role', '==', 'Student'));
+    const querySnapshot = await getDocs(q);
   
     const users = [];
     querySnapshot.forEach(doc => {
