@@ -192,7 +192,7 @@ const registerAcc = async (email, password, photoURL) => {
     return { uid: user.uid, email: user.email };  
   } catch (error) {
     console.error("Registration failed:", error);
-    throw new Error(error.message);  
+    throw error;  
   }
 };
 
@@ -202,6 +202,7 @@ const loginAcc = async (email, password) => {
     const user = userCredential.user;
     const uid = user.uid;
 
+    
     // Get the user document from Firestore
     const userDocRef = doc(db, "Users", user.uid);
     const userDocSnapshot = await getDoc(userDocRef);

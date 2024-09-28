@@ -3,14 +3,15 @@ const trainingClassBookingService = require("../services/trainingClassBookingSer
 // Add training class booking
 const addTrainingClassBooking = async (req, res) => {
     try {
-        const { uid, name, contactNum, slot, trainingClassID } = req.body;
-
+        const { uid, name, contactNum, slot, trainingClassID, status } = req.body;
+        console.log(status);
         const addNewTrainingClassBooking = await trainingClassBookingService.addTrainingClassBooking(
             uid,
             name,
             contactNum,
             slot,
-            trainingClassID
+            trainingClassID,
+            status
         );
   
         return res.status(200).json(addNewTrainingClassBooking);
@@ -63,10 +64,24 @@ const getBookingById= async (req, res) => {
   }
 };
 
+const updateBooking = async (req, res) => {
+  try {
+    console.log(req.body);
+    const updates = req.body;
+    const { id } = req.params;
+    const updateBooking = await trainingClassBookingService.updateBooking(id, updates);
+    return res.status(200).json(updateBooking);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+
 module.exports = {
   addTrainingClassBooking,
   getAllTrainingClassBookingsByUID,
   deleteTrainingClassBooking,
   getAllBookingsById,
-  getBookingById
+  getBookingById,
+  updateBooking
 };
