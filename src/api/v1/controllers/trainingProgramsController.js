@@ -119,6 +119,17 @@ const addTrainingProgram= async (req, res) => {
   }
   };
 
+  const getStudentBySlot= async (req, res) => {
+    try {
+      //const { id } = req.params;
+      const {id, slot} = req.body;
+      const findStudents = await trainingProgramsService.getStudentBySlot(id, slot);
+      return res.status(200).json(findStudents);
+    } catch (err) {
+      res.status(400).json({ message: err.message });
+    }
+  };
+
   module.exports = {
     getAllTrainingPrograms,
     getAllTrainingProgramsOfUser,
@@ -127,5 +138,6 @@ const addTrainingProgram= async (req, res) => {
     updateTrainingProgram,
     deleteTrainingProgram,
     uploadTrainingProgramImage,
-    getRecommendedTrainingPrograms
+    getRecommendedTrainingPrograms,
+    getStudentBySlot
   };

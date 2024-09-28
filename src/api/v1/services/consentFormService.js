@@ -25,15 +25,20 @@ const addConsentForm = async (uid, q1, q2, q2_details, q3, q3_details) => {
 // get consent form by UID
 const getConsentFormByUID = async (uid) => {
     try {
-      const consentFormRef = collection(db, 'ConsentForm');
-      const q = query(consentFormRef, where('uid', '==', uid));
-      const querySnapshot = await getDocs(q);
-  
-      const consentForm = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  
-      return consentForm;
+        const consentFormRef = collection(db, 'ConsentForm');
+        const q = query(consentFormRef, where('uid', '==', uid));
+        const querySnapshot = await getDocs(q);
+        
+        // Check if there are any documents and return the first one
+        if (!querySnapshot.empty) {
+            const doc = querySnapshot.docs[0];
+            return { id: doc.id, ...doc.data() };
+        }
+        
+        // Return null if no document is found
+        return null;
     } catch (err) {
-      throw new Error('Error fetching consent form');
+        throw new Error('Error fetching consent form');
     }
 };
 

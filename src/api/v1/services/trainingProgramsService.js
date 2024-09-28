@@ -89,12 +89,6 @@ const updateTrainingProgram = async (id, updates) => {
     // Prepare fields to update
     const fieldsToUpdate = { ...updates };
 
-    // Add downloadUrl to fieldsToUpdate if it's provided
-    // if (updates.downloadUrl) {
-    //   fieldsToUpdate.downloadUrl = updates.downloadUrl;
-    // }
-
-    // Update the document with the fields
     await updateDoc(trainingProgramRef, fieldsToUpdate);
 
     return { id, updates};
@@ -134,6 +128,66 @@ const uploadTrainingProgramImage = async (trainingProgramImage) => {
   }
 }
 
+const getStudentBySlot = async (id, slot) => {
+  try {
+    // Fetch the training program details first
+    const trainingProgramRef = doc(db, 'TrainingPrograms', id); // Assuming the collection is 'TrainingPrograms'
+    const trainingProgramSnap = await getDoc(trainingProgramRef);
+
+    let trainingProgramName = 'Unknown Program'; // Default value
+
+    if (trainingProgramSnap.exists()) {
+      trainingProgramName = trainingProgramSnap.data().title || 'Unknown Program'; // Fallback if no name
+    }
+
+    // Fetch students based on slot and classID
+    const bookingRef = collection(db, 'TrainingClassBooking');
+    const q = query(
+      bookingRef,
+      where('trainingClassID', '==', id),
+      where('slot', '==', slot)
+    );
+
+    const querySnapshot = await getDocs(q);
+    const students = await Promise.all(
+      querySnapshot.docs.map(async (docSnapshot) => {
+        const studentData = docSnapshot.data();
+
+        // Fetch user profile based on uid
+        const userProfileRef = doc(db, 'Users', studentData.uid);
+        const userProfileSnap = await getDoc(userProfileRef);
+
+        let receiverData = {
+          name: 'Unknown',
+          photoURL: '/default-avatar.png', // Set a default value here
+          uid: studentData.uid
+        };
+
+        if (userProfileSnap.exists()) {
+          receiverData.name = userProfileSnap.data().name || 'Unknown';
+          receiverData.photoURL = userProfileSnap.data().photoURL || '/default-avatar.png'; // Fallback if empty
+        }
+
+        return {
+          bookingID : docSnapshot.id,
+          name: studentData.name,
+          contactNum: studentData.contactNum,
+          slot: studentData.slot,
+          uid: studentData.uid,
+          photoURL: receiverData.photoURL,
+          trainingProgramName ,// Include training program name in the result
+          status : studentData.status
+        };
+      })
+    );
+
+    return students;
+  } catch (error) {
+    console.error('Error fetching:', error);
+    throw error;
+  }
+};
+
 module.exports = {
     getAllTrainingPrograms,
     getAllUserTrainingPrograms,
@@ -142,6 +196,7 @@ module.exports = {
     updateTrainingProgram,
     deleteTrainingProgram,
     uploadTrainingProgramImage,
-    getRecommendedTrainingPrograms
+    getRecommendedTrainingPrograms,
+    getStudentBySlot
   };
   

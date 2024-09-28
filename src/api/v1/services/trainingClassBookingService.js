@@ -1,20 +1,21 @@
 const {db} = require('../../../configs/firebaseDB');
-const { collection, getDocs, addDoc, doc, deleteDoc, setDoc, getDoc, query, where, orderBy } = require("firebase/firestore");
+const { collection, getDocs, addDoc, doc, deleteDoc, setDoc, getDoc, query, where, orderBy, updateDoc} = require("firebase/firestore");
 
 // add training class booking
-const addTrainingClassBooking = async (uid, name, contactNum, slot, trainingClassID) => {
+const addTrainingClassBooking = async (uid, name, contactNum, slot, trainingClassID, status) => {
     try {
         const addNewTrainingClassBooking = await addDoc(collection(db, 'TrainingClassBooking'), {
             uid,
             name,
             contactNum,
             slot,
-            trainingClassID
+            trainingClassID,
+            status
         });
 
         const trainingClassBookingID = addNewTrainingClassBooking.id;
 
-        return { uid, name, contactNum, slot, trainingClassID, trainingClassBookingID };
+        return { uid, name, contactNum, slot, trainingClassID, trainingClassBookingID, status};
     } catch (err) {
         console.log('Error creating new training class booking:', err);
         throw err;
@@ -78,10 +79,27 @@ const getBookingById = async (id) => {
     }
 }
 
+const updateBooking = async (id, updates) => {
+    try {
+      const bookingRef = doc(db, 'TrainingClassBooking', id); 
+  
+      // Prepare fields to update
+      const fieldsToUpdate = { ...updates };
+  
+      await updateDoc(bookingRef, fieldsToUpdate);
+  
+      return { id, updates};
+    } catch (error) {
+      console.error('Error fetching:', error);
+      throw error;
+    }
+  }
+
 module.exports = {
     addTrainingClassBooking,
     getAllTrainingClassBookingsByUID,
     deleteTrainingClassBooking,
     getAllBookingsById,
-    getBookingById
+    getBookingById,
+    updateBooking
 };

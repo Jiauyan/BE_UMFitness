@@ -8,4 +8,6 @@ router.get("/getAllTrainingClassBookingsByUID/:uid", trainingClassBookingControl
 router.delete("/deleteTrainingClassBooking/:id", trainingClassBookingController.deleteTrainingClassBooking);
 router.get("/getAllBookingsById/:id", trainingClassBookingController.getAllBookingsById);
 router.get("/getBookingById/:id", trainingClassBookingController.getBookingById);
+router.post("/updateBooking/:id", trainingClassBookingController.updateBooking);
+
 module.exports = router;
