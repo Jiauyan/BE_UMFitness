@@ -35,9 +35,9 @@ const socketHandlers = (io) => {
     });
 
     // Get chatrooms by sender UID
-    socket.on('getChatroomsBySender', async (senderUID) => {
+    socket.on('getChatroomsByUser', async (userUID) => {
       try {
-        const chatRooms = await chatService.getChatroomsBySender(senderUID);
+        const chatRooms = await chatService.getChatroomsByUser(userUID);
         socket.emit('chatrooms', chatRooms);
       } catch (error) {
         socket.emit('error', 'Failed to fetch chatrooms');
@@ -77,10 +77,10 @@ const getAllUsers = async (req, res) => {
     }
 }
 
-const getAllUsersWithoutMessagesFromSender = async (req, res) => {
+const getAllUsersWithoutMessagesFromOrToSender = async (req, res) => {
   try {
     const senderUID = req.params.uid;
-    const users = await chatService.getAllUsersWithoutMessagesFromSender(senderUID); // Call user service function
+    const users = await chatService.getAllUsersWithoutMessagesFromOrToSender(senderUID); // Call user service function
     res.status(200).json(users); // Send JSON response with all users
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -109,10 +109,10 @@ const getMessages = async (req, res) => {
   }
 };
 
-const getChatroomsBySender = async (req, res) => {
+const getChatroomsByUser = async (req, res) => {
   try {
-    const  senderUID  = req.params;
-    const chatRooms = await chatService.getChatroomsBySender(senderUID);
+    const  userUID  = req.params;
+    const chatRooms = await chatService.getChatroomsByUser(userUID);
     res.status(200).json(chatRooms);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -123,8 +123,8 @@ module.exports = {
     getAllUsers,
     sendMessage,
     getMessages,
-    getChatroomsBySender,
+    getChatroomsByUser,
     socketHandlers,
-    getAllUsersWithoutMessagesFromSender,
-    createChatroom
+    createChatroom,
+    getAllUsersWithoutMessagesFromOrToSender
 };

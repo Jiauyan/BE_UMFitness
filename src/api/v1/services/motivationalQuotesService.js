@@ -40,9 +40,11 @@ const getMotivationalQuoteById = async (id) => {
 
 const addMotivationalQuote = async (uid, motivationalQuote) => {
   try {
+    const timestamp = new Date().toISOString();
     const addMotivationalQuote = await addDoc(collection(db, 'MotivationalQuotes'), {
       uid,
       motivationalQuote,
+      createdAt: timestamp
     });
     
     return { id: addMotivationalQuote.id, motivationalQuote, uid };
@@ -55,9 +57,11 @@ const addMotivationalQuote = async (uid, motivationalQuote) => {
 
 const updateMotivationalQuote = async (id, uid, motivationalQuote) => {
   try {
+    const timestamp = new Date().toISOString();
     const updateMotivationalQuote = await setDoc(doc(db,'MotivationalQuotes',id),{
       uid,
-      motivationalQuote
+      motivationalQuote,
+      createdAt: timestamp 
     })
     return { id, motivationalQuote, uid };
   } catch (error) {

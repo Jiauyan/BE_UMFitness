@@ -61,7 +61,6 @@ const createChatroom = async (senderUID, receiverUID) => {
 
 const getAllUsers = async (senderUID) => {
   try {
-    //console.log(senderUID);
     const usersRef = collection(db, 'Users');
     const q = query(usersRef, where('role', '==', 'Student'));
     const querySnapshot = await getDocs(q);
@@ -79,15 +78,13 @@ const getAllUsers = async (senderUID) => {
       }
     });
   
-    console.log(users);
     return users;
   } catch (error) {
     throw new Error('Error getting all users with info: ' + error.message);
   }
 };
 
-
-const getUsersWithMessagesFromSender = async (senderUID) => {
+const getUsersWithMessagesFromOrToSender = async (senderUID) => {
   const chatroomsRef = ref(database, 'CHATROOM');
   const usersWithMessages = new Set();
 
@@ -101,8 +98,12 @@ const getUsersWithMessagesFromSender = async (senderUID) => {
         if (messagesSnapshot.exists()) {
           const messages = messagesSnapshot.val();
           for (let messageId in messages) {
-            if (messages[messageId].senderUID === senderUID) {
-              usersWithMessages.add(messages[messageId].receiverUID);
+            const message = messages[messageId];
+            
+            // Add both sender and receiver to the set if either matches senderUID
+            if (message.senderUID === senderUID || message.receiverUID === senderUID) {
+              usersWithMessages.add(message.senderUID);
+              usersWithMessages.add(message.receiverUID);
             }
           }
         }
@@ -115,12 +116,12 @@ const getUsersWithMessagesFromSender = async (senderUID) => {
   }
 };
 
-const getAllUsersWithoutMessagesFromSender = async (senderUID) => {
+const getAllUsersWithoutMessagesFromOrToSender = async (senderUID) => {
   try {
     const allStudents = await getAllUsers(senderUID);  
-    console.log(allStudents);
-    const usersWithMessages = await getUsersWithMessagesFromSender(senderUID);
+    const usersWithMessages = await getUsersWithMessagesFromOrToSender(senderUID);
 
+    // Filter students who are not in the usersWithMessages set
     const studentsWithoutMessages = allStudents.filter(student => !usersWithMessages.has(student.uid));
     return studentsWithoutMessages;
   } catch (error) {
@@ -177,13 +178,13 @@ const sendMessage = async (chatroomId, messageData) => {
   return newMessage;
 };
 
-const getChatroomsBySender = async (senderUID) => {
+const getChatroomsByUser = async (userUID) => {
   const chatroomsRef = ref(database, 'CHATROOM');
   try {
     const snapshot = await get(chatroomsRef);
     if (snapshot.exists()) {
       const chatrooms = snapshot.val();
-      const senderChatrooms = [];
+      const userChatrooms = [];
 
       for (let chatroomId in chatrooms) {
         const messagesRef = child(ref(database), `CHATROOM/${chatroomId}/messages`);
@@ -192,41 +193,51 @@ const getChatroomsBySender = async (senderUID) => {
         if (messagesSnapshot.exists()) {
           const messages = messagesSnapshot.val();
           
+          // Flag to check if user is in this chatroom
+          let isUserInChatroom = false;
+          let otherUID = null;
+
+          // Check each message in the chatroom to see if userUID is either sender or receiver
           for (let messageId in messages) {
-            if (messages[messageId].senderUID === senderUID.uid) {
-              const receiverUID = messages[messageId].receiverUID;
-
-              // Fetch receiver's details
-              const receiverRef = doc(db, "Users", receiverUID);
-              const receiverSnapshot = await getDoc(receiverRef);
-
-              let receiverData = {
-                username: 'Unknown',
-                photoURL: '',
-                uid:''
-              };
-
-              if (receiverSnapshot.exists()) {
-                receiverData = {
-                  username: receiverSnapshot.data().username,
-                  photoURL: receiverSnapshot.data().photoURL,
-                  uid: receiverUID
-                };
-              }
-
-              senderChatrooms.push({
-                chatroomId: chatroomId,
-                chatroomDetails: chatrooms[chatroomId],  // Assuming chatrooms[chatroomId] holds the chatroom details
-                receiverDetails: receiverData  // Add receiver's details
-              });
-
-              break;  // Stop checking further once we find the sender in this chatroom
+            const message = messages[messageId];
+            
+            if (message.senderUID === userUID.uid || message.receiverUID === userUID.uid) {
+              isUserInChatroom = true;
+              otherUID = message.senderUID === userUID.uid ? message.receiverUID : message.senderUID;
+              break;  // Stop checking further once we find the user in this chatroom
             }
+          }
+
+          // If user is found in this chatroom, add it to the list
+          if (isUserInChatroom) {
+            // Fetch the other user's details
+            const otherUserRef = doc(db, "Users", otherUID);
+            const otherUserSnapshot = await getDoc(otherUserRef);
+
+            let otherUserData = {
+              username: 'Unknown',
+              photoURL: '',
+              uid: ''
+            };
+
+            if (otherUserSnapshot.exists()) {
+              otherUserData = {
+                username: otherUserSnapshot.data().username,
+                photoURL: otherUserSnapshot.data().photoURL,
+                uid: otherUID
+              };
+            }
+
+            userChatrooms.push({
+              chatroomId: chatroomId,
+              chatroomDetails: chatrooms[chatroomId],  // Assuming chatrooms[chatroomId] holds the chatroom details
+              otherUserDetails: otherUserData  // Add the other user's details
+            });
           }
         }
       }
-      
-      return senderChatrooms;
+
+      return userChatrooms;
     } else {
       console.log("No chatrooms found.");
       return [];
@@ -242,7 +253,8 @@ module.exports = {
   getAllUsers,
   getMessages,
   sendMessage,
-  getChatroomsBySender,
-  getAllUsersWithoutMessagesFromSender,
+  getChatroomsByUser,
   createChatroom,
+  getUsersWithMessagesFromOrToSender,
+  getAllUsersWithoutMessagesFromOrToSender
 };
