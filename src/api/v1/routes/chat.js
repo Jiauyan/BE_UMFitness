@@ -4,11 +4,11 @@ const router = express.Router();
 const chatController = require("../controllers/chatController");
 
 router.get("/getAllUsers", chatController.getAllUsers);
-router.get("/getChatroomsBySender/:uid", chatController.getChatroomsBySender);
+router.get("/getChatroomsByuser/:uid", chatController.getChatroomsByUser);
 router.post("/sendMessage/:chatroomId", chatController.sendMessage);
 router.get("/getMessages/:chatroomId", chatController.getMessages);
 router.get("/getMessages/:chatroomId", chatController.getMessages);
-router.get("/getAllUsersWithoutMessagesFromSender/:uid", chatController.getAllUsersWithoutMessagesFromSender);
 router.post("/createChatroom", chatController.createChatroom);
+router.get("/getAllUsersWithoutMessagesFromOrToSender/:uid", chatController.getAllUsersWithoutMessagesFromOrToSender);
 
 module.exports = router;
