@@ -15,7 +15,7 @@ const storeStepsCount = async (req, res) => {
 
 const getStepsCount = async (req, res) => {
     try {
-        const { uid } = req.params;
+        const { uid } = req.body;
         // Assuming you have a function in stepsService to fetch step counts by uid
         const steps = await stepsService.getStepsByUid(uid);
         return res.status(200).json({ steps });
