@@ -24,12 +24,12 @@ const updateProfileHandler = async (req, res) => {
 const updateWaterHandler = async (req, res) => {
     try {
       const { uid } = req.params;
-      const { currentHydration } = req.body;
+      const { todayWater } = req.body;
 
        // Log the received data for debugging
-      console.log('Received data for water update:', { uid, currentHydration });
+      console.log('Received data for water update:', { uid, todayWater });
 
-      const updateWater = await profileService.updateWater(uid, currentHydration);
+      const updateWater = await profileService.updateWater(uid, todayWater);
 
       return res.status(201).json(updateWater);
     } catch (err) {
