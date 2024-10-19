@@ -28,21 +28,54 @@ const updateProfile = async (uid, updates) => {
   }
 }
 
-const updateWater = async (uid, currentHydration) => {
+const updateWater = async (uid, todayWater) => {
   try {
+
+    const date = new Date();
+    const day = date.toISOString().split('T')[0];  // e.g. "2024-10-11"
+    const year = date.getFullYear();
+    const month = `${year}-${date.getMonth() + 1}`;  // e.g. "2024-10"
+
     const userRef = doc(db, 'Users', uid);
 
-    // Create an object with only the defined field
-    const currentHydrationUpdate = {};
-    if (currentHydration !== undefined) {
-      currentHydrationUpdate.currentHydration = currentHydration;
-    }
+    // Fetch existing hydration data
+    const userSnap = await getDoc(userRef);
+    const currentWaterData = userSnap.exists() ? userSnap.data() : {};
 
-    // Log the fields to be updated
-    console.log('Updating fields:', currentHydrationUpdate);
+    // Merge existing hydration data to avoid losing previous records
+    const existingHydrationByDay = currentWaterData.waterByDay || {};
+    const existingHydrationByMonth = currentWaterData.waterByMonth || {};
 
-    // Update the document with the filtered fields
-    await updateDoc(userRef, currentHydrationUpdate);
+     // Get the last updated date
+     const lastUpdatedDate = currentWaterData.lastUpdated ? new Date(currentWaterData.lastUpdated.toDate()) : null;
+     const isNewDay = !lastUpdatedDate || lastUpdatedDate.toISOString().split('T')[0] !== day;
+ 
+     // If it's a new day, reset today's water intake
+     const previousDayWater = existingHydrationByDay[day] || 0;
+     const newTodayWater = isNewDay ? todayWater : todayWater; // Use the passed-in total for today
+
+    // Calculate the difference in hydration for today
+    const hydrationDifference = newTodayWater - previousDayWater;
+
+     const updatedHydrationByDay = {
+      ...existingHydrationByDay,
+      [day]: newTodayWater,
+    };
+    const updatedHydrationByMonth = {
+      ...existingHydrationByMonth,
+      [month]: (existingHydrationByMonth[month] || 0) + hydrationDifference,
+    };
+ 
+    const updatedWaterData = {
+      waterByDay: updatedHydrationByDay,
+      waterByMonth: updatedHydrationByMonth,
+      lastUpdated: date,
+      todayWater: newTodayWater,
+      monthlyWater: (existingHydrationByMonth[month] || 0) + hydrationDifference,
+    };
+
+    console.log('Updating current hydration:', updatedWaterData);
+    await updateDoc(userRef, updatedWaterData);
 
     return { message: 'Current Hydration updated successfully' };
   } catch (error) {

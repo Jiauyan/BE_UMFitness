@@ -22,7 +22,7 @@ const { storage } = require('../../../configs/firebaseDB');
 
 const registerAccountHandler = async (req, res, next) => {
     try {
-        const { email, password, username, role, name, age, gender, height, weight, fitnessLevel, favClass, fitnessGoal, currentHydration, phoneNumber, photoURL } = req.body;
+        const { email, password, username, role, name, age, gender, height, weight, fitnessLevel, favClass, fitnessGoal, todayWater, phoneNumber, photoURL } = req.body;
 
         // Register account with Firebase Authentication
         const account = await registerAccount(email, password);
@@ -30,7 +30,7 @@ const registerAccountHandler = async (req, res, next) => {
         // Parse height and weight as integers
         const parsedHeight = parseInt(height, 10);
         const parsedWeight = parseInt(weight, 10);
-        const parsedCurrentHydration = parseInt(currentHydration, 10);
+        const parsedCurrentHydration = parseInt(todayWater, 10);
         const parsedAge = parseInt(age, 10);
 
          // Prepare user details
@@ -46,9 +46,13 @@ const registerAccountHandler = async (req, res, next) => {
             fitnessLevel,
             favClass: Array.isArray(favClass) ? favClass : favClass.split(',').map(item => item.trim()),
             fitnessGoal,
-            currentHydration: parsedCurrentHydration,
             phoneNumber,
-            photoURL
+            photoURL,
+            todayWater: parsedCurrentHydration,
+            monthlyWater: 0,
+            waterByDay: {},
+            waterByMonth: {},
+            lastUpdated: new Date(),
         };
 
         console.log("current hydration in BE:");
