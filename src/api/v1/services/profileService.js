@@ -125,9 +125,25 @@ const updateProfileInfo = async (uid, updates) => {
   }
 }
 
+const updateCurrentMotivationalQuote = async (uid, currentMotivationalQuote) => {
+  try {
+    const userRef = doc(db, 'Users', uid);
+
+    // Pass the new value as an object to updateDoc
+    const updateCurrentMotivationalQuote= await updateDoc(userRef, { currentMotivationalQuote: currentMotivationalQuote });
+
+    return { currentMotivationalQuote };
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    throw error;
+  }
+};
+
+
 module.exports = {
     updateProfile,
     updateWater,
     uploadProfileImage,
-    updateProfileInfo
+    updateProfileInfo,
+    updateCurrentMotivationalQuote
 }
