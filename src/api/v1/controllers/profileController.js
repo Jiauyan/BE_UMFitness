@@ -7,7 +7,7 @@ const fs = require('fs');
 const updateProfileHandler = async (req, res) => {
     try {
       const { uid } = req.params;
-      const { username, gender, age, height, weight, photoURL } = req.body;
+      const { username, gender, age, height, weight, photoURL, currentMotivationalQuote } = req.body;
       const updates = req.body;
 
        // Log the received data for debugging
