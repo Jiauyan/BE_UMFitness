@@ -63,9 +63,26 @@ const uploadProfileImage = async (req, res) => {
   }
 };
 
+const updateCurrentMotivationalQuote = async (req, res) => {
+  try {
+    const { uid } = req.params;
+    const { currentMotivationalQuote } = req.body;
+    //const update = req.body;
+
+     // Log the received data for debugging
+    // console.log('Received data for update:', currentMotivationalQuote);
+     const updateCurrentMotivationalQuote = await profileService.updateCurrentMotivationalQuote(uid, currentMotivationalQuote);
+
+    return res.status(201).json(currentMotivationalQuote);
+  } catch (err) {
+    console.error('Error in updateCurrentMotivationalQuote:', err);
+    res.status(500).json({ message: err.message });
+  }
+};
 
 module.exports = {
     updateProfileHandler,
     updateWaterHandler,
     uploadProfileImage,
+    updateCurrentMotivationalQuote
 }

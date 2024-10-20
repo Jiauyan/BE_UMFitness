@@ -19,5 +19,6 @@ const upload = multer({ storage: storage });
 router.patch("/updateProfile/:uid", profileController.updateProfileHandler);
 router.patch("/updateWater/:uid", profileController.updateWaterHandler);
 router.post("/uploadProfileImage/:uid", upload.single('profileImage'), profileController.uploadProfileImage);
+router.patch("/updateCurrentMotivationalQuote/:uid", profileController.updateCurrentMotivationalQuote);
 
 module.exports = router;

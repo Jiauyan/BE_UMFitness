@@ -179,6 +179,7 @@ const registerAcc = async (email, password, photoURL) => {
   try {
     const currentHydration = 0;
     const phoneNumber = "0";
+    const currentMotivationalQuote = " ";
     const newUser = await createUserWithEmailAndPassword(auth, email, password);
     const user = newUser.user;
 
@@ -186,7 +187,8 @@ const registerAcc = async (email, password, photoURL) => {
       email: user.email,
       photoURL,
       currentHydration,
-      phoneNumber
+      phoneNumber,
+      currentMotivationalQuote
     });
     
     return { uid: user.uid, email: user.email };  
