@@ -22,7 +22,7 @@ const { storage } = require('../../../configs/firebaseDB');
 
 const registerAccountHandler = async (req, res, next) => {
     try {
-        const { email, password, username, role, name, age, gender, height, weight, fitnessLevel, favClass, fitnessGoal, todayWater, phoneNumber, photoURL } = req.body;
+        const { email, password, username, role, name, age, gender, height, weight, fitnessLevel, favClass, fitnessGoal, todayWater, phoneNumber, photoURL, currentMotivationalQuote } = req.body;
 
         // Register account with Firebase Authentication
         const account = await registerAccount(email, password);
@@ -53,6 +53,7 @@ const registerAccountHandler = async (req, res, next) => {
             waterByDay: {},
             waterByMonth: {},
             lastUpdated: new Date(),
+            currentMotivationalQuote: currentMotivationalQuote || ""
         };
 
         console.log("current hydration in BE:");
