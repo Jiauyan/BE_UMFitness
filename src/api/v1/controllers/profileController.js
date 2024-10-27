@@ -38,6 +38,23 @@ const updateWaterHandler = async (req, res) => {
     }
 };
 
+const updateSleepHandler = async (req, res) => {
+  try {
+    const { uid } = req.params;
+    const { startTime, endTime, duration } = req.body;
+
+     // Log the received data for debugging
+    console.log('Received data for sleep update:', { uid, startTime, endTime, duration });
+
+    const updateWater = await profileService.updateSleep(uid, startTime, endTime, duration);
+
+    return res.status(201).json(updateWater);
+  } catch (err) {
+    console.error('Error in updateSleepHandler:', err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
 const uploadProfileImage = async (req, res) => {
   try {
     const { uid } = req.params;
@@ -83,6 +100,7 @@ const updateCurrentMotivationalQuote = async (req, res) => {
 module.exports = {
     updateProfileHandler,
     updateWaterHandler,
+    updateSleepHandler,
     uploadProfileImage,
     updateCurrentMotivationalQuote
 }
