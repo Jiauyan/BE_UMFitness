@@ -49,7 +49,21 @@ const getTrainingProgramById= async (req, res) => {
 
 const addTrainingProgram= async (req, res) => {
     try {
-      const {uid,title,fitnessLevel, fitnessGoal, typeOfExercise, desc, slots} = req.body;
+      const {
+        uid,
+        title,
+        typeOfTrainingProgram,
+        capacity,
+        feeType,
+        feeAmount,
+        venueType,
+        venue,
+        fitnessLevel, 
+        fitnessGoal, 
+        typeOfExercise, 
+        desc, 
+        slots
+      } = req.body;
       const trainingProgramImage = req.file;
       const trainingProgramImageRef = ref(storage, `trainingProgramImages/${trainingProgramImage.filename}`);
       const uploadResult = await trainingProgramsService.uploadTrainingProgramImage(trainingProgramImage);
@@ -61,6 +75,12 @@ const addTrainingProgram= async (req, res) => {
         uid,
         title,
         downloadUrl,
+        typeOfTrainingProgram,
+        capacity,
+        feeType,
+        feeAmount,
+        venueType,
+        venue,
         fitnessLevel, 
         fitnessGoal, 
         typeOfExercise,
@@ -76,9 +96,10 @@ const addTrainingProgram= async (req, res) => {
   const updateTrainingProgram= async (req, res) => {
     try {
       const { id } = req.params;
+      console.log(req.body);
       const updates = req.body;
       let downloadUrl;
-  
+      
       if (req.file) {
         const trainingProgramImage = req.file;
         const trainingProgramImageRef = ref(storage, `trainingProgramImages/${trainingProgramImage.filename}`);
@@ -130,6 +151,16 @@ const addTrainingProgram= async (req, res) => {
     }
   };
 
+  const deleteSlot = async (req, res) => {
+    try {
+      const {id, slotToDelete} = req.body;
+      const deleteSlot = await trainingProgramsService.deleteSlot(id, slotToDelete);
+      return res.status(200).json(deleteSlot);
+    } catch (err) {
+      res.status(400).json({ message: err.message });
+    }
+  };
+
   module.exports = {
     getAllTrainingPrograms,
     getAllTrainingProgramsOfUser,
@@ -139,5 +170,6 @@ const addTrainingProgram= async (req, res) => {
     deleteTrainingProgram,
     uploadTrainingProgramImage,
     getRecommendedTrainingPrograms,
-    getStudentBySlot
+    getStudentBySlot,
+    deleteSlot
   };

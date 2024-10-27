@@ -43,14 +43,12 @@ const addTip= async (req, res) => {
       const uploadResult = await tipsService.uploadTipImage(tipImage);
       const downloadUrl = await getDownloadURL(tipImageRef);
       
-      const createdAt = format(new Date(), 'MMMM d, yyyy')
 
       const addNewTip= await tipsService.addTip(
         uid,
         title,
         desc,
         downloadUrl,
-        createdAt,
         shortDesc, 
         username, 
         userImageUrl

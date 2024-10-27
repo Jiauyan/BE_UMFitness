@@ -24,4 +24,6 @@ router.patch("/updateTrainingProgram/:id", upload.single('trainingProgramImage')
 //router.post("/uploadTrainingProgramImage", upload.single('trainingProgramImage'), trainingProgramsController.uploadTrainingProgramImage);
 router.post("/getRecommendedTrainingPrograms", trainingProgramsController.getRecommendedTrainingPrograms);
 router.post("/getStudentBySlot", trainingProgramsController.getStudentBySlot);
+router.post("/deleteSlot", trainingProgramsController.deleteSlot);
+
 module.exports = router;
