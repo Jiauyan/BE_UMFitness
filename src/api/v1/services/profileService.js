@@ -1,5 +1,5 @@
 const { db, storage } = require('../../../configs/firebaseDB');
-const { collection, getDocs, addDoc, doc, deleteDoc, setDoc, getDoc, query, where, updateDoc } = require("firebase/firestore");
+const { collection, getDocs, addDoc, doc, deleteDoc, setDoc, getDoc, query, where, updateDoc, arrayUnion  } = require("firebase/firestore");
 const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
 const { v4 } = require("uuid");
 const fs = require('fs');
@@ -84,6 +84,96 @@ const updateWater = async (uid, todayWater) => {
   }
 }
 
+const updateSleep = async (uid, startTime, endTime, duration) => {
+  try {
+
+    if (!uid || !startTime || !endTime || !duration) {
+      throw new Error('Invalid input: one or more required fields are missing');
+    }
+
+    const userRef = doc(db, 'Users', uid);
+
+    // Fetch existing sleep data
+    const userSnap = await getDoc(userRef);
+    const currentSleepData = userSnap.exists() ? userSnap.data() : {};
+
+    // Merge existing sleep data to avoid losing previous records
+    const existingSleepByDay = currentSleepData.sleepByDay || {};
+    const existingSleepByMonth = currentSleepData.sleepByMonth || {};
+
+    // Use the passed-in date directly
+    const date = new Date();
+    date.setDate(date.getDate() - 1);
+    const day = date.toISOString().split('T')[0];  // e.g. "2024-10-11"
+    const year = new Date(date).getFullYear();
+    const month = `${year}-${date.getMonth() + 1}`;  // e.g. "2024-10"
+
+    console.log('Yesterday\'s date:', day);
+
+    // Check if the user has already submitted sleep data for today
+    if (existingSleepByDay[day]) {
+      return { 
+        message: 'You can only update your sleep record once per day. Please try again tomorrow.',
+        data: currentSleepData
+      };
+    }
+
+    // Update sleep records
+    const updatedSleepByDay = {
+      ...existingSleepByDay,
+      [day]: {
+        startTime: startTime,
+        endTime: endTime,
+        duration: duration,
+        createdAt: new Date(), // Store the creation timestamp
+      },
+    };
+
+    function parseDuration(durationString) {
+      // Split the duration string into hours and minutes
+      const [hours, minutes] = durationString
+        .match(/(\d+) hours (\d+) minutes/)
+        .slice(1)
+        .map(Number);
+      // Convert the total time to minutes
+      return hours * 60 + minutes;
+    }
+    
+    function formatDuration(totalMinutes) {
+      // Calculate hours and remaining minutes
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      // Format the result as "X hours Y minutes"
+      return `${hours} hours ${minutes} minutes`;
+    }
+    
+    // Calculate total sleep hours for the month
+    const existingSleepDuration = existingSleepByMonth[month] || "0 hours 0 minutes";
+    const totalMinutes = parseDuration(existingSleepDuration) + parseDuration(duration);
+    
+    // Update the sleep data for the month
+    const updatedSleepData = {
+      sleepByDay: updatedSleepByDay,
+      sleepByMonth: {
+        ...existingSleepByMonth,
+        [month]: formatDuration(totalMinutes),
+      },
+      lastUpdated: new Date(),
+    };
+
+    console.log('Updating sleep records:', updatedSleepData);
+    await updateDoc(userRef, updatedSleepData);
+
+    return { 
+      message: 'Sleep records updated successfully',
+      data: updatedSleepData
+    };
+  } catch (error) {
+    console.error('Error updating sleep records:', error);
+    throw error;
+  }
+}
+
 const uploadProfileImage = async (profileImage) => {
   try {
     const profileImageRef = ref(storage, `profileImages/${profileImage.filename}`);
@@ -143,6 +233,7 @@ const updateCurrentMotivationalQuote = async (uid, currentMotivationalQuote) => 
 module.exports = {
     updateProfile,
     updateWater,
+    updateSleep,
     uploadProfileImage,
     updateProfileInfo,
     updateCurrentMotivationalQuote
