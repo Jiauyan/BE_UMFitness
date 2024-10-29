@@ -51,6 +51,7 @@ const addTrainingProgram= async (req, res) => {
     try {
       const {
         uid,
+        contactNum,
         title,
         typeOfTrainingProgram,
         capacity,
@@ -73,6 +74,7 @@ const addTrainingProgram= async (req, res) => {
 
       const addNewTrainingProgram= await trainingProgramsService.addTrainingProgram(
         uid,
+        contactNum,
         title,
         downloadUrl,
         typeOfTrainingProgram,

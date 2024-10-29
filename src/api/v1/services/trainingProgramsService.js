@@ -63,6 +63,7 @@ const getTrainingProgramById = async (id) => {
 
 const addTrainingProgram = async (
   uid,
+  contactNum,
   title, 
   downloadUrl,
   typeOfTrainingProgram,
@@ -91,6 +92,7 @@ const addTrainingProgram = async (
 
     const addTrainingProgram = await addDoc(collection(db, 'TrainingPrograms'), {
       uid,
+      contactNum,
       title,
       createdAt: timestamp,
       downloadUrl,

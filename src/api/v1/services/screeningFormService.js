@@ -9,7 +9,7 @@ const upsertScreeningForm = async (uid, q1, q2, q3, q4, q5, q6, q7) => {
   
       // Set the data (update if exists, create if not) with merge option
       await setDoc(docRef, {
-        q1, q2, q3, q4, q5, q6, q7
+        uid, q1, q2, q3, q4, q5, q6, q7
       }, { merge: true });
   
       return { uid, q1, q2, q3, q4, q5, q6, q7 };
