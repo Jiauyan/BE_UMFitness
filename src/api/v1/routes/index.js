@@ -12,7 +12,7 @@ const motivationalQuotesRouter = require("./motivationalQuotes");
 const fitnessPlanRouter = require("./fitnessPlan");
 const fitnessActivityRouter = require("./fitnessActivity");
 const trainingProgramsRouter = require("./trainingPrograms");
-const consentFormRouter = require("./consentForm");
+const screeningFormRouter = require("./screeningForm");
 const trainingClassBookingRouter = require("./trainingClassBooking");
 
 router.use("/auth", authRouter);
@@ -26,7 +26,7 @@ router.use("/motivationalQuotes", motivationalQuotesRouter);
 router.use("/fitnessPlan", fitnessPlanRouter);
 router.use("/fitnessActivity", fitnessActivityRouter);
 router.use("/trainingPrograms", trainingProgramsRouter);
-router.use("/consentForm", consentFormRouter);
+router.use("/screeningForm", screeningFormRouter);
 router.use("/trainingClassBooking", trainingClassBookingRouter);
 
 module.exports = router;
