@@ -14,6 +14,7 @@ const fitnessActivityRouter = require("./fitnessActivity");
 const trainingProgramsRouter = require("./trainingPrograms");
 const screeningFormRouter = require("./screeningForm");
 const trainingClassBookingRouter = require("./trainingClassBooking");
+const consentFormRouter = require("./consentForm");
 
 router.use("/auth", authRouter);
 router.use("/goals", goalsRouter);
@@ -28,5 +29,6 @@ router.use("/fitnessActivity", fitnessActivityRouter);
 router.use("/trainingPrograms", trainingProgramsRouter);
 router.use("/screeningForm", screeningFormRouter);
 router.use("/trainingClassBooking", trainingClassBookingRouter);
+router.use("/consentForm", consentFormRouter);
 
 module.exports = router;
