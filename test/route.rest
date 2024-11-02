@@ -209,3 +209,35 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/trainingPrograms/getAllTrainingPrograms
+
+###
+
+GET http://localhost:3000/steps/getStepCountByUid/cNfMo2E7J7WSyYGJs3KSioKy2D73
+
+###
+GET http://localhost:3000/posts/getAllPostsByUid/qC2HlKMvwSbsYHfBcKsQJquXuqn2
+
+###
+POST http://localhost:3000/trainingPrograms/getStudentBySlot
+Content-Type: application/json
+
+{
+  "id": "HXpZXdrYzRGjxfhkrtd0",
+  "slot": "7/26/2024 - 10:00 AM to 11:00 AM"
+}
+
+###
+POST http://localhost:3000/steps/getStepsByDay/1PSPsIfGIfO3avhNK4lO6K5ndbj1
+Content-Type: application/json
+
+{
+  "date": "2024-10-01T13:55:26.462Z"
+}
+
+###
+POST http://localhost:3000/steps/getStepsByWeek/1PSPsIfGIfO3avhNK4lO6K5ndbj1
+Content-Type: application/json
+
+{
+  "date": "2024-10-01T16:00:00.000Z"
+}

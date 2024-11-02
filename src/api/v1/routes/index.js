@@ -16,6 +16,7 @@ const screeningFormRouter = require("./screeningForm");
 const trainingClassBookingRouter = require("./trainingClassBooking");
 const consentFormRouter = require("./consentForm");
 const paymentRouter = require("./payment");
+const checkoutRouter = require("./checkout");
 
 router.use("/auth", authRouter);
 router.use("/goals", goalsRouter);
@@ -32,5 +33,6 @@ router.use("/screeningForm", screeningFormRouter);
 router.use("/trainingClassBooking", trainingClassBookingRouter);
 router.use("/consentForm", consentFormRouter);
 router.use("/payment", paymentRouter);
+router.use("/checkout", checkoutRouter);
 
 module.exports = router;

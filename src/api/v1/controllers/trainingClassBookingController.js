@@ -3,15 +3,16 @@ const trainingClassBookingService = require("../services/trainingClassBookingSer
 // Add training class booking
 const addTrainingClassBooking = async (req, res) => {
     try {
-        const { uid, name, contactNum, slot, trainingClassID, status } = req.body;
-        console.log(status);
+        const { uid, name, contactNum, slot, trainingClassID, status,feeAmount, paymentStatus } = req.body;
         const addNewTrainingClassBooking = await trainingClassBookingService.addTrainingClassBooking(
             uid,
             name,
             contactNum,
             slot,
             trainingClassID,
-            status
+            status,
+            feeAmount,
+            paymentStatus
         );
   
         return res.status(200).json(addNewTrainingClassBooking);
