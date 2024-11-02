@@ -99,7 +99,7 @@ const addTrainingProgram = async (
       typeOfTrainingProgram,
       capacity : Number(capacity),
       feeType,
-      feeAmount,
+      feeAmount : Number(feeAmount),
       venueType,
       venue,
       fitnessLevel, 

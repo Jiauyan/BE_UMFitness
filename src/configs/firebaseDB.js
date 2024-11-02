@@ -2,6 +2,7 @@ const { getFirestore } = require("firebase/firestore");
 const { initializeApp } = require("firebase/app");
 const { getAuth, createUserWithEmailAndPassword } = require("firebase/auth");
 const { getStorage } = require("firebase/storage");
+const { getDatabase } = require("firebase/database");
 
 const firebaseConfig = {
   apiKey: process.env.API_KEY,
@@ -18,6 +19,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 const storage = getStorage(app);
+const database = getDatabase(app);
 
 const connectfirebaseDB = async () => {
   try {
@@ -33,5 +35,6 @@ module.exports = {
   app,
   auth,
   db,
-  storage
+  storage,
+  database
 };

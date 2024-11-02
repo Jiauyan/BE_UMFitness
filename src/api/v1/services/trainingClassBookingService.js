@@ -1,7 +1,7 @@
 const {db} = require('../../../configs/firebaseDB');
 const { collection, getDocs, addDoc, doc, deleteDoc, setDoc, getDoc, query, where, orderBy, updateDoc, runTransaction} = require("firebase/firestore");
 
-const addTrainingClassBooking = async (uid, name, contactNum, slot, trainingClassID, status) => {
+const addTrainingClassBooking = async (uid, name, contactNum, slot, trainingClassID, status, feeAmount, paymentStatus) => {
     try {
         // First, create a new booking in the TrainingClassBooking collection
         const newSlot = {
@@ -22,7 +22,9 @@ const addTrainingClassBooking = async (uid, name, contactNum, slot, trainingClas
             contactNum,
             slot: newSlot,
             trainingClassID,
-            status
+            status,
+            feeAmount,
+            paymentStatus
         });
 
         // Then, update the specific slot in all other bookings in the TrainingClassBooking collection
@@ -79,7 +81,9 @@ const addTrainingClassBooking = async (uid, name, contactNum, slot, trainingClas
             slot: newSlot, 
             trainingClassID, 
             trainingClassBookingID, 
-            status
+            status,
+            feeAmount,
+            paymentStatus
         };
     } catch (err) {
         console.error('Error creating new training class booking:', err);
