@@ -1,5 +1,5 @@
 const {db} = require('../../../configs/firebaseDB');
-const { setDoc, doc, getDoc } = require("firebase/firestore");
+const { setDoc, doc, getDoc, updateDoc } = require("firebase/firestore");
 
 const storeStep = async (uid, stepCount) => {
     try {
@@ -82,7 +82,42 @@ const storeStep = async (uid, stepCount) => {
     }
   };
 
+  const updateStepGoal = async (uid, stepGoal) => {
+    try {
+      const userRef = doc(db, 'Steps', uid);
+
+      await setDoc(userRef, {
+        uid,
+        stepGoal,
+      }, { merge: true });
+
+      return { uid, stepGoal, message: 'Step goal updated successfully'};
+    } catch (error) {
+        console.error('Error updating step goal:', error);
+        throw error;
+    }
+  }
+
+  const getStepGoalByUid = async (uid) => {
+    try {
+      // Fetch the steps document from Firestore
+      const stepSnap = await getDoc(doc(db, 'Steps', uid));
+      if (!stepSnap.exists()) {
+        throw new Error(`No step goal found for user ${uid}`);
+      }
+      const stepData = stepSnap.data();
+      return {
+        uid,
+        stepGoal: stepData.stepGoal
+    };
+    } catch (err) {
+      throw new Error(`Error fetching steps: ${err.message}`);
+    }
+  };
+
 module.exports = {
     storeStep,
-    getStepsByUid
+    getStepsByUid,
+    updateStepGoal,
+    getStepGoalByUid
 }
