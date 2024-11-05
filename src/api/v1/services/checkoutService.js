@@ -3,8 +3,6 @@ const stripe = Stripe(process.env.STRIPE_SECRET_KEY); // Ensure your secret key 
 
 const createCheckoutSession = async (data) => {
     try {
-        console.log(data);
-
         // Create a customer
         const customer = await stripe.customers.create({
             email: data.customerEmail,  // Email address for the customer
@@ -29,7 +27,6 @@ const createCheckoutSession = async (data) => {
             success_url: `${data.origin}/paymentSuccess`,
             cancel_url: `${data.origin}/paymentCancel`,
         });
-
         return session;
     } catch (error) {
         console.error("Stripe Checkout Session Error:", error);
@@ -37,6 +34,39 @@ const createCheckoutSession = async (data) => {
     }
 };
 
+const completeCheckout = async (sessionId) => {
+    try {
+        if (typeof sessionId !== 'string') {
+            throw new Error("Session ID must be a string");
+        }
+        const session = await stripe.checkout.sessions.retrieve(sessionId);
+        return session;
+    } catch (error) {
+        console.error("Stripe Checkout Session Error:", error);
+        throw error;
+    }
+};
+
+const refundPayment = async (paymentIntentId) => {
+    try {
+        const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+        // Use `latest_charge` instead of checking `paymentIntent.charges.data`
+        const chargeId = paymentIntent.latest_charge;
+        if (!chargeId) {
+            throw new Error("No charges found to refund.");
+        }
+        const refund = await stripe.refunds.create({
+            charge: chargeId,
+        });
+        return refund;
+    } catch (error) {
+        console.error('Stripe Refund Error:', error);
+        throw error;
+    }
+};
+
 module.exports = {
-    createCheckoutSession
+    createCheckoutSession,
+    completeCheckout,
+    refundPayment
 };
