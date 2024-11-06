@@ -212,7 +212,6 @@ const updateTrainingProgram = async (id, updates) => {
 const deleteTrainingProgram = async (id) => {
   try {
     const deleteTrainingProgram = await deleteDoc(doc(db,'TrainingPrograms',id));
-    console.log("TrainingProgram deleted successfully");
     return deleteTrainingProgram;
   } catch (error) {
     console.error('Error fetching:', error);
@@ -223,7 +222,6 @@ const deleteTrainingProgram = async (id) => {
 const uploadTrainingProgramImage = async (trainingProgramImage) => {
   try {
     const trainingProgramImageRef = ref(storage, `trainingProgramImages/${trainingProgramImage.filename}`);
-    console.log(trainingProgramImage.path);
     // Assuming you are using Node.js and have the file system module available
     const buffer = fs.readFileSync(trainingProgramImage.path);  // Read the file into a buffer
 
@@ -231,7 +229,6 @@ const uploadTrainingProgramImage = async (trainingProgramImage) => {
       contentType: trainingProgramImage.mimetype, 
     };
     await uploadBytes(trainingProgramImageRef, buffer, metadata);
-    console.log("Sharing trainingProgram image uploaded");
   } catch (error) {
     console.error('Error uploading:', error);
     throw error;
@@ -240,7 +237,6 @@ const uploadTrainingProgramImage = async (trainingProgramImage) => {
 
 const getStudentBySlot = async (id, slot) => {
   try {
-    console.log(slot);
     // Fetch the training program details first
     const trainingProgramRef = doc(db, 'TrainingPrograms', id); // Assuming the collection is 'TrainingPrograms'
     const trainingProgramSnap = await getDoc(trainingProgramRef);
@@ -291,7 +287,6 @@ const getStudentBySlot = async (id, slot) => {
         };
       })
     );
-    console.log(students);
     return students;
   } catch (error) {
     console.error('Error fetching:', error);

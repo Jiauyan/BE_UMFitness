@@ -1,5 +1,7 @@
 const Stripe = require('stripe');
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY); // Ensure your secret key is correctly configured
+const {db} = require('../../../configs/firebaseDB');
+const { collection, getDocs, addDoc, query, where, setDoc } = require("firebase/firestore");
 
 const createCheckoutSession = async (data) => {
     try {
@@ -58,7 +60,21 @@ const refundPayment = async (paymentIntentId) => {
         const refund = await stripe.refunds.create({
             charge: chargeId,
         });
-        return refund;
+            // Find the document by transactionId
+        const paymentsRef = collection(db, 'Payment');
+        const querySnapshot = await getDocs(query(paymentsRef, where("transactionId", "==", paymentIntentId)));
+
+        if (querySnapshot.empty) {
+        throw new Error("No matching payment document found for the given transactionId.");
+        }
+
+        // Get the first matching document (assuming transactionId is unique)
+        const paymentDoc = querySnapshot.docs[0];
+        
+        // Update the refundStatus field
+        const refundStatus = await setDoc(paymentDoc.ref, { refundStatus: true }, { merge: true });
+
+        return {refund, refundStatus};
     } catch (error) {
         console.error('Stripe Refund Error:', error);
         throw error;

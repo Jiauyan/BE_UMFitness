@@ -16,9 +16,6 @@ const updateProfile = async (uid, updates) => {
       }
     }
 
-    // Log the fields to be updated
-    console.log('Updating fields:', fieldsToUpdate);
-
     // Update the document with the filtered fields
     await updateDoc(userRef, fieldsToUpdate);
     return { message: 'Profile updated successfully' };
@@ -197,14 +194,6 @@ const updateProfileInfo = async (uid, updates) => {
      const userRef = doc(db, 'Users', uid);
 
      const fieldsToUpdate = { ...updates };
-
-     // Add downloadUrl to fieldsToUpdate if it's provided
-    //  if (updates.downloadUrl) {
-    //    fieldsToUpdate.downloadUrl = updates.downloadUrl;
-    //  }
-
-    // Log the fields to be updated
-    console.log('Updating fields:', fieldsToUpdate);
 
     // Update the document with the filtered fields
     await updateDoc(userRef, fieldsToUpdate);
