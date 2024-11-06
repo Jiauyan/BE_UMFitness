@@ -14,10 +14,10 @@ const createPaymentIntent = async (req, res) => {
 
 const storePaymentStatus = async (req, res) => {
   try {
-    const { uid, paymentStatus, amount, transactionId, trainingProgramTitle, trainingProgramID } = req.body;
+    const { uid, paymentStatus, amount, transactionId, trainingProgramTitle, trainingProgramID, refundStatus } = req.body;
     
     // Basic validation to check for required fields
-    if (!uid || !paymentStatus || !amount || !transactionId || !trainingProgramTitle || !trainingProgramID ) {
+    if (!uid || !paymentStatus || !amount || !transactionId || !trainingProgramTitle || !trainingProgramID || refundStatus ) {
       return res.status(400).json({ message: "All fields are required except timestamp." });
     }
 
@@ -28,7 +28,8 @@ const storePaymentStatus = async (req, res) => {
       amount,
       transactionId,
       trainingProgramTitle,
-      trainingProgramID
+      trainingProgramID,
+      refundStatus
     );
 
     // Return success response
@@ -53,8 +54,20 @@ const getAllPaymentsByUid= async (req, res) => {
   }
 };
 
+const createRefundHandler = async (req, res) => {
+  const { transactionId } = req.body;
+  const result = await paymentService.createRefund(transactionId);
+
+  if (result.success) {
+    res.status(200).json({ success: true, refund: result.refund });
+  } else {
+    res.status(500).json({ success: false, error: result.error });
+  }
+};
+
 module.exports = {
   createPaymentIntent,
   storePaymentStatus,
-  getAllPaymentsByUid
+  getAllPaymentsByUid,
+  createRefundHandler
 };
