@@ -153,22 +153,6 @@ const deleteAccount = async (uid) => {
     }).catch((error) => {
       console.error(error);
     })
-
-    // const chatroomsRef = ref(rtdb, 'CHATROOM');
-    // const chatroomsSnapshot = await get(chatroomsRef);
-
-    // if (chatroomsSnapshot.exists()) {
-    //   const chatrooms = chatroomsSnapshot.val();
-    //   await Promise.all(chatrooms.map(async (chatroomId) => {
-    //     const uids = chatroomId.split('_');
-    //     // Check if the user's UID is part of the chatroom ID
-    //     if (uids.includes(uid)) {
-    //       await remove(ref(rtdb, `CHATROOM/${chatroomId}`));
-    //     }
-    //   }))
-    // }
-
-    console.log("Account and related data deleted successfully");
   } catch (error) {
     console.error("Error deleting account:", error);
   }
@@ -349,6 +333,22 @@ const getUserByIdService = async (uid) => {
   }
 }
 
+const checkUserEmail = async (email) => {
+  try {
+    const usersRef = collection(db, "Users");
+    const q = query(usersRef, where("email", "==", email));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      return false;
+    }else{
+      return true;
+    }
+  } catch (error) {
+    console.error('Error fetching:', error);
+    throw error;
+  }
+}
+
   module.exports = {
     registerAccount,
     saveUserDetails,
@@ -365,6 +365,7 @@ const getUserByIdService = async (uid) => {
     fitnessGoalService,
     favClassService,
     getUserByIdService,
-    uploadTipImage
+    uploadTipImage,
+    checkUserEmail
   };
   

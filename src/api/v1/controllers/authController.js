@@ -15,6 +15,7 @@ const {
   logoutAccount, 
   forgotPassword ,
   deleteAccount,
+  checkUserEmail
 } = require("../services/authService");
 const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
 const fs = require('fs');
@@ -242,6 +243,16 @@ const getUserByIdHandler = async (req, res) => {
   }
 };
 
+const checkUserEmailHandler = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const findEmail = await checkUserEmail(email);
+    return res.status(200).json(findEmail);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
 
   module.exports = {
     registerAccountHandler,
@@ -256,5 +267,6 @@ const getUserByIdHandler = async (req, res) => {
     fitnessLevelHandler,
     fitnessGoalHandler,
     favClassHandler,
-    getUserByIdHandler
+    getUserByIdHandler,
+    checkUserEmailHandler
   };

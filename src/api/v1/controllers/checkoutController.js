@@ -41,6 +41,7 @@ const refundPayment = async (req, res) => {
           return res.status(400).json({ message: 'Payment Intent ID is required' });
       }
       const refund = await checkoutService.refundPayment(paymentIntentId);
+      
       res.status(200).json({ message: 'Refund processed successfully', refund });
   } catch (error) {
       res.status(500).json({ message: 'Failed to process refund', error: error.message });

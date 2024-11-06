@@ -90,7 +90,6 @@ const updateTip = async (id, updates) => {
 const deleteTip = async (id) => {
   try {
     const deleteTip = await deleteDoc(doc(db,'Tips',id));
-    console.log("Tip deleted successfully");
     return deleteTip;
   } catch (error) {
     console.error('Error fetching:', error);
@@ -101,7 +100,6 @@ const deleteTip = async (id) => {
 const uploadTipImage = async (tipImage) => {
   try {
     const tipImageRef = ref(storage, `tipImages/${tipImage.filename}`);
-    console.log(tipImage.path);
     // Assuming you are using Node.js and have the file system module available
     const buffer = fs.readFileSync(tipImage.path);  // Read the file into a buffer
 
@@ -109,7 +107,6 @@ const uploadTipImage = async (tipImage) => {
       contentType: tipImage.mimetype, 
     };
     await uploadBytes(tipImageRef, buffer, metadata);
-    console.log("Sharing tip image uploaded");
   } catch (error) {
     console.error('Error uploading:', error);
     throw error;
