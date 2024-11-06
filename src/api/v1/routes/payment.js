@@ -6,5 +6,6 @@ const router = express.Router();
 router.post('/create-payment-intent', paymentController.createPaymentIntent);
 router.post('/storePaymentStatus', paymentController.storePaymentStatus);
 router.get("/getAllPaymentsByUid/:uid", paymentController.getAllPaymentsByUid);
+router.post('/createRefund', paymentController.createRefundHandler);
 
 module.exports = router;

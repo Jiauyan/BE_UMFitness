@@ -1,7 +1,7 @@
 // services/paymentService.js
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY); // Secret key from environment variables
 const {db} = require('../../../configs/firebaseDB');
-const { collection, getDocs, addDoc, query, where } = require("firebase/firestore");
+const { collection, getDocs, addDoc, query, where, setDoc } = require("firebase/firestore");
 
 const createPaymentIntent = async (amount, email, name) => {
   try {
@@ -28,7 +28,7 @@ const createPaymentIntent = async (amount, email, name) => {
 };
 
 // store payment
-const storePaymentStatus = async (uid, paymentStatus, amount, transactionId, trainingProgramTitle, trainingProgramID) => {
+const storePaymentStatus = async (uid, paymentStatus, amount, transactionId, trainingProgramTitle, trainingProgramID, refundStatus) => {
   try {
       const timestamp = new Date().toISOString();
       const storePayment = await addDoc(collection(db, 'Payment'), {
@@ -38,10 +38,11 @@ const storePaymentStatus = async (uid, paymentStatus, amount, transactionId, tra
         transactionId,
         trainingProgramTitle,
         trainingProgramID,
-        timestamp
+        timestamp,
+        refundStatus
       });
 
-      return { id:storePayment.id, uid, paymentStatus, amount, transactionId, trainingProgramTitle, trainingProgramID, timestamp };
+      return { id:storePayment.id, uid, paymentStatus, amount, transactionId, trainingProgramTitle, trainingProgramID, timestamp, refundStatus };
   }catch (error) {
       console.log('Error storing payment status:', error);
       throw new Error("Failed to store payment status.");
@@ -62,8 +63,37 @@ const getAllPaymentsByUid = async (uid) => {
   }
 }
 
+const createRefund = async (transactionId) => {
+  try {
+    // Create a refund using the Stripe API
+    const refund = await stripe.refunds.create({
+      payment_intent: transactionId,
+    });
+
+    // Find the document by transactionId
+    const paymentsRef = collection(db, 'Payment');
+    const querySnapshot = await getDocs(query(paymentsRef, where("transactionId", "==", transactionId)));
+
+    if (querySnapshot.empty) {
+      throw new Error("No matching payment document found for the given transactionId.");
+    }
+
+    // Get the first matching document (assuming transactionId is unique)
+    const paymentDoc = querySnapshot.docs[0];
+    
+    // Update the refundStatus field
+    await setDoc(paymentDoc.ref, { refundStatus: true }, { merge: true });
+
+    return { success: true, refund };
+  } catch (error) {
+    console.error('Refund error:', error);
+    return { success: false, error: error.message };
+  }
+};
+
 module.exports = {
   createPaymentIntent,
   storePaymentStatus,
-  getAllPaymentsByUid
+  getAllPaymentsByUid,
+  createRefund
 };
