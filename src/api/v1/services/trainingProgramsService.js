@@ -308,8 +308,10 @@ const deleteSlot = async (id, slotToDelete) => {
           slots: arrayRemove(slotDelete)
         });
         console.log("Slot deleted successfully");
+        return { success: true };
       } else {
-        console.log("No slot found with the specified time");
+        console.log("Cannot delete slot: either no slot found or slot has enrolled students");
+        return { success: false, reason: "Slot has enrolled students" };
       }
     } else {
       console.log("No document found with the specified ID");

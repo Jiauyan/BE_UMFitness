@@ -40,10 +40,12 @@ const getGoalById = async (id) => {
 
 const addGoal = async (title, uid, status) => {
   try {
+    const timestamp = new Date().toISOString();
     const addGoal = await addDoc(collection(db, 'Goals'), {
       title,
       uid,
-      status
+      status,
+      createdAt: timestamp
     });
     
     return { id: addGoal.id, title, uid, status };
@@ -56,10 +58,12 @@ const addGoal = async (title, uid, status) => {
 
 const updateGoal = async (id, uid, title, status) => {
   try {
+    const timestamp = new Date().toISOString();
     const updateGoal = await setDoc(doc(db,'Goals',id),{
       uid,
       title,
-      status
+      status,
+      createdAt: timestamp
     })
     return { id, title, uid, status };
   } catch (error) {
