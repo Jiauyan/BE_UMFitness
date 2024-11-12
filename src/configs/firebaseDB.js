@@ -5,7 +5,7 @@ const { getStorage } = require("firebase/storage");
 const { getDatabase } = require("firebase/database");
 
 const firebaseConfig = {
-  apiKey: process.env.API_KEY || 'mock_key',
+  apiKey: "AIzaSyB8V9R_P0I415Uz7M2mjFsbH7ZuQvDOLE0",
   authDomain: process.env.AUTH_DOMAIN,
   databaseURL: process.env.DATABASE_URL_FIREBASE,
   projectId: process.env.PROJECT_ID,
