@@ -15,12 +15,15 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use("/", router);
+app.use('/favicon.ico', express.static('path/to/favicon.ico'));
+// Or generally for all static files
+app.use(express.static('public'));
 
 // Root route to prevent "Cannot GET /" error
 app.get('/', (req, res) => {
     res.send('Welcome to My Express App on Vercel!');
   });
-  
+
 // swaggerDocs(app, port);
 
 //handle errors
