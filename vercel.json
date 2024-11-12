@@ -4,8 +4,25 @@
     },
     "rewrites": [
         {
-            "source": "(.*)",
-            "destination": "/index.js"
+            "source": "/(.*)",
+            "destination": "/api/index.js"
         }
-    ]
+    ],
+    "routes": [
+        {
+            "src": "/api/(.*)",
+            "dest": "/api/index.js",
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+        }
+    ],
+    "builds": [
+        {
+            "src": "/api/index.js",
+            "use": "@vercel/node"
+        }
+    ],
+    "env": {
+        "API_KEY": "@api_key"
+    },
+    "regions": ["all"]
 }
