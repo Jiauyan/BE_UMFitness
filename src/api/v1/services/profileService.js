@@ -81,10 +81,9 @@ const updateWater = async (uid, todayWater) => {
   }
 }
 
-const updateSleep = async (uid, startTime, endTime, duration) => {
+const updateSleep = async (uid, startTime, endTime, duration, date) => {
   try {
-
-    if (!uid || !startTime || !endTime || !duration) {
+    if (!uid || !date || !startTime || !endTime || !duration) {
       throw new Error('Invalid input: one or more required fields are missing');
     }
 
@@ -94,66 +93,59 @@ const updateSleep = async (uid, startTime, endTime, duration) => {
     const userSnap = await getDoc(userRef);
     const currentSleepData = userSnap.exists() ? userSnap.data() : {};
 
-    // Merge existing sleep data to avoid losing previous records
     const existingSleepByDay = currentSleepData.sleepByDay || {};
     const existingSleepByMonth = currentSleepData.sleepByMonth || {};
 
-    // Use the passed-in date directly
-    const date = new Date();
-    date.setDate(date.getDate() - 1);
-    const day = date.toISOString().split('T')[0];  // e.g. "2024-10-11"
+    const day = new Date(date).toISOString().split('T')[0];
     const year = new Date(date).getFullYear();
-    const month = `${year}-${date.getMonth() + 1}`;  // e.g. "2024-10"
+    const month = `${year}-${new Date(date).getMonth() + 1}`;
 
-    console.log('Yesterday\'s date:', day);
-
-    // Check if the user has already submitted sleep data for today
-    if (existingSleepByDay[day]) {
-      return { 
-        message: 'You can only update your sleep record once per day. Please try again tomorrow.',
-        data: currentSleepData
-      };
-    }
-
-    // Update sleep records
-    const updatedSleepByDay = {
-      ...existingSleepByDay,
-      [day]: {
-        startTime: startTime,
-        endTime: endTime,
-        duration: duration,
-        createdAt: new Date(), // Store the creation timestamp
-      },
-    };
-
+    // Helper function to parse duration from "X hours Y minutes" format
     function parseDuration(durationString) {
-      // Split the duration string into hours and minutes
       const [hours, minutes] = durationString
         .match(/(\d+) hours (\d+) minutes/)
         .slice(1)
         .map(Number);
-      // Convert the total time to minutes
       return hours * 60 + minutes;
     }
-    
+
+    // Helper function to format duration to "X hours Y minutes" format
     function formatDuration(totalMinutes) {
-      // Calculate hours and remaining minutes
       const hours = Math.floor(totalMinutes / 60);
       const minutes = totalMinutes % 60;
-      // Format the result as "X hours Y minutes"
       return `${hours} hours ${minutes} minutes`;
     }
-    
-    // Calculate total sleep hours for the month
-    const existingSleepDuration = existingSleepByMonth[month] || "0 hours 0 minutes";
-    const totalMinutes = parseDuration(existingSleepDuration) + parseDuration(duration);
-    
-    // Update the sleep data for the month
+
+    // Calculate the duration of the new record
+    const newDurationMinutes = parseDuration(duration);
+
+    // Check if there's an existing duration for this day (edit mode)
+    const previousDurationString = existingSleepByDay[day]?.duration || "0 hours 0 minutes";
+    const previousDurationMinutes = parseDuration(previousDurationString);
+
+    // Update sleep record for the day
+    const updatedSleepByDay = {
+      ...existingSleepByDay,
+      [day]: { 
+        startTime: startTime,
+        endTime: endTime,
+        duration: duration,
+        createdAt: new Date(),
+      },
+    };
+
+    // Calculate adjusted total minutes for the month
+    const existingMonthlyDuration = existingSleepByMonth[month] || "0 hours 0 minutes";
+    const currentMonthTotalMinutes = parseDuration(existingMonthlyDuration);
+
+    // Subtract previous day's duration, add new duration
+    const adjustedMonthlyTotalMinutes = currentMonthTotalMinutes - previousDurationMinutes + newDurationMinutes;
+
     const updatedSleepData = {
       sleepByDay: updatedSleepByDay,
       sleepByMonth: {
         ...existingSleepByMonth,
-        [month]: formatDuration(totalMinutes),
+        [month]: formatDuration(adjustedMonthlyTotalMinutes),
       },
       lastUpdated: new Date(),
     };
@@ -161,15 +153,15 @@ const updateSleep = async (uid, startTime, endTime, duration) => {
     console.log('Updating sleep records:', updatedSleepData);
     await updateDoc(userRef, updatedSleepData);
 
-    return { 
+    return {
       message: 'Sleep records updated successfully',
-      data: updatedSleepData
+      data: updatedSleepData,
     };
   } catch (error) {
     console.error('Error updating sleep records:', error);
     throw error;
   }
-}
+};
 
 const uploadProfileImage = async (profileImage) => {
   try {

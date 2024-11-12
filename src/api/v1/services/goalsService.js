@@ -48,7 +48,7 @@ const addGoal = async (title, uid, status) => {
       createdAt: timestamp
     });
     
-    return { id: addGoal.id, title, uid, status };
+    return { id: addGoal.id, title, uid, status, createdAt:timestamp };
   } catch (error) {
     console.error('Error adding goal:', error);
     throw error;
