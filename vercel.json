@@ -1,28 +1,15 @@
 {
-    "github": {
-        "silent": true
-    },
-    "rewrites": [
-        {
-            "source": "/(.*)",
-            "destination": "/api/index.js"
-        }
-    ],
-    "routes": [
-        {
-            "src": "/api/(.*)",
-            "dest": "/api/index.js",
-            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
-        }
-    ],
-    "builds": [
-        {
-            "src": "/api/index.js",
-            "use": "@vercel/node"
-        }
-    ],
+    "version": 2,
+    "name": "be-um-fitness",
     "env": {
-        "API_KEY": "@api_key"
+      "API_KEY": "@api_key",
+      "ANOTHER_ENV": "@another_env"
     },
-    "regions": ["all"]
-}
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "/api/index.js"
+      }
+    ]
+  }
+  
