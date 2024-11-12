@@ -16,6 +16,11 @@ app.use(express.json());
 app.use(cors());
 app.use("/", router);
 
+// Root route to prevent "Cannot GET /" error
+app.get('/', (req, res) => {
+    res.send('Welcome to My Express App on Vercel!');
+  });
+  
 // swaggerDocs(app, port);
 
 //handle errors
