@@ -164,6 +164,15 @@ const registerAcc = async (email, password, photoURL) => {
     const currentHydration = 0;
     const phoneNumber = "0";
     const currentMotivationalQuote = " ";
+    const todayWater= 0;
+    const waterByDay = {};
+    const waterByMonth = {};
+    const sleepByDay = {};
+    const sleepByMonth = {};
+    const stepsToday = 0 ;
+    const stepsByDay = {};
+    const stepsByMonth = {};
+
     const newUser = await createUserWithEmailAndPassword(auth, email, password);
     const user = newUser.user;
 
@@ -172,7 +181,15 @@ const registerAcc = async (email, password, photoURL) => {
       photoURL,
       currentHydration,
       phoneNumber,
-      currentMotivationalQuote
+      currentMotivationalQuote,
+      todayWater,
+      waterByDay,
+      waterByMonth,
+      sleepByDay,
+      sleepByMonth,
+      stepsToday,
+      stepsByDay,
+      stepsByMonth
     });
     
     return { uid: user.uid, email: user.email };  

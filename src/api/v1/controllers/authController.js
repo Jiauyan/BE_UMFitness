@@ -19,6 +19,8 @@ const {
 } = require("../services/authService");
 const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
 const fs = require('fs');
+const path = require('path');
+
 const { storage } = require('../../../configs/firebaseDB');
 
 const registerAccountHandler = async (req, res, next) => {
@@ -121,7 +123,8 @@ const registerAccHandler = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    const imagePath = 'src/api/v1/uploads/defaultProfileImg.png';
+    // If __dirname gives the directory as src/api/v1/controllers
+    const imagePath = path.join(__dirname, '..', 'uploads', 'defaultProfileImg.png');
 
     const profileImageRef = ref(storage, `profileImages/${Date.now()}.png`);
 
@@ -137,7 +140,7 @@ const registerAccHandler = async (req, res, next) => {
       email,
       password,
       photoURL 
-    );
+    );  
 
     return res.status(201).json(account);
   } catch (err) {
