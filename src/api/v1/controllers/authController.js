@@ -20,6 +20,7 @@ const {
 const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
 const fs = require('fs');
 const { storage } = require('../../../configs/firebaseDB');
+const path = require('path');
 
 const registerAccountHandler = async (req, res, next) => {
     try {
@@ -120,8 +121,9 @@ const deleteAccountHandler = async (req, res, next) => {
 const registerAccHandler = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-
-    const imagePath = path.resolve(__dirname, 'src/api/v1/uploads/defaultProfileImg.png');
+    // This should correctly resolve the path to your image file
+    const imagePath = path.join(__dirname, '..', 'uploads', 'defaultProfileImg.png');
+    console.log('Image Path:', imagePath); 
 
     // Check if the default image exists and handle the case where it does not
     if (!fs.existsSync(imagePath)) {
