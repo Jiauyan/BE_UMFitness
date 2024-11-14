@@ -1,4 +1,4 @@
-const {app, auth} = require('../../../configs/firebaseDB');
+const {app, auth, database} = require('../../../configs/firebaseDB');
 const  {signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail,deleteUser} = require("firebase/auth")
 const { getFirestore, doc, setDoc, getDoc, getDocs, deleteDoc,collection,where, query, snapshotEqual} = require('firebase/firestore');
 const db = getFirestore();
@@ -111,7 +111,9 @@ const deleteAccount = async (uid) => {
       'FitnessActivities',
       'Steps',
       'MotivationalQuotes',
-      'TrainingPrograms'
+      'TrainingPrograms',
+      'Payment',
+      'ScreeningForm'
     ];
 
     for (const collectionName of collectionsToDelete) {
@@ -124,35 +126,23 @@ const deleteAccount = async (uid) => {
       });
     }
 
+     // Delete all chatrooms associated with the user
+     const chatroomsRef = ref(database, 'CHATROOM');
+     const chatroomsSnapshot = await get(chatroomsRef);
+     if (chatroomsSnapshot.exists()) {
+       const chatrooms = chatroomsSnapshot.val();
+       const chatroomDeletionPromises = Object.keys(chatrooms).filter(chatroomId => chatroomId.includes(uid)).map(chatroomId => {
+        console.log(chatroomId);
+         return remove(ref(database, `CHATROOM/${chatroomId}`));
+       });
+    }
+
     // Delete the user document
     await deleteDoc(doc(db, 'Users', uid));
     
     // Delete the user authentication
     await deleteUser(user);
 
-    // Delete 'CHATROOM' data from Realtime Database
-    const database = getDatabase(app);
-    const dbRef = ref(database, 'CHATROOM');
-
-    get(dbRef).then((snapshot) => {
-      if (snapshot.exists()) {
-        const chatroomsSnapshot = snapshot.val();
-        const chatrooms = Object.entries(chatroomsSnapshot);
-
-        chatrooms.map(async ([chatroomId, value]) => {
-          const uids = chatroomId.split('_');
-          // Check if the user's UID is part of the chatroom ID
-          if (uids.includes(uid)) {
-            const userChatRoomRef = ref(database, `CHATROOM/${chatroomId}`);
-            await remove(userChatRoomRef);
-          }
-        });
-      } else {
-        console.log('Error');
-      }
-    }).catch((error) => {
-      console.error(error);
-    })
   } catch (error) {
     console.error("Error deleting account:", error);
   }

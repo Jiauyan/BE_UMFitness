@@ -11,6 +11,9 @@
         "src": "/(.*)",
         "dest": "/src/app.js"
       }
-    ]
+    ],
+      "redirects": [
+        { "source": "/", "destination": "/login", "permanent": true }
+      ]
   }
   

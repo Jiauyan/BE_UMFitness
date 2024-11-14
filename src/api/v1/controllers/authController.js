@@ -121,16 +121,21 @@ const registerAccHandler = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    const imagePath = 'src/api/v1/uploads/defaultProfileImg.png';
+    const imagePath = path.resolve(__dirname, 'src/api/v1/uploads/defaultProfileImg.png');
 
-    const profileImageRef = ref(storage, `profileImages/${Date.now()}.png`);
+    // Check if the default image exists and handle the case where it does not
+    if (!fs.existsSync(imagePath)) {
+      return res.status(500).send("Default profile image is missing.");
+    }
 
     const buffer = fs.readFileSync(imagePath);
     const metadata = {
-      contentType: req.file ? req.file.mimetype : 'image/png',
+      contentType: 'image/png', // Assuming the image is a PNG
     };
-    await uploadBytes(profileImageRef, buffer, metadata);
 
+    // Upload to your preferred storage solution
+    const profileImageRef = ref(storage, `profileImages/${Date.now()}.png`);
+    await uploadBytes(profileImageRef, buffer, metadata);
     const photoURL = await getDownloadURL(profileImageRef);
 
     const account = await registerAcc(
