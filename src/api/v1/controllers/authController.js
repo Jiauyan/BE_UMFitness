@@ -107,13 +107,15 @@ const forgotPasswordHandler = async(req, res, next) => {
 }
 
 const deleteAccountHandler = async (req, res, next) => {
+  console.log('Received params:', req.params);  // Log to check the parameters
   try {
-    const {uid} = req.params;
-    const deleteAcc = await deleteAccount(
-      uid
-    );
+    const { uid } = req.params;
+    if (!uid) {
+      throw new Error('UID is missing from the request parameters');
+    }
+    const deleteAcc = await deleteAccount(uid);
     return res.status(201).json(deleteAcc);
-  } catch (error){
+  } catch (error) {
     console.error('Authentication failed:', error);
     return res.status(401).json({ error: "Authentication failed", details: error.message });
   }
