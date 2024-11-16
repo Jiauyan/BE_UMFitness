@@ -4,6 +4,7 @@ const { getFirestore, doc, setDoc, getDoc, getDocs, deleteDoc,collection,where, 
 const db = getFirestore();
 const { ref, remove, get, getDatabase } = require('firebase/database');
 const {firebase} = require('firebase/app');
+const admin = require('firebase-admin');
 
 const loginAccount = async (email, password) => {
   try {
@@ -95,23 +96,6 @@ const forgotPassword = async (email) => {
 }
 
 const deleteAccount = async (uid) => {
-  const auth = getAuth();
-  onAuthStateChanged(auth, user => {
-    if (user) {
-      console.log("User is signed in", user);
-    } else {
-      console.log("No user is signed in");
-    }
-  });
-    const user = auth.currentUser;
-  if (!user) {
-    console.error("No user is currently logged in.");
-    throw new Error("No authenticated user.");
-  }
-  if (user.uid !== uid) {
-    console.error("Unauthorized attempt to delete account", { currentUserUID: user.uid, requestedUID: uid });
-    throw new Error("Unauthorized operation. UID mismatch.");
-  }
 
   try {
     const collectionsToDelete = [
@@ -139,7 +123,14 @@ const deleteAccount = async (uid) => {
     }
 
     await deleteDoc(doc(db, 'Users', uid));
-    await deleteUser(user);
+    admin.auth().deleteUser(uid)
+      .then(() => {
+        console.log('Successfully deleted user');
+      })
+      .catch((error) => {
+        console.error('Error deleting user:', error);
+      });
+    // await deleteUser(user);
   } catch (error) {
     console.error("Error deleting account:", error);
     throw new Error("Failed to delete user data.");

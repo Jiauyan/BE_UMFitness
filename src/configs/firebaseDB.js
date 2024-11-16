@@ -3,6 +3,13 @@ const { initializeApp } = require("firebase/app");
 const { getAuth, createUserWithEmailAndPassword } = require("firebase/auth");
 const { getStorage } = require("firebase/storage");
 const { getDatabase } = require("firebase/database");
+const admin = require('firebase-admin');
+
+const serviceAccount = require('./../../credential.json');
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
 
 const firebaseConfig = {
   apiKey: process.env.API_KEY,
