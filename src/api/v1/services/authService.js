@@ -96,9 +96,13 @@ const forgotPassword = async (email) => {
 
 const deleteAccount = async (uid) => {
   const user = auth.currentUser;
-  if (!user || user.uid !== uid) {
-    console.error("Attempt to delete account failed", { currentUserUID: user?.uid, requestedUID: uid });
-    throw new Error("User is not authenticated or does not match the requested UID");
+  if (!user) {
+    console.error("No user is currently logged in.");
+    throw new Error("No authenticated user.");
+  }
+  if (user.uid !== uid) {
+    console.error("Unauthorized attempt to delete account", { currentUserUID: user.uid, requestedUID: uid });
+    throw new Error("Unauthorized operation. UID mismatch.");
   }
 
   try {
@@ -127,14 +131,10 @@ const deleteAccount = async (uid) => {
     }
 
     await deleteDoc(doc(db, 'Users', uid));
-    if (uid === auth.currentUser.uid) {
-      await deleteUser(user);
-    } else {
-      // Optionally handle admin case or error out
-      console.error("Cannot delete other users");
-    }
+    await deleteUser(user);
   } catch (error) {
     console.error("Error deleting account:", error);
+    throw new Error("Failed to delete user data.");
   }
 };
 
