@@ -1,5 +1,5 @@
 const {app, auth, database} = require('../../../configs/firebaseDB');
-const  {signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail,deleteUser} = require("firebase/auth")
+const {signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail, deleteUser, getAuth, onAuthStateChanged } = require("firebase/auth")
 const { getFirestore, doc, setDoc, getDoc, getDocs, deleteDoc,collection,where, query, snapshotEqual} = require('firebase/firestore');
 const db = getFirestore();
 const { ref, remove, get, getDatabase } = require('firebase/database');
@@ -95,7 +95,15 @@ const forgotPassword = async (email) => {
 }
 
 const deleteAccount = async (uid) => {
-  const user = auth.currentUser;
+  const auth = getAuth();
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      console.log("User is signed in", user);
+    } else {
+      console.log("No user is signed in");
+    }
+  });
+    const user = auth.currentUser;
   if (!user) {
     console.error("No user is currently logged in.");
     throw new Error("No authenticated user.");
