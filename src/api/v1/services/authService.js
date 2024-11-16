@@ -1,7 +1,7 @@
-const {app, auth, database, db} = require('../../../configs/firebaseDB');
+const {app, auth, database} = require('../../../configs/firebaseDB');
 const  {signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail,deleteUser} = require("firebase/auth")
 const { getFirestore, doc, setDoc, getDoc, getDocs, deleteDoc,collection,where, query, snapshotEqual} = require('firebase/firestore');
-//const db = getFirestore();
+const db = getFirestore();
 const { ref, remove, get, getDatabase } = require('firebase/database');
 const {firebase} = require('firebase/app');
 
@@ -95,11 +95,12 @@ const forgotPassword = async (email) => {
 }
 
 const deleteAccount = async (uid) => {
-  const user = auth.currentUser;
-  if (!user) {
-    console.error("User is not authenticated");
-    return;
-  }
+  // const user = auth.currentUser;
+  // if (!user) {
+  //   console.error("User is not authenticated");
+  //   return;
+  // }
+  console.log(uid);
   try {
     const collectionsToDelete = [
       'Goals', 
@@ -121,8 +122,9 @@ const deleteAccount = async (uid) => {
       const collectionQuery = query(collectionRef, where('uid', '==', uid));
       const collectionSnapshot = await getDocs(collectionQuery);
 
-      const docDeletionPromises = collectionSnapshot.docs.map(doc => deleteDoc(doc.ref));
-      await Promise.all(docDeletionPromises);
+      collectionSnapshot.forEach(async (doc) => {
+        await deleteDoc(doc.ref);
+      });
     }
     
     // Delete the user document
@@ -144,7 +146,6 @@ const deleteAccount = async (uid) => {
       await Promise.all(chatroomDeletionPromises);
     }
 
-    
   } catch (error) {
     console.error("Error deleting account:", error);
   }
