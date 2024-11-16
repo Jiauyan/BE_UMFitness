@@ -96,56 +96,43 @@ const forgotPassword = async (email) => {
 
 const deleteAccount = async (uid) => {
   const user = auth.currentUser;
-  if (!user) {
-    console.error("User is not authenticated");
+  if (!user || user.uid !== uid) {
+    console.error("User is not authenticated or does not match the requested UID");
     return;
   }
-  console.log(uid);
+
   try {
     const collectionsToDelete = [
-      'Goals', 
-      'Tips', 
-      'TrainingClassBooking', 
-      'Posts', 
-      'ConsentForm', 
-      'FitnessPlans', 
-      'FitnessActivities',
-      'Steps',
-      'MotivationalQuotes',
-      'TrainingPrograms',
-      'Payment',
-      'ScreeningForm'
+      'Goals', 'Tips', 'TrainingClassBooking', 'Posts', 'ConsentForm', 'FitnessPlans',
+      'FitnessActivities', 'Steps', 'MotivationalQuotes', 'TrainingPrograms', 'Payment', 'ScreeningForm'
     ];
 
     for (const collectionName of collectionsToDelete) {
       const collectionRef = collection(db, collectionName);
       const collectionQuery = query(collectionRef, where('uid', '==', uid));
       const collectionSnapshot = await getDocs(collectionQuery);
-
-      collectionSnapshot.forEach(async (doc) => {
+      for (const doc of collectionSnapshot.docs) {
         await deleteDoc(doc.ref);
-      });
+      }
     }
 
-
-    // Chatroom deletion
     const chatroomsRef = ref(database, 'CHATROOM');
     const chatroomsSnapshot = await get(chatroomsRef);
     if (chatroomsSnapshot.exists()) {
       const chatrooms = chatroomsSnapshot.val();
-      const chatroomDeletionPromises = Object.keys(chatrooms).filter(chatroomId => {
-        return chatroomId.split('_').some(partUid => partUid === uid);
-      }).map(chatroomId => {
-        return remove(ref(database, `CHATROOM/${chatroomId}`));
-      });
+      const chatroomDeletionPromises = Object.keys(chatrooms)
+        .filter(chatroomId => chatroomId.split('_').some(partUid => partUid === uid))
+        .map(chatroomId => remove(ref(database, `CHATROOM/${chatroomId}`)));
       await Promise.all(chatroomDeletionPromises);
     }
-    
-    // Delete the user document
+
     await deleteDoc(doc(db, 'Users', uid));
-    
-    // Delete the user authentication
-    await deleteUser(user);
+    if (uid === auth.currentUser.uid) {
+      await deleteUser(user);
+    } else {
+      // Optionally handle admin case or error out
+      console.error("Cannot delete other users");
+    }
   } catch (error) {
     console.error("Error deleting account:", error);
   }
