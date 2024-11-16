@@ -124,6 +124,12 @@ const deleteAccount = async (uid) => {
       const docDeletionPromises = collectionSnapshot.docs.map(doc => deleteDoc(doc.ref));
       await Promise.all(docDeletionPromises);
     }
+    
+    // Delete the user document
+    await deleteDoc(doc(db, 'Users', uid));
+    
+    // Delete the user authentication
+    await deleteUser(user);
 
     // Chatroom deletion
     const chatroomsRef = ref(database, 'CHATROOM');
@@ -138,11 +144,7 @@ const deleteAccount = async (uid) => {
       await Promise.all(chatroomDeletionPromises);
     }
 
-    // Delete the user document
-    await deleteDoc(doc(db, 'Users', uid));
     
-    // Delete the user authentication
-    await deleteUser(user);
   } catch (error) {
     console.error("Error deleting account:", error);
   }
