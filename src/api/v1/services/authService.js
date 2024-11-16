@@ -97,8 +97,7 @@ const forgotPassword = async (email) => {
 const deleteAccount = async (uid) => {
   const user = auth.currentUser;
   if (!user || user.uid !== uid) {
-    console.error("User is not authenticated or does not match the requested UID");
-    return;
+    throw new Error("User is not authenticated or does not match the requested UID", user, uid , user.uid);
   }
 
   try {
