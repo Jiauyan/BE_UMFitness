@@ -123,12 +123,12 @@ const deleteAccount = async (uid) => {
     }
 
     await deleteDoc(doc(db, 'Users', uid));
-    admin.auth().deleteUser(uid)
+    await admin.auth().deleteUser(uid)
       .then(() => {
-        console.log('Successfully deleted user');
+        return('Successfully deleted user');
       })
       .catch((error) => {
-        console.error('Error deleting user:', error);
+        throw new Error('Error deleting user:', error);
       });
     // await deleteUser(user);
   } catch (error) {
