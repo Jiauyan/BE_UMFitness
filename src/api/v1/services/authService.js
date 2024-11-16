@@ -95,11 +95,11 @@ const forgotPassword = async (email) => {
 }
 
 const deleteAccount = async (uid) => {
-  // const user = auth.currentUser;
-  // if (!user) {
-  //   console.error("User is not authenticated");
-  //   return;
-  // }
+  const user = auth.currentUser;
+  if (!user) {
+    console.error("User is not authenticated");
+    return;
+  }
   console.log(uid);
   try {
     const collectionsToDelete = [
