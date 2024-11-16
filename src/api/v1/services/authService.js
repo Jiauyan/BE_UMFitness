@@ -1,7 +1,7 @@
-const {app, auth, database} = require('../../../configs/firebaseDB');
+const {app, auth, database, db} = require('../../../configs/firebaseDB');
 const  {signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, sendPasswordResetEmail,deleteUser} = require("firebase/auth")
 const { getFirestore, doc, setDoc, getDoc, getDocs, deleteDoc,collection,where, query, snapshotEqual} = require('firebase/firestore');
-const db = getFirestore();
+//const db = getFirestore();
 const { ref, remove, get, getDatabase } = require('firebase/database');
 const {firebase} = require('firebase/app');
 
