@@ -13,6 +13,10 @@ const app = express();
 
 //routes
 app.use(express.json());
+// Allow specific origin
+app.use(cors({ origin: 'https://fe-we-fit.vercel.app' }));
+
+// Or, to allow all origins
 app.use(cors());
 app.use("/", router);
 app.use(express.static('public'));
