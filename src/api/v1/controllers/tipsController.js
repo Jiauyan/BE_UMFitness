@@ -60,13 +60,11 @@ const addTip= async (req, res) => {
     try {
       const { id } = req.params;
       const updates = req.body;
-      let downloadUrl;
+      let downloadUrl = null;  
   
-      if (req.file) {
-        const tipImage = req.file;
-        const tipImageRef = ref(storage, `tipImages/${tipImage.filename}`);
-        const uploadResult = await tipsService.uploadTipImage(tipImage);
-        downloadUrl = await getDownloadURL(tipImageRef);
+       // Check if the file was uploaded and process it
+       if (req.file) {
+        downloadUrl = await tipsService.uploadTipImage(req.file);
       }
   
       // Include the downloadUrl in updates only if a new image was uploaded
@@ -91,23 +89,11 @@ const addTip= async (req, res) => {
     }
   };
 
-  const uploadTipImage = async (req, res) => {
-    try {
-      const tipImage = req.file;
-      const uploadResult = await tipsService.uploadTipImage(tipImage);
-      res.status(200).json({ message: 'Uploaded successfully', data: uploadResult });
-  } catch (err) {
-      console.error(err); 
-      res.status(500).json({ message: "Internal Server Error", error: err.toString() });
-  }
-  };
-
   module.exports = {
     getAllTips,
     getAllTipsOfUser,
     getTipById,
     addTip,
     updateTip,
-    deleteTip,
-    uploadTipImage
+    deleteTip
   };

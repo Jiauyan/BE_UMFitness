@@ -71,11 +71,6 @@ const updateTip = async (id, updates) => {
     // Prepare fields to update
     const fieldsToUpdate = { ...updates };
 
-    // Add downloadUrl to fieldsToUpdate if it's provided
-    // if (updates.downloadUrl) {
-    //   fieldsToUpdate.downloadUrl = updates.downloadUrl;
-    // }
-
     // Update the document with the fields
     await updateDoc(tipRef, fieldsToUpdate);
 
