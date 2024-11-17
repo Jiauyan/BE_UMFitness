@@ -1,6 +1,6 @@
 const { db, storage } = require('../../../configs/firebaseDB');
 const { collection, getDocs, addDoc, doc, deleteDoc, setDoc, getDoc, query, where, updateDoc } = require("firebase/firestore");
-const { ref, uploadBytes } = require("firebase/storage");
+const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
 const { v4 } = require("uuid");
 const fs = require('fs');
 
@@ -100,18 +100,14 @@ const deleteTip = async (id) => {
 const uploadTipImage = async (tipImage) => {
   try {
     const tipImageRef = ref(storage, `tipImages/${tipImage.filename}`);
-    // Assuming you are using Node.js and have the file system module available
-    const buffer = fs.readFileSync(tipImage.path);  // Read the file into a buffer
-
-    const metadata = {
-      contentType: tipImage.mimetype, 
-    };
-    await uploadBytes(tipImageRef, buffer, metadata);
+    const result = await uploadBytes(tipImageRef, tipImage.buffer, { contentType: tipImage.mimetype });
+    const downloadUrl = await getDownloadURL(result.ref);
+    return downloadUrl; // Returns the URL to access the file
   } catch (error) {
     console.error('Error uploading:', error);
     throw error;
   }
-}
+};
 
 module.exports = {
     getAllTips,

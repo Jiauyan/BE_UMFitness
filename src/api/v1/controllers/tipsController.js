@@ -37,17 +37,9 @@ const getTipById= async (req, res) => {
 
 const addTip= async (req, res) => {
   try {
-    console.log("Request body:", req.body);
-    console.log("File upload:", req.file);
     const { uid, title, desc, shortDesc, username, userImageUrl } = req.body;
-    const tipImage = req.file;
-    if (!tipImage) throw new Error("No file uploaded");
-    
-    const tipImageRef = ref(storage, `tipImages/${tipImage.filename}`);
-    await tipsService.uploadTipImage(tipImage);
-  
-    const downloadUrl = await getDownloadURL(tipImageRef);
-    console.log("Image uploaded successfully. Download URL:", downloadUrl);
+    const {tipImage} = req.file;
+    const downloadUrl = await uploadTipImage(tipImage);
   
     const addNewTip = await tipsService.addTip(
       uid, title, desc, downloadUrl, shortDesc, username, userImageUrl
