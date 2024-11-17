@@ -60,12 +60,10 @@ const getTrainingProgramById = async (id) => {
     }
 }
 
-
 const addTrainingProgram = async (
   uid,
   contactNum,
-  title, 
-  downloadUrl,
+  title,
   typeOfTrainingProgram,
   capacity,
   feeType,
@@ -76,25 +74,24 @@ const addTrainingProgram = async (
   fitnessGoal, 
   typeOfExercise, 
   desc, 
-  slots
+  slots,
+  downloadUrl
 ) => {
   try {
     const timestamp = new Date().toISOString();
-    const parsedSlots = slots.map(slot => {
-      try {
-        return JSON.parse(slot);
-      } catch (e) {
-        console.error("Error parsing slot:", slot, e);
-        return null;  // Or handle the error as appropriate
-      }
-    }).filter(slot => slot !== null);
+    // const parsedSlots = slots.map(slot => {
+    //   try {
+    //     return JSON.parse(slot);
+    //   } catch (e) {
+    //     console.error("Error parsing slot:", slot, e);
+    //     return null;  // Or handle the error as appropriate
+    //   }
+    // }).filter(slot => slot !== null);
 
     const addTrainingProgram = await addDoc(collection(db, 'TrainingPrograms'), {
       uid,
       contactNum,
       title,
-      createdAt: timestamp,
-      downloadUrl,
       typeOfTrainingProgram,
       capacity : Number(capacity),
       feeType,
@@ -105,18 +102,20 @@ const addTrainingProgram = async (
       fitnessGoal, 
       typeOfExercise,
       desc,
-      slots: parsedSlots.map(parsedSlot => ({
-        time: parsedSlot.time,
-        enrolled: parsedSlot.enrolled,
-        capacity: Number(parsedSlot.capacity),
+      slots: slots.map(slot => ({
+        time: slot.time,
+        enrolled: slot.enrolled,
+        capacity: Number(slot.capacity),
         status: false
-    }))
+      })),
+      downloadUrl,
+      createdAt: timestamp,
     });
     return { 
       id: addTrainingProgram.id, 
       uid,
+      contactNum,
       title, 
-      downloadUrl,
       typeOfTrainingProgram,
       capacity,
       feeType,
@@ -127,7 +126,9 @@ const addTrainingProgram = async (
       fitnessGoal, 
       typeOfExercise, 
       desc, 
-      slots
+      slots,
+      downloadUrl,
+      createdAt: timestamp
     };
   } catch (error) {
     console.error('Error adding trainingProgram:', error);
@@ -217,18 +218,6 @@ const deleteTrainingProgram = async (id) => {
     throw error;
   }
 }
-
-const uploadTrainingProgramImage = async (trainingProgramImage) => {
-  try {
-    const trainingProgramImageRef = ref(storage, `trainingProgramImages/${trainingProgramImage.filename}`);
-    const result = await uploadBytes(trainingProgramImageRef, trainingProgramImage.buffer, { contentType: trainingProgramImage.mimetype });
-    const downloadUrl = await getDownloadURL(result.ref);
-    return downloadUrl; // Returns the URL to access the file
-  } catch (error) {
-    console.error('Error uploading:', error);
-    throw error;
-  }
-};
 
 const getStudentBySlot = async (id, slot) => {
   try {
@@ -324,7 +313,6 @@ module.exports = {
     addTrainingProgram,
     updateTrainingProgram,
     deleteTrainingProgram,
-    uploadTrainingProgramImage,
     getRecommendedTrainingPrograms,
     getStudentBySlot,
     deleteSlot

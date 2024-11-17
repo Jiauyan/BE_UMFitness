@@ -63,17 +63,13 @@ const addTrainingProgram= async (req, res) => {
         fitnessGoal, 
         typeOfExercise, 
         desc, 
-        slots
+        slots,
+        downloadUrl
       } = req.body;
-      let downloadUrl = null; 
-      if (req.file) {
-        downloadUrl = await trainingProgramsService.uploadTrainingProgramImage(req.file);
-      }
       const addNewTrainingProgram= await trainingProgramsService.addTrainingProgram(
         uid,
         contactNum,
         title,
-        downloadUrl,
         typeOfTrainingProgram,
         capacity,
         feeType,
@@ -84,7 +80,8 @@ const addTrainingProgram= async (req, res) => {
         fitnessGoal, 
         typeOfExercise,
         desc,
-        slots
+        slots,
+        downloadUrl,
       );
       return res.status(200).json(addNewTrainingProgram);
     } catch (err) {
@@ -95,17 +92,7 @@ const addTrainingProgram= async (req, res) => {
   const updateTrainingProgram= async (req, res) => {
     try {
       const { id } = req.params;
-      const updates = req.body;
-      let downloadUrl = null; 
-      if (req.file) {
-        downloadUrl = await trainingProgramsService.uploadTrainingProgramImage(req.file);
-      }
-
-      // Include the downloadUrl in updates only if a new image was uploaded
-      if (downloadUrl) {
-        updates.downloadUrl = downloadUrl;
-      }
-  
+      const {updates} = req.body;
       const updatedTrainingProgram = await trainingProgramsService.updateTrainingProgram(id, updates);
       return res.status(200).json(updatedTrainingProgram);
     } catch (err) {
