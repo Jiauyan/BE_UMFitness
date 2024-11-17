@@ -42,7 +42,7 @@ const getTipById = async (id) => {
 }
 
 
-const addTip = async (uid, title, desc, downloadUrl, shortDesc, username, userImageUrl
+const addTip = async (uid, title, desc, shortDesc, username, userImageUrl, downloadUrl
 ) => {
   try {
     const timestamp = new Date().toISOString();

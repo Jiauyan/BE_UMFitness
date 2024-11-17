@@ -40,18 +40,11 @@ const getTipById= async (req, res) => {
 
 const addTip= async (req, res) => {
   try {
-    res.set('Cache-Control', 'no-store');
-    const { uid, title, desc, shortDesc, username, userImageUrl } = req.body;
-    let downloadUrl = null; // Default to null if no file is uploaded
-
-        // Check if the file was uploaded and process it
-        if (req.file) {
-            downloadUrl = await tipsService.uploadTipImage(req.file);
-        }
+    const { uid, title, desc, shortDesc, username, userImageUrl, downloadUrl} = req.body;
 
         // Proceed to add the tip with the data provided in the request
         const addNewTip = await tipsService.addTip(
-            uid, title, desc, downloadUrl, shortDesc, username, userImageUrl
+          uid, title, desc, shortDesc, username, userImageUrl, downloadUrl
         );
     return res.status(200).json(addNewTip);
   } catch (err) {
