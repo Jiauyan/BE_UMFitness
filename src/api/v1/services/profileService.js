@@ -166,20 +166,14 @@ const updateSleep = async (uid, startTime, endTime, duration, date) => {
 const uploadProfileImage = async (profileImage) => {
   try {
     const profileImageRef = ref(storage, `profileImages/${profileImage.filename}`);
-    console.log(profileImage.path);
-    // Assuming you are using Node.js and have the file system module available
-    const buffer = fs.readFileSync(profileImage.path);  // Read the file into a buffer
-
-    const metadata = {
-      contentType: profileImage.mimetype, 
-    };
-    await uploadBytes(profileImageRef, buffer, metadata);
-    console.log("Sharing profile image uploaded");
+    const result = await uploadBytes(profileImageRef, profileImage.buffer, { contentType: profileImage.mimetype });
+    const photoURL = await getDownloadURL(result.ref);
+    return photoURL; // Returns the URL to access the file
   } catch (error) {
     console.error('Error uploading:', error);
     throw error;
   }
-}
+};
 
 const updateProfileInfo = async (uid, updates) => {
   try {
