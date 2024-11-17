@@ -62,7 +62,7 @@ const uploadProfileImage = async (req, res) => {
     let photoURL = null;
 
     if (req.file) {
-      photoURL = await profileService.uploadTipImage(req.file);
+      photoURL = await profileService.uploadProfileImage(req.file);
     }
     
     if (photoURL) {
