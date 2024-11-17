@@ -65,13 +65,10 @@ const addTrainingProgram= async (req, res) => {
         desc, 
         slots
       } = req.body;
-      const trainingProgramImage = req.file;
-      const trainingProgramImageRef = ref(storage, `trainingProgramImages/${trainingProgramImage.filename}`);
-      const uploadResult = await trainingProgramsService.uploadTrainingProgramImage(trainingProgramImage);
-      const downloadUrl = await getDownloadURL(trainingProgramImageRef);
-      
-      //const createdAt = format(new Date(), 'MMMM d, yyyy')
-
+      let downloadUrl = null; 
+      if (req.file) {
+        downloadUrl = await trainingProgramsService.uploadTrainingProgramImage(req.file);
+      }
       const addNewTrainingProgram= await trainingProgramsService.addTrainingProgram(
         uid,
         contactNum,
@@ -98,17 +95,12 @@ const addTrainingProgram= async (req, res) => {
   const updateTrainingProgram= async (req, res) => {
     try {
       const { id } = req.params;
-      console.log(req.body);
       const updates = req.body;
-      let downloadUrl;
-      
+      let downloadUrl = null; 
       if (req.file) {
-        const trainingProgramImage = req.file;
-        const trainingProgramImageRef = ref(storage, `trainingProgramImages/${trainingProgramImage.filename}`);
-        const uploadResult = await trainingProgramsService.uploadTrainingProgramImage(trainingProgramImage);
-        downloadUrl = await getDownloadURL(trainingProgramImageRef);
+        downloadUrl = await trainingProgramsService.uploadTrainingProgramImage(req.file);
       }
-  
+
       // Include the downloadUrl in updates only if a new image was uploaded
       if (downloadUrl) {
         updates.downloadUrl = downloadUrl;
@@ -129,17 +121,6 @@ const addTrainingProgram= async (req, res) => {
     } catch (err) {
       res.status(400).json({ message: err.message });
     }
-  };
-
-  const uploadTrainingProgramImage = async (req, res) => {
-    try {
-      const trainingProgramImage = req.file;
-      const uploadResult = await trainingProgramsService.uploadTrainingProgramImage(trainingProgramImage);
-      res.status(200).json({ message: 'Uploaded successfully', data: uploadResult });
-  } catch (err) {
-      console.error(err); 
-      res.status(500).json({ message: "Internal Server Error", error: err.toString() });
-  }
   };
 
   const getStudentBySlot= async (req, res) => {
@@ -170,7 +151,6 @@ const addTrainingProgram= async (req, res) => {
     addTrainingProgram,
     updateTrainingProgram,
     deleteTrainingProgram,
-    uploadTrainingProgramImage,
     getRecommendedTrainingPrograms,
     getStudentBySlot,
     deleteSlot
