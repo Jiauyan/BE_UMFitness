@@ -36,27 +36,25 @@ const getTipById= async (req, res) => {
 
 
 const addTip= async (req, res) => {
-    try {
-      const {uid,title,desc,shortDesc, username, userImageUrl} = req.body;
-      const tipImage = req.file;
-      const tipImageRef = ref(storage, `tipImages/${tipImage.filename}`);
-      const uploadResult = await tipsService.uploadTipImage(tipImage);
-      const downloadUrl = await getDownloadURL(tipImageRef);
-      
-
-      const addNewTip= await tipsService.addTip(
-        uid,
-        title,
-        desc,
-        downloadUrl,
-        shortDesc, 
-        username, 
-        userImageUrl
-      );
-      return res.status(200).json(addNewTip);
-    } catch (err) {
-      res.status(400).json({ message: err.message });
-    }
+  try {
+    const { uid, title, desc, shortDesc, username, userImageUrl } = req.body;
+    const tipImage = req.file;
+    if (!tipImage) throw new Error("No file uploaded");
+    
+    const tipImageRef = ref(storage, `tipImages/${tipImage.filename}`);
+    await tipsService.uploadTipImage(tipImage);
+  
+    const downloadUrl = await getDownloadURL(tipImageRef);
+    console.log("Image uploaded successfully. Download URL:", downloadUrl);
+  
+    const addNewTip = await tipsService.addTip(
+      uid, title, desc, downloadUrl, shortDesc, username, userImageUrl
+    );
+    return res.status(200).json(addNewTip);
+  } catch (err) {
+    console.error("Error in addTip:", err.message);
+    return res.status(400).json({ message: err.message });
+  }
   };
 
   const updateTip= async (req, res) => {

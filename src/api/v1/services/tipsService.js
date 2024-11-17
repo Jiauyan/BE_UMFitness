@@ -56,7 +56,7 @@ const addTip = async (uid, title, desc, downloadUrl, shortDesc, username, userIm
       username, 
       userImageUrl
     });
-    return { id: addTip.id, uid, title, desc, downloadUrl, shortDesc, username, userImageUrl};
+    return { id: addTip.id, uid, title, desc, downloadUrl, shortDesc, username, userImageUrl, createdAt};
   } catch (error) {
     console.error('Error adding tip:', error);
     throw error;
