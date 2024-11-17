@@ -98,7 +98,6 @@ module.exports = {
     getTipById,
     addTip,
     updateTip,
-    deleteTip,
-    uploadTipImage
+    deleteTip
   };
   
