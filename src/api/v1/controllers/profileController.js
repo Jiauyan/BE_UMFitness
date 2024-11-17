@@ -58,19 +58,8 @@ const updateSleepHandler = async (req, res) => {
 const uploadProfileImage = async (req, res) => {
   try {
     const { uid } = req.params;
-    const updates = req.body;
-    let photoURL = null;
-
-    if (req.file) {
-      photoURL = await profileService.uploadProfileImage(req.file);
-    }
-    
-    if (photoURL) {
-      updates.photoURL = photoURL;
-    }
-
+    const {updates} = req.body;
     const updatedProfile = await profileService.updateProfileInfo(uid, updates);
-
     return res.status(200).json(updatedProfile);
   } catch (err) {
     res.status(400).json({ message: err.message });

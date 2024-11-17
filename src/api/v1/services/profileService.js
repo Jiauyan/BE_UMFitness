@@ -163,25 +163,18 @@ const updateSleep = async (uid, startTime, endTime, duration, date) => {
   }
 };
 
-const uploadProfileImage = async (profileImage) => {
-  try {
-    const profileImageRef = ref(storage, `profileImages/${profileImage.filename}`);
-    const result = await uploadBytes(profileImageRef, profileImage.buffer, { contentType: profileImage.mimetype });
-    const photoURL = await getDownloadURL(result.ref);
-    return photoURL; // Returns the URL to access the file
-  } catch (error) {
-    console.error('Error uploading:', error);
-    throw error;
-  }
-};
-
 const updateProfileInfo = async (uid, updates) => {
   try {
      const userRef = doc(db, 'Users', uid);
 
-     const fieldsToUpdate = { ...updates };
-
-    // Update the document with the filtered fields
+     // Prepare fields to update
+    const fieldsToUpdate = {};
+    for (const key in updates) {
+      if (updates[key] !== undefined) {
+        fieldsToUpdate[key] = updates[key];
+      }
+    }
+    
     await updateDoc(userRef, fieldsToUpdate);
     return { message: 'Profile updated successfully' };
   } catch (error) {
