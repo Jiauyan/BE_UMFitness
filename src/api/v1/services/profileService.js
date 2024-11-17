@@ -174,7 +174,7 @@ const updateProfileInfo = async (uid, updates) => {
         fieldsToUpdate[key] = updates[key];
       }
     }
-    
+
     await updateDoc(userRef, fieldsToUpdate);
     return { message: 'Profile updated successfully' };
   } catch (error) {
@@ -202,7 +202,6 @@ module.exports = {
     updateProfile,
     updateWater,
     updateSleep,
-    uploadProfileImage,
     updateProfileInfo,
     updateCurrentMotivationalQuote
 }
