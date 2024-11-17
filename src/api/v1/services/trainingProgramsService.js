@@ -79,7 +79,7 @@ const addTrainingProgram = async (
 ) => {
   try {
     const timestamp = new Date().toISOString();
-    // const parsedSlots = slots.map(slot => {
+    // const slots = slots.map(slot => {
     //   try {
     //     return JSON.parse(slot);
     //   } catch (e) {
@@ -140,16 +140,7 @@ const addTrainingProgram = async (
 const updateTrainingProgram = async (id, updates) => {
   try {
     // Extract slots if they exist
-    const slots = updates.slots || [];
-    // Parse slots safely
-    const parsedSlots = slots.map(slot => {
-      try {
-        return JSON.parse(slot);
-      } catch (e) {
-        console.error("Error parsing slot:", slot, e);
-        return null; // Ignore invalid slots
-      }
-    }).filter(slot => slot !== null);
+    const slots = updates.slots;
 
     const trainingProgramRef = doc(db, 'TrainingPrograms', id);
 
@@ -166,12 +157,12 @@ const updateTrainingProgram = async (id, updates) => {
       fieldsToUpdate.capacity = newCapacity;
 
       // Also update capacity of each parsed slot
-      parsedSlots.forEach(slot => {
+      slots.forEach(slot => {
         slot.capacity = newCapacity; // Update capacity for each slot
         slot.status = slot.enrolled >= newCapacity;
       });
 
-      for (const slot of parsedSlots) {
+      for (const slot of slots) {
         const bookingsRef = collection(db, 'TrainingClassBooking');
         // Assuming you want to update bookings related to a specific slot, use slot.time or another unique slot identifier in your query.
         const q = query(bookingsRef,
@@ -191,11 +182,11 @@ const updateTrainingProgram = async (id, updates) => {
   }
 
     // Add the parsed slots to the update fields
-    fieldsToUpdate.slots = parsedSlots.map(parsedSlot => ({
-      time: parsedSlot.time,
-      enrolled: parsedSlot.enrolled,
-      capacity: Number(parsedSlot.capacity),
-      status: parsedSlot.status ? parsedSlot.status : false
+    fieldsToUpdate.slots = slots.map(slot => ({
+      time: slot.time,
+      enrolled: slot.enrolled,
+      capacity: Number(slot.capacity),
+      status: slot.status ? slot.status : false
 
     }));
 
