@@ -3,7 +3,13 @@ const router = express.Router();
 const multer = require('multer');
 const tipsController = require("../controllers/tipsController");
 
-const upload = multer({ storage: multer.memoryStorage() });
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage: storage,
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  }
+});
 
 // Routing
 router.get("/getAllTips", tipsController.getAllTips);

@@ -6,6 +6,7 @@ const { format } = require('date-fns');
 // get all tips
 const getAllTips= async (req, res) => {
     try {
+      res.set('Cache-Control', 'no-store');
       const findAllTips= await tipsService.getAllTips();
       return res.status(200).json(findAllTips);
     } catch (err) {
@@ -15,6 +16,7 @@ const getAllTips= async (req, res) => {
 
 const getAllTipsOfUser = async (req, res) => {
   try {
+    res.set('Cache-Control', 'no-store');
     const { uid } = req.params;
     const allUserTips = await tipsService.getAllUserTips(uid);
     return res.status(200).json(allUserTips);
@@ -26,6 +28,7 @@ const getAllTipsOfUser = async (req, res) => {
 
 const getTipById= async (req, res) => {
     try {
+      res.set('Cache-Control', 'no-store');
       const { id } = req.params;
       const findOneTip= await tipsService.getTipById(id);
       return res.status(200).json(findOneTip);
@@ -37,6 +40,7 @@ const getTipById= async (req, res) => {
 
 const addTip= async (req, res) => {
   try {
+    res.set('Cache-Control', 'no-store');
     const { uid, title, desc, shortDesc, username, userImageUrl } = req.body;
     let downloadUrl = null; // Default to null if no file is uploaded
 
@@ -58,6 +62,7 @@ const addTip= async (req, res) => {
 
   const updateTip= async (req, res) => {
     try {
+      res.set('Cache-Control', 'no-store');
       const { id } = req.params;
       const updates = req.body;
       let downloadUrl = null;  
@@ -69,7 +74,7 @@ const addTip= async (req, res) => {
   
       // Include the downloadUrl in updates only if a new image was uploaded
       if (downloadUrl) {
-        updates.downloadUrl = downloadUrl;
+        updates.tipImage = downloadUrl;
       }
   
       const updatedTip = await tipsService.updateTip(id, updates);
