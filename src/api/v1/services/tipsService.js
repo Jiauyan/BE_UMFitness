@@ -92,18 +92,6 @@ const deleteTip = async (id) => {
   }
 }
 
-const uploadTipImage = async (tipImage) => {
-  try {
-    const tipImageRef = ref(storage, `tipImages/${tipImage.filename}`);
-    const result = await uploadBytes(tipImageRef, tipImage.buffer, { contentType: tipImage.mimetype });
-    const downloadUrl = await getDownloadURL(result.ref);
-    return downloadUrl; // Returns the URL to access the file
-  } catch (error) {
-    console.error('Error uploading:', error);
-    throw error;
-  }
-};
-
 module.exports = {
     getAllTips,
     getAllUserTips,

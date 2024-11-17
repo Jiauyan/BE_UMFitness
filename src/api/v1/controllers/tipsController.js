@@ -38,7 +38,6 @@ const getTipById= async (req, res) => {
 const addTip= async (req, res) => {
   try {
     const { uid, title, desc, shortDesc, username, userImageUrl, downloadUrl} = req.body;
-
         // Proceed to add the tip with the data provided in the request
         const addNewTip = await tipsService.addTip(
           uid, title, desc, shortDesc, username, userImageUrl, downloadUrl
@@ -54,18 +53,6 @@ const addTip= async (req, res) => {
     try {
       const { id } = req.params;
       const updates = req.body;
-      let downloadUrl = null;  
-  
-       // Check if the file was uploaded and process it
-       if (req.file) {
-        downloadUrl = await tipsService.uploadTipImage(req.file);
-      }
-  
-      // Include the downloadUrl in updates only if a new image was uploaded
-      if (downloadUrl) {
-        updates.tipImage = downloadUrl;
-      }
-  
       const updatedTip = await tipsService.updateTip(id, updates);
       return res.status(200).json(updatedTip);
     } catch (err) {
