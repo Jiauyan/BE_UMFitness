@@ -69,7 +69,12 @@ const updateTip = async (id, updates) => {
     const tipRef = doc(db, 'Tips', id); 
 
     // Prepare fields to update
-    const fieldsToUpdate = { ...updates };
+    const fieldsToUpdate = {};
+    for (const key in updates) {
+      if (updates[key] !== undefined) {
+        fieldsToUpdate[key] = updates[key];
+      }
+    }
 
     // Update the document with the fields
     await updateDoc(tipRef, fieldsToUpdate);

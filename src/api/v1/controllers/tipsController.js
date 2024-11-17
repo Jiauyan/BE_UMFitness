@@ -52,7 +52,7 @@ const addTip= async (req, res) => {
   const updateTip= async (req, res) => {
     try {
       const { id } = req.params;
-      const updates = req.body;
+      const {updates} = req.body;
       const updatedTip = await tipsService.updateTip(id, updates);
       return res.status(200).json(updatedTip);
     } catch (err) {
