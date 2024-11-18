@@ -78,6 +78,7 @@ const addTrainingProgram = async (
   downloadUrl
 ) => {
   try {
+    const numericFeeAmount = parseFloat(feeAmount).toFixed(2);
     const timestamp = new Date().toISOString();
     const addTrainingProgram = await addDoc(collection(db, 'TrainingPrograms'), {
       uid,
@@ -86,7 +87,7 @@ const addTrainingProgram = async (
       typeOfTrainingProgram,
       capacity : Number(capacity),
       feeType,
-      feeAmount : feeAmount,
+      feeAmount: parseFloat(numericFeeAmount),
       venueType,
       venue,
       fitnessLevel, 
