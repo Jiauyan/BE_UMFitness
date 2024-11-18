@@ -260,7 +260,7 @@ const completeProfile = async (
       gender,  
       weight, 
       height,
-      phoneNumber: ""
+      phoneNumber:" "
     };
 
     const userRef = doc(db, 'Users', uid);
@@ -284,9 +284,16 @@ const completeProfile = async (
         sleepByMonth: {},
         currentMotivationalQuote: " " // Consider using a default motivational quote or allowing input
       };
+      const stepsRef = doc(db, 'Steps', uid);
+      const stepsData = {
+        uid,
+        stepsToday: 0,
+        stepsByDay: {},
+        stepsByMonth: {}
+      };
       const addStudentInfo = await setDoc(userRef, studentData, { merge: true });
-
-      return addStudentInfo;
+      const addStepInfo = await setDoc(stepsRef, stepsData, { merge: true });
+      return {addStudentInfo, addStepInfo};
     }
   } catch (error) {
     console.error('Error updating user profile:', error);
