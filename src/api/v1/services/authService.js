@@ -85,14 +85,22 @@ const logoutAccount = async () => {
 };
 
 const forgotPassword = async (email) => {
-    try {
-        await sendPasswordResetEmail(auth, email);
-        return "Password reset email sent successfully";
-    } catch (error) {
-        console.log("Printing error code:" + error.code);
-        console.log("Printing error message:" + error.message);
-        return error.message;
-    }
+  try {
+      await sendPasswordResetEmail(auth, email);
+      // The email might not be registered, but we won't know it for sure
+      return "If this email is associated with an account, a password reset link will be sent.";
+  } catch (error) {
+      console.log("Error code:", error.code);
+      console.log("Error message:", error.message);
+      
+      // Handle specific Firebase errors
+      if (error.code === 'auth/invalid-email') {
+          return "The email address is not valid. Please check and try again.";
+      } else {
+          // For other unknown errors
+          return "An error occurred. Please try again later.";
+      }
+  }
 }
 
 const deleteAccount = async (uid) => {
