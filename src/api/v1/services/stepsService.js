@@ -67,7 +67,6 @@ const storeStep = async (uid, stepCount) => {
           stepsByMonth: {},
         };
       }
-  
       const stepData = stepSnap.data();
   
       // Get today's steps

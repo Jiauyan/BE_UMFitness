@@ -40,7 +40,6 @@ const registerAccount = async (email, password) => {
     throw error
   }
 };
-
 const saveUserDetails = async (uid, userDetails) => {
   try {
     // Validate userDetails here if needed
