@@ -50,24 +50,32 @@ const storeStep = async (uid, stepCount) => {
   const getStepsByUid = async (uid) => {
     try {
       const date = new Date();
-      const day = date.toISOString().split('T')[0];  // e.g. "2024-10-11"
+      const day = date.toISOString().split('T')[0]; // e.g., "2024-10-11"
       const year = date.getFullYear();
-      const month = `${year}-${date.getMonth() + 1}`;  // e.g. "2024-10"
+      const month = `${year}-${date.getMonth() + 1}`; // e.g., "2024-10"
   
       // Fetch the steps document from Firestore
       const stepSnap = await getDoc(doc(db, 'Steps', uid));
+  
+      // If document doesn't exist, return default values
       if (!stepSnap.exists()) {
-        throw new Error(`No steps found for user ${uid}`);
+        console.warn(`No steps found for user ${uid}`);
+        return {
+          uid,
+          stepsToday: 0,
+          stepsByDay: {},
+          stepsByMonth: {},
+        };
       }
   
       const stepData = stepSnap.data();
   
       // Get today's steps
       const stepsToday = stepData.stepsByDay?.[day] || 0;
-      
-      // Get step history for each day (could be filtered for last 30 days)
+  
+      // Get step history for each day
       const stepsByDay = stepData.stepsByDay || {};
-      
+  
       // Get steps count by month
       const stepsByMonth = stepData.stepsByMonth || {};
   
@@ -75,12 +83,19 @@ const storeStep = async (uid, stepCount) => {
         uid,
         stepsToday,
         stepsByDay,
-        stepsByMonth
+        stepsByMonth,
       };
     } catch (err) {
-      throw new Error(`Error fetching steps: ${err.message}`);
+      console.error(`Error fetching steps for user ${uid}:`, err);
+      // Return default values in case of an error
+      return {
+        uid,
+        stepsToday: 0,
+        stepsByDay: {},
+        stepsByMonth: {},
+      };
     }
-  };
+  };  
 
   const updateStepGoal = async (uid, stepGoal) => {
     try {
