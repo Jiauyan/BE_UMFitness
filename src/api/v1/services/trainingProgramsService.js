@@ -79,15 +79,6 @@ const addTrainingProgram = async (
 ) => {
   try {
     const timestamp = new Date().toISOString();
-    // const slots = slots.map(slot => {
-    //   try {
-    //     return JSON.parse(slot);
-    //   } catch (e) {
-    //     console.error("Error parsing slot:", slot, e);
-    //     return null;  // Or handle the error as appropriate
-    //   }
-    // }).filter(slot => slot !== null);
-
     const addTrainingProgram = await addDoc(collection(db, 'TrainingPrograms'), {
       uid,
       contactNum,
@@ -95,7 +86,7 @@ const addTrainingProgram = async (
       typeOfTrainingProgram,
       capacity : Number(capacity),
       feeType,
-      feeAmount : Number(feeAmount),
+      feeAmount : parseFloat(feeAmount),
       venueType,
       venue,
       fitnessLevel, 
