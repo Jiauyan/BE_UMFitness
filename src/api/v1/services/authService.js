@@ -147,35 +147,12 @@ const deleteAccount = async (uid) => {
 
 const registerAcc = async (email, password, photoURL) => {
   try {
-    const currentHydration = 0;
-    const phoneNumber = "0";
-    const currentMotivationalQuote = " ";
-    const todayWater= 0;
-    const waterByDay = {};
-    const waterByMonth = {};
-    const sleepByDay = {};
-    const sleepByMonth = {};
-    const stepsToday = 0 ;
-    const stepsByDay = {};
-    const stepsByMonth = {};
-
     const newUser = await createUserWithEmailAndPassword(auth, email, password);
     const user = newUser.user;
 
     await setDoc(doc(db, "Users", user.uid), {
       email: user.email,
       photoURL,
-      currentHydration,
-      phoneNumber,
-      currentMotivationalQuote,
-      todayWater,
-      waterByDay,
-      waterByMonth,
-      sleepByDay,
-      sleepByMonth,
-      stepsToday,
-      stepsByDay,
-      stepsByMonth
     });
     
     return { uid: user.uid, email: user.email };  
@@ -267,10 +244,15 @@ const completeProfile = async (
   age,
   gender, 
   weight, 
-  height,) => {
-  const userRef = doc(db, 'Users', uid);
+  height
+) => {
   try {
-    const addUserInfo = await setDoc(userRef, {  
+    // Basic input validation (example, can be extended based on actual requirements)
+    if (!uid || !role || !name || !username || age <= 0 || weight <= 0 || height <= 0) {
+      throw new Error('Invalid input data');
+    }
+
+    const commonData = {
       role, 
       name,
       username,
@@ -278,14 +260,37 @@ const completeProfile = async (
       gender,  
       weight, 
       height,
-     }, 
-     { merge: true });
+      phoneNumber: ""
+    };
 
-    return addUserInfo;
-    
+    const userRef = doc(db, 'Users', uid);
+
+    if (role === "Trainer") {
+      // Trainer-specific data
+      const trainerData = {
+        ...commonData,
+        currentMotivationalQuote: " " // Consider using a default motivational quote or allowing input
+      };
+      const addTrainerInfo = await setDoc(userRef, trainerData, { merge: true });
+      return addTrainerInfo;
+    } else {
+      // Assuming role is Student or any other role
+      const studentData = {
+        ...commonData,
+        currentHydration: 0,
+        todayWater: 0,
+        waterByDay: {},
+        waterByMonth: {},
+        sleepByDay: {},
+        sleepByMonth: {}
+      };
+      const addStudentInfo = await setDoc(userRef, studentData, { merge: true });
+      
+      return addStudentInfo;
+    }
   } catch (error) {
-    console.error('Error fetching:', error);
-    throw error;
+    console.error('Error updating user profile:', error);
+    throw error;  // Consider whether throwing the error is the best approach based on your error handling strategy
   }
 }
 
