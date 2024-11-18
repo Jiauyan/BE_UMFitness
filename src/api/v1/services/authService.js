@@ -269,7 +269,6 @@ const completeProfile = async (
       // Trainer-specific data
       const trainerData = {
         ...commonData,
-        currentMotivationalQuote: " " // Consider using a default motivational quote or allowing input
       };
       const addTrainerInfo = await setDoc(userRef, trainerData, { merge: true });
       return addTrainerInfo;
@@ -282,10 +281,11 @@ const completeProfile = async (
         waterByDay: {},
         waterByMonth: {},
         sleepByDay: {},
-        sleepByMonth: {}
+        sleepByMonth: {},
+        currentMotivationalQuote: " " // Consider using a default motivational quote or allowing input
       };
       const addStudentInfo = await setDoc(userRef, studentData, { merge: true });
-      
+
       return addStudentInfo;
     }
   } catch (error) {
