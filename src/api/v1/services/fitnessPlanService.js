@@ -29,6 +29,7 @@ const createFitnessPlan = async (uid, title, date, completeCount, totalCount) =>
 const updateFitnessPlan = async (id, uid, title, date, completeCount, totalCount) => {
     try {
         const timestamp = new Date().toISOString();
+        const createdAt = timestamp;
         const updateFitnessPlan = await setDoc(doc(db, 'FitnessPlans', id), {
             uid,
             title, 
