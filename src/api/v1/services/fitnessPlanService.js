@@ -26,15 +26,16 @@ const createFitnessPlan = async (uid, title, date, completeCount, totalCount) =>
 
 // edit fitness plan
 // createdAt - get from createFitnessPlan (to maintain list sequence after editing - based on add time,  not edit time)
-const updateFitnessPlan = async (id, uid, title, date, completeCount, totalCount, createdAt) => {
+const updateFitnessPlan = async (id, uid, title, date, completeCount, totalCount) => {
     try {
+        const timestamp = new Date().toISOString();
         const updateFitnessPlan = await setDoc(doc(db, 'FitnessPlans', id), {
             uid,
             title, 
             date,
             completeCount,
             totalCount,
-            createdAt
+            createdAt: timestamp
         })
 
         return { id, uid, title, date, completeCount, totalCount, createdAt };

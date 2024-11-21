@@ -23,15 +23,14 @@ const addFitnessPlan = async (req, res) => {
 const updateFitnessPlan = async (req, res) => {
     try {
         const { id } = req.params;
-        const { uid, title, date, completeCount, totalCount, createdAt } = req.body;
+        const { uid, title, date, completeCount, totalCount } = req.body;
         const updateFitnessPlan = await fitnessPlanService.updateFitnessPlan(
             id,
             uid,
             title,
             date,
             completeCount,
-            totalCount,
-            createdAt
+            totalCount
         );
         return res.status(200).json(updateFitnessPlan);
     }catch (err) {
