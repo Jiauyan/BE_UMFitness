@@ -17,9 +17,9 @@ const formatTime = (timestamp) => {
     } else if (duration.asHours() < 24) {
         return `${Math.floor(duration.asHours())} hours ago`;
     } else if (duration.asDays() < 365) {
-        return `${Math.floor(duration.asDays())} days ago`;
+        return moment(timestamp).format('DD/MM/YYYY');  // Formats the date if it's less than a year and more than 24 hours
     } else {
-        return `${Math.floor(duration.asYears())} years ago`;
+        return moment(timestamp).format('DD/MM/YYYY');  // Formats the date if it's less than a year and more than 24 hours
     }
 };
 
