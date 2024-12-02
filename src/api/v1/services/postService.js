@@ -3,23 +3,27 @@ const { collection, getDocs, addDoc, doc, deleteDoc, setDoc, getDoc, query, wher
 const moment = require('moment');
 require('moment-duration-format');
 
-// Format the time string
 const formatTime = (timestamp) => {
     if (!timestamp) {
         return "Invalid date";
     }
 
-    const duration = moment.duration(moment().diff(moment(timestamp)));
+    const now = moment();
+    const date = moment(timestamp);
+    const duration = moment.duration(now.diff(date));
+
     if (duration.asSeconds() < 60) {
         return `${Math.floor(duration.asSeconds())} seconds ago`;
     } else if (duration.asMinutes() < 60) {
         return `${Math.floor(duration.asMinutes())} minutes ago`;
     } else if (duration.asHours() < 24) {
         return `${Math.floor(duration.asHours())} hours ago`;
-    } else if (duration.asDays() < 365) {
-        return moment(timestamp).format('DD/MM/YYYY');  // Formats the date if it's less than a year and more than 24 hours
+    } else if (now.diff(date, 'days') === 1) {
+        return "yesterday"; // If it was one day ago
+    } else if (now.diff(date, 'weeks') < 1) {
+        return `${Math.floor(duration.asDays())} days ago`; // Less than a week
     } else {
-        return moment(timestamp).format('DD/MM/YYYY');  // Formats the date if it's less than a year and more than 24 hours
+        return date.format('DD MMM YYYY').toUpperCase(); // Older than a week
     }
 };
 
